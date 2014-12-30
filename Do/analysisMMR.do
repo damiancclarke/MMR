@@ -1,19 +1,26 @@
 /* analysisMMR v1.00             damiancclarke             yyyy-mm-dd:2014-12-30
 ----|----1----|----2----|----3----|----4----|----5----|----6----|----7----|----8
 
+This file runs cross-country regressions, analysing the effect of education on
+maternal mortality.  Regressions of the following form are run:
 
+     MMR_it = a + educ_it*B + W_it*g + d_t + u_it
 
+where MMR_it refers to the rate of maternal mortality in region i in time t, and
+educ_it refers to educational outcomes of women of fertile age in the same regi-
+on at the same time.
 
-Cross-country regressions for MMR analysis.  Takes data created in the do file
-MMREduc_Setup.do.
+Data used here comes from the following scripts:
+   > setupMMR.do
+   >
 
-This is replacing MMR_Analysis.do 1.00 and is a partial refactorisation.
+contact mailto:damian.clarke@economics.ox.ac.uk
 */
 
 clear all
 version 11
-cap log close
 set more off
+cap log close
 
 ********************************************************************************
 **** (1) Globals and Locals
@@ -24,14 +31,13 @@ global OUT "~/investigacion/Activa/MMR/Results"
 global LOG "~/investigacion/Activa/MMR/Log"
 
 
-global RESULTS "~/investigacion/Activa/MMR/Results_aug2013/allages"
-global TABLES "~/investigacion/Activa/MMR/Results_aug2013/allages/Tables"
-global GRAPHS "~/investigacion/Activa/MMR/Results_aug2013/Graphs"
-
-
-
-
 log using "$LOG/MMR_Analysis.txt", text replace
+
+cap mkdir "$OUT/tables"
+cap mkdir "$OUT/graphs"
+
+
+
 
 global mmr ln_MMR MMR
 global covars GDPpc ln_GDPpc Immuniz fertil percentattend population TeenBirths
@@ -45,34 +51,15 @@ local xvars  atleastprim
 *local xvars lp ls lh
 
 
-cap mkdir $TABLES
-cap mkdir $GRAPHS
+local full   1
+local summ   0
+local MMR    0
+local MMRreg 0
+local MMRinc 0
+local Zsc    0
+local cntry  0
 
-*TABLES
-local table1
-local table2 SummaryStats
-local table3 CrossCountry_female
-local table3a CrossCountry_all
-local table3b CrossCountry_region
-local table3c CrossCountry_income
-local table4 Zscores_female
-local table4a Zscores_all
-local table5 CountrySpecific
-local table7 CrossCountry_ln_female
-local table7a CrossCountry_ln_all
 
-*FIGURES
-local figure1a SchoolingRegion
-local figure1b MMRRegion
-local figure2 MMRMap
-local figure3a Educ_Nigeria
-local figure3b MMR_Nigeria
-local figure4a Educ_Zimbabwe
-local figure4b MMR_Zimbabwe
-local figure5a Educ_Kenya
-local figure5b MMR_Kenya
-
-*SWITCHES
 local fullsample no
 local sumstats no
 local MMRregs no
@@ -83,49 +70,51 @@ local DHSsample yes
 local countryspecific no
 
 ********************************************************************************
-**** (1) Use and rename (for now `gender' has been replaced with F after _BASE_)
+**** (2) Use and rename
 ********************************************************************************
-use $PATH/Data/MMReduc_BASE_F, clear
-do $DO/UNESCO_naming.do
+use "$DAT/MMReduc_BASE_F", clear
+do "$COD/UNESCO_naming.do"
+
 encode region_code, gen(region)
 gen gender="F"
 rename TeenBirths_t TeenBirths
 
 ********************************************************************************
-***(2) Full sample graphs
+*** (3) Full sample graphs
 ********************************************************************************
-if `"`fullsample'"'=="yes" {
-	twoway scatter MMR year if age_all || lfit MMR year if age_all, ///
-	title(Maternal Mortality by Year) subtitle(Points represent country average)
-	graph export $GRAPHS/timetrend_MMR.eps, replace as(eps)
+if `full'==1 {
+    cap mkdir "$OUT/graphs/trends"
+    
+    twoway scatter MMR year if age_all || lfit MMR year if age_all, ///
+    title(Maternal Mortality by Year) subtitle(Points represent country average)
+    graph export "$OUT/graphs/trends/timetrend_MMR.eps", replace as(eps)
 
-	**** Education over time
-*	foreach educ of varlist lu- yr_sch_ter { 
-*		twoway scatter `educ' year if age_all || lfit `educ' year if ///
-*		age_all, title("Educational Achievement (F) by Year") ///
-*		subtitle(Points represent country average)
-*		graph export $GRAPHS/timetrend_`educ'_F.png, replace as(png)
-*	}
+    foreach educ of varlist lu- yr_sch_ter { 
+        twoway scatter `educ' year if age_all || lfit `educ' year if ///
+        age_all, title("Educational Achievement (F) by Year") ///
+        subtitle(Points represent country average)
+        graph export "$OUT/graphs/trends/timetrend_`educ'_F.eps", replace as(eps)
+    }
 
-	**** MMR versus education graphs
-	foreach MMR of varlist ln_MMR MMR {
-		if "`MMR'"=="ln_MMR" {
-			local title "Log Maternal Mortality"
-			local legend1 "ln(MMR)"
-		}
-		else if "`MMR'"=="MMR" {
-			local title "Maternal Mortality"
-			local legend1 "MMR"
-		}
-		twoway scatter `MMR' yr_sch if age_fert || lfit `MMR' yr_sch if ///
-		age_fert, lcolor(black) range(0 12) || qfit `MMR' yr_sch if age_fert, ///
-		lpattern(dash) lcolor(black) range(0 .) ///
-		xlabel(0 "0" 5 "5" 10 "10" 15 "15") ///  
-		note("Notes to figure: Each point represents a country average of maternal deaths per 100,000 births."  "Education data is for women aged 15-39.") ///
-		legend(lab(1 "`legend1'") lab(2 "Fitted Values (linear)") ///
-		lab(3 "Fitted Values (quadratic)")) scheme(s1color)
-		graph export $GRAPHS/Schooling_`MMR'_F.eps, replace as(eps)
-	}
+    local n1 " Each point represents a country average of maternal deaths per "
+    local n2 "100,000 live births.  Education data is for women aged 15-39."
+    foreach MMR of varlist ln_MMR MMR {
+        if "`MMR'"=="ln_MMR" {
+            local title "Log Maternal Mortality"
+            local legend1 "ln(MMR)"
+        }
+        else if "`MMR'"=="MMR" {
+            local title "Maternal Mortality"
+            local legend1 "MMR"
+        }
+        twoway scatter `MMR' yr_sch if age_fert || lfit `MMR' yr_sch if       ///
+        age_fert, lcolor(black) range(0 12) || qfit `MMR' yr_sch if age_fert, ///
+        lpattern(dash) lcolor(black) range(0 .) ///
+        xlabel(0 "0" 5 "5" 10 "10" 15 "15") note("Notes to figure:`n1' `n2'") ///
+        legend(lab(1 "`legend1'") lab(2 "Fitted Values (linear)") ///
+        lab(3 "Fitted Values (quadratic)")) scheme(s1color)
+        graph export "$OUT/graphs/trends/Schooling_`MMR'_F.eps", replace as(eps)
+    }
 }
 
 ********************************************************************************
@@ -166,12 +155,12 @@ if `"`sumstats'"'=="yes" {
 	local title "Summary Stats for All Countries"
 
  	estpost sum $mmr $covars `educsum'
-	estout using "$TABLES/`table2'.xls", replace `opts' title(`title')
+	estout using "$TABLES/SummaryStats.xls", replace `opts' title(`title')
 
 	foreach year of numlist 1990(5)2010 {
 		local title "Summary Stats for All Countries (`year')"
 		estpost sum $mmr $covars `educsum' if year==`year'
-		estout using "$TABLES/`table2'.xls", append `opts' title(`title')
+		estout using "$TABLES/SummaryStats.xls", append `opts' title(`title')
 	}
 
 
@@ -183,13 +172,13 @@ if `"`sumstats'"'=="yes" {
 			local title "Years of Schooling by Region"
 			local ylab ylabel(4 "4" 6 "6" 8 "8" 10 "10" 12 "12")
 			local ytit ytitle("Years of Education")
-			local save `figure1a'
+			local save SchoolingRegion
 		}
 		else if `"`outcome'"'=="MMR" {
 			local title "Maternal Mortalit|y Ratio by Region"
 			local ylab ylabel(0 "0" 200 "200" 400 "400" 600 "600" 800 "800")
 			local ytit ytitle("MMR")
-			local save `figure1b'
+			local save MMRRegion
 		}
 
 		twoway line `outcome' year if region1 || ///
@@ -227,21 +216,21 @@ local opts fe vce(cluster BLcode)
 
 if `"`MMRregs'"'=="yes" {
 	xi: xtreg MMR `trend' `xvars', `opts'
-	outreg2 `xvars' using $TABLES/`table3'.xls, excel replace label
+	outreg2 `xvars' using $TABLES/CrossCountry_female.xls, excel replace label
 	qui xi: xtreg MMR `xvars' `control7', `opts'
 
 	foreach num of numlist 1(1)7 {
 		xi: xtreg MMR `trend' `xvars' `control`num'' if e(sample), `opts'
-		outreg2 `xvars' `control`num'' using $TABLES/`table3'.xls, excel append label
+		outreg2 `xvars' `control`num'' using $TABLES/CrossCountry_female.xls, excel append label
 	}
 
 	xi: xtreg ln_MMR `trend' `xvars', `options'
-	outreg2 `xvars' using $TABLES/`table7'.xls, excel replace label
+	outreg2 `xvars' using $TABLES/CrossCountry_ln_female.xls, excel replace label
 	qui xi: xtreg ln_MMR `xvars' `control7', `opts'
 
 	foreach num of numlist 1(1)7 {
 		xi: xtreg ln_MMR `trend' `xvars' `control`num'' if e(sample), `opts'
-		outreg2 `xvars' `control`num'' using $TABLES/`table7'.xls, excel append label
+		outreg2 `xvars' `control`num'' using $TABLES/CrossCountry_ln_female.xls, excel append label
 	}
 }
 
@@ -262,19 +251,19 @@ if `"`MMRregion'"'=="yes" {
 	local r6 "South Asia"
 	local r7 "Sub-Saharan Africa"
 	
-	cap rm $TABLES/`table3b'.xls
-	cap rm $TABLES/`table3b'.txt
+	cap rm $TABLES/CrossCountry_region.xls
+	cap rm $TABLES/CrossCountry_region.txt
 
 	foreach num of numlist 1(1)7 {
 		qui xi: xtreg MMR `xvars' `control7' if region_code=="`r`num''", `opts'
 	
 		xi: xtreg MMR `xvars' `control2' if region_c=="`r`num''"&e(sample), `opts'
-		outreg2 using $TABLES/`table3b'.xls, excel append label ctitle("`r`num''")
+		outreg2 using $TABLES/CrossCountry_region.xls, excel append label ctitle("`r`num''")
 	}
 
 	foreach num of numlist 1(1)7 {
 		xi: xtreg MMR `xvars' `control7' if region_code=="`r`num''", `opts'
-		outreg2 using $TABLES/`table3b'.xls, excel append label ctitle("`r`num''")
+		outreg2 using $TABLES/CrossCountry_region.xls, excel append label ctitle("`r`num''")
 	}
 }
 
@@ -285,19 +274,19 @@ if `"`MMRincome'"'=="yes" {
 	replace income2="LM" if income2=="Lower middle"
 	replace income2="UM" if income2=="Upper middle"
 
-	cap rm "$TABLES/`table3c'.xls"
-	cap rm "$TABLES/`table3c'.txt"
+	cap rm "$TABLES/CrossCountry_income.xls"
+	cap rm "$TABLES/CrossCountry_income.txt"
 
 	foreach i in Low LM UM High {
 		qui xi: xtreg MMR `xvars' `control7' if income2=="`i'", `opts'
 	
 		xi: xtreg MMR `xvars' `control2' if e(sample)&income2=="`i'", `opts'
-		outreg2 using "$TABLES/`table3c'.xls", excel append label ctitle("`i'")
+		outreg2 using "$TABLES/CrossCountry_income.xls", excel append label ctitle("`i'")
 	}
 
 	foreach i in Low LM UM High {
 		xi: xtreg MMR `xvars' `control7' if income2=="`i'", `opts'
-		outreg2 using "$TABLES/`table3c'.xls", excel append label ctitle("`i'")
+		outreg2 using "$TABLES/CrossCountry_income.xls", excel append label ctitle("`i'")
 	}
 }
 
@@ -305,12 +294,12 @@ if `"`MMRincome'"'=="yes" {
 ***(8) Correlations between health and development outcomes (Zscores)
 ********************************************************************************
 if `"`Zscores'"'=="yes" {
-	cap rm "$TABLES/`table4'.xls"
+	cap rm "$TABLES/Zscores_female.xls"
 
 	foreach v in fertility Immunization percentattend ln_GDPpc TeenBirths {
 		egen z_`v'=std(`v')
 		reg z_`v' `xvars', robust
-		outreg2 using "$TABLES/`table4'.xls", excel append
+		outreg2 using "$TABLES/Zscores_female.xls", excel append
 	}
 }
 
