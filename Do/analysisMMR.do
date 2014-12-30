@@ -49,13 +49,13 @@ local xv3 yr_sch yr_sch_sq
 
 
 **SWITCHES (set 1 to run, else 0)
-local full   1
+local full   0
 local summ   0
-local MMR    0
+local MMRall 0
 local MMRreg 0
 local MMRinc 0
 local Zsc    0
-local cntry  0
+local cntry  1
 
 foreach a in outreg2 arrowplot {
     cap which `a'
@@ -109,8 +109,6 @@ if `full'==1 {
         lab(3 "Fitted Values (quadratic)")) scheme(s1color)
         graph export "$OUT/graphs/trends/Schooling_`MMR'_F.eps", replace as(eps)
     }
-
-
 }
 
 ********************************************************************************
@@ -210,7 +208,7 @@ local cont6 `cont5' fertility
 local cont7 `cont6' TeenBirths
 
 
-if `MMR'==1 {
+if `MMRall'==1 {
     local iter = 1
     foreach x in xv1 xv2 xv3 {
         if `iter'==1 local n1 CrossCountry_female.xls
@@ -243,7 +241,7 @@ if `MMR'==1 {
 
 
 ********************************************************************************
-***(6) MMR versus schooling by region
+*** (7) MMR versus schooling by region
 ********************************************************************************
 if `MMRreg'==1 {
     replace region_UNESCO=subinstr(region_UNESCO, " ", "", .)
@@ -277,7 +275,7 @@ if `MMRreg'==1 {
 }
 
 ********************************************************************************
-***(7) MMR versus schooling by income
+*** (8) MMR versus schooling by income
 ********************************************************************************
 if `MMRinc'==1 {
     replace income2="LM" if income2=="Lower middle"
@@ -302,7 +300,7 @@ if `MMRinc'==1 {
 }
 
 ********************************************************************************
-***(8) Correlations between health and development outcomes (Zscores)
+*** (9) Correlations between health and development outcomes (Zscores)
 ********************************************************************************
 if `Zsc'==1 {
     local name $OUT/tables/Zscores_female.xls
@@ -318,19 +316,17 @@ if `Zsc'==1 {
 }
 
 ********************************************************************************
-***(9) DHS Microdata subsample
+*** (10) Country regressions
 ********************************************************************************
-if `"`DHSsample'"'=="yes" {
-	use `DHS_MMR', clear
-	merge 1:m _cou year using `DHS_Edu'
-	encode _cou, gen(ccode)
-
-	gen FEMALEyrs_sq=FEMALEyrseduc^2
-	gen MALEyrs_sq=MALEyrseduc^2
-
-	xtset ccode year
-	xtreg MMR i.year FEMALEprimary FEMALEsecondary FEMALEpostsecondary /*
-	*/ MALEprimary MALEsecondary MALEpostsecondary 
-	*xtreg MMR i.year FEMALEyrs* MALEyrs*
-	
+if `cntry'==1 {
+    arrowplot ln_MMR yr_sch, group(country) scheme(s1color) gen(MMRcoefs) ///
+     xtitle("Years of Schooling") ytitle("Log MMR") groupname("Country")  ///
+     note("107 countries have a negative trend, 39 have a positive trend.")
+    
+    graph export "$OUT/graphs/countries.eps", as(eps) replace
 }
+
+
+
+
+
