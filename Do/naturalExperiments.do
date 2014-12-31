@@ -44,6 +44,8 @@ local Nig 1
 local Zim 0
 local Ken 0
 
+local opts cells("count mean sd min max")
+local linef lcolor(black) lpattern(dash)
 
 ********************************************************************************
 *** (2a) Nigeria Estimates Education
@@ -53,50 +55,52 @@ local Biafra1 yr6769southeast yr6769nonwest_noSE
 local Biafra2 reg_mexp0 reg_mexp1 reg_mexp2 reg_mexp3 reg_mexp4 mexp0 mexp1 /*
 */ mexp2 mexp3 mexp4
 local wt [pw=v005]
-local sample (yr6575==1|yr5661==1)
+local sampT yr6575==1|yr5661==1
+local sampP yr5055==1|yr5660==1
+
 local se cluster(yearstate)
+
+local treat1 yr7075nonwest yr6569nonwest
+local treat2 yr7075capexp53 yr6569capexp53 capexp53
+local treat3 nonwest_main_exposure nonwest_pre_exposure
+local treat4 capexp53_main_exposure capexp53_pre_exposure
+
+local placebo1 yr5660nonwest
+local placebo2 yr5660capexp53 capexp53
+local placebo3 nonwest_main_exposure_fake
+local placebo4 capexp53_main_exposure_fake
 
 
 if `Nig'==1 {
     use "$DAT/Nigeria/educ", clear
     replace educ=. if educ>25
     gen yearstate=yearbirth*100*stcode1967
+    estpost sum educ capexp53 yearbirth if (yr6575==1|yr5661==1)
+    estout using "$OUT/tables/sumStatsCountry.xls", replace `opts'
 
-    
+        
     **TREATMENT
-    local treat1 yr7075nonwest yr6569nonwest
-    local treat2 yr7075capexp53 yr6569capexp53 capexp53
-    local treat3 nonwest_main_exposure nonwest_pre_exposure
-    local treat4 capexp53_main_exposure capexp53_pre_exposure
-
-    xi: reg educ `treat1' `Ncont' `Biafra1' `wt' if `sample', robust `se'
+    xi: reg educ `treat1' `Ncont' `Biafra1' `wt' if `sampT', robust `se'
     outreg2 `treat1' using "$OUT/tables/Nigeria.xls", excel replace
-    xi: reg educ `treat2' `Ncont' `Biafra1' `wt' if `sample', robust `se'
+    xi: reg educ `treat2' `Ncont' `Biafra1' `wt' if `sampT', robust `se'
     outreg2 `treat2' using "$OUT/tables/Nigeria.xls", excel append
-    xi: reg educ `treat3' `Ncont' `Biafra2' `wt' if `sample', robust `se'
+    xi: reg educ `treat3' `Ncont' `Biafra2' `wt' if `sampT', robust `se'
     outreg2 `treat3' using "$OUT/tables/Nigeria.xls", excel append
-    xi: reg educ `treat4' `Ncont' `Biafra2' `wt' if `sample', robust `se'
+    xi: reg educ `treat4' `Ncont' `Biafra2' `wt' if `sampT', robust `se'
     outreg2 `treat4' using "$OUT/tables/Nigeria.xls", excel append
 
     **PLACEBO
-    local placebo1 yr5660nonwest
-    local placebo2 yr5660capexp53 capexp53
-    local placebo3 nonwest_main_exposure_fake
-    local placebo4 capexp53_main_exposure_fake
-    local sample yr5055==1|yr5660==1
     
-    xi: reg educ `placebo1' `Ncont' `Biafra1' `wt' if `sample', robust `se'
+    xi: reg educ `placebo1' `Ncont' `Biafra1' `wt' if `sampP', robust `se'
     outreg2 `placebo1' using "$OUT/tables/NigeriaPlacebo.xls", excel replace
-    xi: reg educ `placebo2' `Ncont' `Biafra1' `wt' if `sample', robust `se'
+    xi: reg educ `placebo2' `Ncont' `Biafra1' `wt' if `sampP', robust `se'
     outreg2 `placebo2' using "$OUT/tables/NigeriaPlacebo.xls", excel append
-    xi: reg educ `placebo3' `Ncont' `Biafra2' `wt' if `sample', robust `se'
+    xi: reg educ `placebo3' `Ncont' `Biafra2' `wt' if `sampP', robust `se'
     outreg2 `placebo3' using "$OUT/tables/NigeriaPlacebo.xls", excel append
-    xi: reg educ `placebo4' `Ncont' `Biafra2' `wt' if `sample', robust `se'
+    xi: reg educ `placebo4' `Ncont' `Biafra2' `wt' if `sampP', robust `se'
     outreg2 `placebo4' using "$OUT/tables/NigeriaPlacebo.xls", excel append
 
     **GRAPHICAL
-    local linef lcolor(black) lpattern(dash)
-
     collapse educ, by(yearbirth)
     egen educ=ma(education)
     graph twoway line educ yearbir if yearbirth>=1955, scheme(s1color) ///
@@ -109,111 +113,61 @@ if `Nig'==1 {
     graph export "$OUT/graphs/Nigeria_educ.eps", as(eps) replace
 }
 
+********************************************************************************
+*** (2b) Nigeria Estimates MMR
+********************************************************************************
+if `Nig'==1 {
+    use "$DAT/Nigeria/mmr", clear
+    gen yearstate=yearbirth*100*stcode1967
 
+    estpost sum mmr mmr_25 yearbirth if (yr6575==1|yr5661==1)
+    estout using "$OUT/tables/sumStatsCountry.xls", append `opts'
+
+    foreach m in mmr mmr_25 {
+
+        ***TREATMENT
+        xi: reg `m' `treat1' `Ncont' `Biafra1' `wt' if `sampT', `se'
+        outreg2 `treat1' using "$OUT/tables/Nigeria.xls", excel appen
+        xi: reg `m' `treat2' `Ncont' `Biafra1' `wt' if `sampT', `se'
+        outreg2 `treat2' using "$OUT/tables/Nigeria.xls", excel append
+        xi: reg `m' `treat3' `Ncont' `Biafra2' `wt' if `sampT', `se'
+        outreg2 `treat3' using "$OUT/tables/Nigeria.xls", excel append
+        xi: reg `m' `treat4' `Ncont' `Biafra2' `wt' if `sampT', `se'
+        outreg2 `treat4' using "$OUT/tables/Nigeria.xls", excel append
+
+
+        **PLACEBO
+        xi: reg `m' `placebo1' `Ncont' `Biafra1' `wt' if `sampP', `se'
+        outreg2 `placebo1' using "$OUT/tables/NigeriaPlacebo.xls", excel 
+        xi: reg `m' `placebo2' `Ncont' `Biafra1' `wt' if `sampP', `se'
+        outreg2 `placebo2' using "$OUT/tables/NigeriaPlacebo.xls", excel 
+        xi: reg `m' `placebo3' `Ncont' `Biafra2' `wt' if `sampP', `se'
+        outreg2 `placebo3' using "$OUT/tables/NigeriaPlacebo.xls", excel 
+        xi: reg `m' `placebo4' `Ncont' `Biafra2' `wt' if `sampP', `se'
+        outreg2 `placebo4' using "$OUT/tables/NigeriaPlacebo.xls", excel 
+
+        **NOTE: ALSO HAVE A ROBUSTNESS CHECK FOR NO LAGOS
+    }
+    **GRAPHICAL
+    collapse mmr [pw=v005], by(yearbirth)
+    keep if year>1931
+    egen mmr_ma=ma(mmr)
+
+    graph twoway line mmr_m yearbirth if yearbir>=1955&yearbir<1990, ///
+    scheme(s1color) ytitle("Maternal Mortality") legend(off)         ///
+    xline(1965, lcolor(black) lpattern(dot))                         ///
+    xline(1975, lcolor(black) lpattern(dot))                         ///
+    || lfit mmr_ma yearbirth if yearbir<=1965&yearbir>=1955, `linef' ///
+    || lfit mmr_ma yearbirth if yearbir>=1975&yearbir<1990,  `linef' ///
+    || lfit mmr_ma yearbirth if yearbir<=1975&yearbir>=1965, `linef' ///
+    note("Series is a 3 year moving average of maternal deaths per woman")
+    graph export "$OUT/graphs/Nigeria_mmr.eps", as(eps) replace        
+}
 exit
     
-
-if `"`Nigeria'"'=="yes" {
-
-
-if `"`graphs'"'=="yes" {
-preserve
-collapse educ, by(yearbirth nonwest) 
-graph twoway line educ yearbir if nonwest==1&yearbirth>=1960, scheme(s1color) ytitle("Years of Education") ///
-|| line educ yearbir if nonwest==0&yearbirth>=1960, xline(1965, lcolor(black) lpattern(dot)) xline(1975, lcolor(black) lpattern(dot)) ///
-|| lfit educ yearbirth if yearbirth<=1965&nonwest==1&yearbirth>=1960, lcolor(black) lpattern(dash) legend(off) ///
-|| lfit educ yearbirth if yearbirth>=1975&nonwest==1, lcolor(black) lpattern(dash) ///
-|| lfit educ yearbirth if yearbirth<=1975&yearbirth>=1965&nonwest==1, lcolor(black) lpattern(dash) ///
-|| lfit educ yearbirth if yearbirth<=1965&nonwest==0&yearbirth>=1960, lcolor(black) lpattern(dash) legend(off) ///
-|| lfit educ yearbirth if yearbirth>=1975&nonwest==0, lcolor(black) lpattern(dash) ///
-|| lfit educ yearbirth if yearbirth<=1975&yearbirth>=1965&nonwest==0, lcolor(black) lpattern(dash)
-graph export $RESULTS/Nigeria_educ.eps, as(eps) replace
-restore
-collapse educ, by(yearbirth)
-egen educ=ma(education)
-graph twoway line educ yearbir if yearbirth>=1955, scheme(s1color) ytitle("Years of Education") ///
-xline(1965, lcolor(black) lpattern(dot)) xline(1975, lcolor(black) lpattern(dot)) ///
-|| lfit educ yearbirth if yearbirth<=1965&yearbirth>=1955, lcolor(black) lpattern(dash) legend(off) ///
-|| lfit educ yearbirth if yearbirth>=1975, lcolor(black) lpattern(dash) ///
-|| lfit educ yearbirth if yearbirth<=1975&yearbirth>=1965, lcolor(black) lpattern(dash) ///
-note("Series is a 3 year moving average of educational attainment")
-
-graph export $RESULTS/Nigeria_educ.eps, as(eps) replace
-}
-
-
-use "$DAT/Nigeria/mmr", clear
-gen yearstate=yearbirth*100*stcode1967
-
-if `"`regs'"'=="yes" {
-xi: reg mmr yr7075nonwest yr6569nonwest $controls `Biafra1' [pw=v005] if (yr6575==1|yr5661==1), robust cluster(yearstate)
-outreg2 yr7075nonwest yr6569nonwest using "$RESULTS/Nigeria.xls", excel append
-xi: reg mmr yr7075capexp63 yr6569capexp63 capexp63 $controls $Biafra1 [pw=v005] if (yr6575==1|yr5661==1), robust cluster(yearstate)
-outreg2 yr7075capexp63 yr6569capexp63 capexp63 using "$RESULTS/Nigeria.xls", excel append
-xi: reg mmr nonwest_main_exposure nonwest_pre_exposure $controls $Biafra2 [pw=v005] if (yr6575==1|yr5661==1), robust cluster(yearstate)
-outreg2 nonwest_main_exposure nonwest_pre_exposure using "$RESULTS/Nigeria.xls", excel append
-xi: reg mmr capexp63_main_exposure capexp63_pre_exposure $controls $Biafra2 [pw=v005] if (yr6575==1|yr5661==1), robust cluster(yearstate)
-outreg2 capexp63_main_exposure capexp63_pre_exposure using "$RESULTS/Nigeria.xls", excel append
-
-xi: reg mmr yr6265nonwest $controls `Biafra1' [pw=v005] if (yr6265==1|yr5661==1), robust cluster(yearstate)
-outreg2 yr6265nonwest using "$RESULTS/Nigeria_check.xls", excel replace
-xi: reg mmr yr6265capexp53 capexp53 $controls $Biafra1 [pw=v005] if (yr6265==1|yr5661==1), robust cluster(yearstate)
-outreg2 yr6265capexp53 capexp53 using "$RESULTS/Nigeria_check.xls", excel append
-
-xi: reg mmr yr5661nonwest $controls `Biafra1' [pw=v005] if (yr5055==1|yr5661==1), robust cluster(yearstate)
-outreg2 yr5661nonwest using "$RESULTS/Nigeria_check.xls", excel append
-xi: reg mmr yr5661capexp53 capexp53 $controls $Biafra1 [pw=v005] if (yr5055==1|yr5661==1), robust cluster(yearstate)
-outreg2 yr5661capexp53 capexp53 using "$RESULTS/Nigeria_check.xls", excel append
-
-preserve
-drop if states1976=="Lagos"
-xi: reg mmr yr7075nonwest yr6569nonwest $controls `Biafra1' [pw=v005] if (yr6575==1|yr5661==1), robust cluster(yearstate)
-outreg2 yr7075nonwest yr6569nonwest using "$RESULTS/Nigeria_noLagos.xls", excel replace
-xi: reg mmr yr7075capexp53 yr6569capexp53 capexp53 $controls $Biafra1 [pw=v005] if (yr6575==1|yr5661==1), robust cluster(yearstate)
-outreg2 yr7075capexp53 yr6569capexp53 capexp53 using "$RESULTS/Nigeria_noLagos.xls", excel append
-xi: reg mmr nonwest_main_exposure nonwest_pre_exposure $controls $Biafra2 [pw=v005] if (yr6575==1|yr5661==1), robust cluster(yearstate)
-outreg2 nonwest_main_exposure nonwest_pre_exposure using "$RESULTS/Nigeria_noLagos.xls", excel append
-xi: reg mmr capexp53_main_exposure capexp53_pre_exposure $controls $Biafra2 [pw=v005] if (yr6575==1|yr5661==1), robust cluster(yearstate)
-outreg2 capexp53_main_exposure capexp53_pre_exposure using "$RESULTS/Nigeria_noLagos.xls", excel append
-
-xi: reg mmr yr6265nonwest $controls `Biafra1' [pw=v005] if (yr6265==1|yr5661==1), robust cluster(yearstate)
-outreg2 yr6265nonwest using "$RESULTS/Nigeria_noLagos.xls", excel append
-xi: reg mmr yr6265capexp53 capexp53 $controls $Biafra1 [pw=v005] if (yr6265==1|yr5661==1), robust cluster(yearstate)
-outreg2 yr6265capexp53 capexp53 using "$RESULTS/Nigeria_noLagos.xls", excel append
-
-xi: reg mmr yr5661nonwest $controls `Biafra1' [pw=v005] if (yr5055==1|yr5661==1), robust cluster(yearstate)
-outreg2 yr5661nonwest using "$RESULTS/Nigeria_noLagos.xls", excel append
-xi: reg mmr yr5661capexp53 capexp53 $controls $Biafra1 [pw=v005] if (yr5055==1|yr5661==1), robust cluster(yearstate)
-outreg2 yr5661capexp53 capexp53 using "$RESULTS/Nigeria_noLagos.xls", excel append
-restore
-}
-
-if `"`graphs'"'=="yes" {
-preserve
-collapse mmr, by(yearbirth nonwest) 
-graph twoway line mmr yearbir if nonwest==1&yearbirth>=1955&yearbirth<1990, scheme(s1color) ytitle("Maternal Mortality") ///
-|| line mmr yearbir if nonwest==0&yearbirth>=1960&yearbirth<1990, xline(1965, lcolor(black) lpattern(dot)) ///
-xline(1975, lcolor(black) lpattern(dot)) ///
-|| lfit mmr yearbirth if yearbirth<=1965&yearbirth>=1955&nonwest==1, lcolor(black) lpattern(dash) legend(off) ///
-|| lfit mmr yearbirth if yearbirth>=1975&yearbirth<1990&nonwest==1, lcolor(black) lpattern(dash) ///
-|| lfit mmr yearbirth if yearbirth<=1975&yearbirth>=1965&nonwest==1, lcolor(black) lpattern(dash) ///
-|| lfit mmr yearbirth if yearbirth<=1965&yearbirth>=1955&nonwest==0, lcolor(black) lpattern(dash) legend(off) ///
-|| lfit mmr yearbirth if yearbirth>=1975&yearbirth<1990&nonwest==0, lcolor(black) lpattern(dash) ///
-|| lfit mmr yearbirth if yearbirth<=1975&yearbirth>=1965&nonwest==0, lcolor(black) lpattern(dash)
-graph export $RESULTS/Nigeria_mmr.eps, as(eps) replace
-restore
-collapse mmr, by(yearbirth)
-keep if year>1930
-egen mmr_ma=ma(mmr)
-graph twoway line mmr_ma yearbir if yearbirth>=1955&yearbirth<1990, scheme(s1color) ytitle("Maternal Mortality") ///
-xline(1965, lcolor(black) lpattern(dot)) xline(1975, lcolor(black) lpattern(dot)) ///
-|| lfit mmr_ma yearbirth if yearbirth<=1965&yearbirth>=1955, lcolor(black) lpattern(dash) legend(off) ///
-|| lfit mmr_ma yearbirth if yearbirth>=1975&yearbirth<1990, lcolor(black) lpattern(dash) ///
-|| lfit mmr_ma yearbirth if yearbirth<=1975&yearbirth>=1965, lcolor(black) lpattern(dash) ///
-note("Series is a 3 year moving average of maternal deaths per woman")
-graph export $RESULTS/Nigeria_mmr.eps, as(eps) replace
-}
-}
+********************************************************************************
+*** (3a) Zimbabwe Estimates Education
+********************************************************************************
 
 
 if `"`Zimbabwe'"'=="yes" {
