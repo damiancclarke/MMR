@@ -18,8 +18,8 @@
 
 from sys import argv
 import re, os
-import locale
-locale.setlocale(locale.LC_ALL, 'en_US')
+#import locale
+#locale.setlocale(locale.LC_ALL, 'en_US')
 
 script, ftype = argv
 print '\n The script %s is making %s files \n' %(script, ftype)
@@ -27,8 +27,8 @@ print '\n The script %s is making %s files \n' %(script, ftype)
 #-------------------------------------------------------------------------------
 # --- (1) File names
 #-------------------------------------------------------------------------------
-result = '~/investigacion/Activa/MMR/Results/tables'
-tables = '~/investigacion/Activa/MMR/Paper/tables'
+result = '/home/damiancclarke/investigacion/Activa/MMR/Results/tables/'
+tables = '/home/damiancclarke/investigacion/Activa/MMR/Paper/tables/'
 
 sums = 'SumStats.xls'
 mmra = 'CrossCountry_female.xls'
@@ -59,6 +59,9 @@ if ftype=='tex':
     mcsc = '}{l}{\\textsc{'
     mcbf = '}{l}{\\textbf{'
     mc2  = '}}'
+    mc3  = '{\\begin{footnotesize}\\textsc{Notes:} '
+    cadd = ['6']
+    ccm  = ['}{p{12.5cm}}']
 
 elif ftyoe=='csv':
     dd = ';'
@@ -76,3 +79,81 @@ elif ftyoe=='csv':
     mcsc = ''
     mcbf = ''
     mc2  = ''
+    mc3  = 'NOTES: '
+    cadd = ['']
+    ccm  = ['']
+
+#-------------------------------------------------------------------------------
+# --- (3) Sum stats
+#-------------------------------------------------------------------------------
+summi = open(result + sums, 'r')
+summo = open(tables + 'sumStats.' + end, 'w')
+
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
+if ftype=='tex':
+    summo.write('\\begin{table}[htpb!]\\begin{center}\n'
+    '\\caption{Summary Statistics - Cross Country}\\label{MMRtab:sumstats}\n'
+    '\\begin{tabular}{lccccc}\n'
+    '&&&&& \\\\ \\toprule Variable&Obs&Mean&Std. Dev.&Min&Max\\\\\\midrule \n')
+elif ftype=='csv':
+    summo.write('Variable;Obs;Mean;Std. Dev.;Min;Max \n')
+
+for i,line in enumerate(summi):
+    if i>2 and i<20:
+        newline= []
+        words = line.split()
+        for word in words:
+            if is_number(word):
+                word = str(float('%.3E' % float(word)))
+                newline.append(word)
+            else:
+                newline.append(word)
+
+        newline.append('\n')
+        spl = '\t'
+        line = spl.join(newline)
+        
+
+        line = re.sub(r"\s+",dd,line)
+        line=re.sub(r"&$", ls+ls, line)
+
+        line=line.replace('ln_MMR','ln(Maternal Mortality)')
+        line=line.replace('MMR','Maternal Mortality')
+        line=line.replace('ln_GDPpc','ln(GDP per capita)')
+        line=line.replace('GDPpc','GDP per capita')
+        line=line.replace('TeenBirths','Teen Births')
+        line=line.replace('percentattend','Percent Attended Births')
+        line=line.replace('population','Population')
+        line=line.replace('fertility','Fertility')
+        line=line.replace('yr_sch_pri','Years of Primary Education')
+        line=line.replace('yr_sch_sec','Years of Secondary Education')
+        line=line.replace('yr_sch_ter','Years of Tertiary Education')
+        line=line.replace('yr_sch','Total Years of Education')
+        line=line.replace('lp','Percent Primary')
+        line=line.replace('ls','Percent Secondary')
+        line=line.replace('lh','Percent Tertiary')
+        line=line.replace('lu','Percent No Education')
+
+        if ftype=='tex':
+            line=re.sub('Total','\\midrule\\multicolumn{6}{l}{\\\\textsc{'+
+            'Education - Female}} \\\\\\ \n Total',line)
+
+        summo.write(line+'\n')
+
+summo.write(
+mr+'\n'+mc1+cadd[0]+ccm[0]+mc3+'Maternal mortality is expressed in terms of deaths' 
+' per 100,000 live births. Immunization is expressed as the percent of children of'
+' ages 12-23 months who are immunized against diphtheria, pertussis and tetanus'
+' (DPT). Fertility represents births per woman, and teen births are expressed as'
+' the number of births per 1000 women between the ages of 15--19.')
+if ftype=='tex':
+    summo.write('\\end{footnotesize}} \\\\ \\bottomrule '
+    '\\end{tabular}\\end{center}\\end{table}')
+
+summo.close()
