@@ -31,7 +31,7 @@ result = '/home/damiancclarke/investigacion/Activa/MMR/Results/tables/'
 tables = '/home/damiancclarke/investigacion/Activa/MMR/Paper/tables/'
 
 sums = 'SumStats.xls'
-mmra = 'CrossCountry_female.xls'
+mmra = 'CrossCountry_female.txt'
 regn = 'CrossCountry_region.xls'
 incm = 'CrossCountry_income.xls'
 corr = 'Zscores_female.xls'
@@ -60,8 +60,8 @@ if ftype=='tex':
     mcbf = '}{l}{\\textbf{'
     mc2  = '}}'
     mc3  = '{\\begin{footnotesize}\\textsc{Notes:} '
-    cadd = ['6']
-    ccm  = ['}{p{12.5cm}}']
+    cadd = ['6','9']
+    ccm  = ['}{p{12.5cm}}','}{p{20cm}}']
 
 elif ftyoe=='csv':
     dd = ';'
@@ -80,8 +80,8 @@ elif ftyoe=='csv':
     mcbf = ''
     mc2  = ''
     mc3  = 'NOTES: '
-    cadd = ['']
-    ccm  = ['']
+    cadd = ['','']
+    ccm  = ['','']
 
 #-------------------------------------------------------------------------------
 # --- (3) Sum stats
@@ -119,26 +119,25 @@ for i,line in enumerate(summi):
         spl = '\t'
         line = spl.join(newline)
         
-
         line = re.sub(r"\s+",dd,line)
         line=re.sub(r"&$", ls+ls, line)
 
-        line=line.replace('ln_MMR','ln(Maternal Mortality)')
-        line=line.replace('MMR','Maternal Mortality')
-        line=line.replace('ln_GDPpc','ln(GDP per capita)')
-        line=line.replace('GDPpc','GDP per capita')
-        line=line.replace('TeenBirths','Teen Births')
-        line=line.replace('percentattend','Percent Attended Births')
-        line=line.replace('population','Population')
-        line=line.replace('fertility','Fertility')
-        line=line.replace('yr_sch_pri','Years of Primary Education')
-        line=line.replace('yr_sch_sec','Years of Secondary Education')
-        line=line.replace('yr_sch_ter','Years of Tertiary Education')
-        line=line.replace('yr_sch','Total Years of Education')
-        line=line.replace('lp','Percent Primary')
-        line=line.replace('ls','Percent Secondary')
-        line=line.replace('lh','Percent Tertiary')
-        line=line.replace('lu','Percent No Education')
+        line=line.replace('ln_MMR'       ,'ln(Maternal Mortality)'      )
+        line=line.replace('MMR'          ,'Maternal Mortality'          )
+        line=line.replace('ln_GDPpc'     ,'ln(GDP per capita)'          )
+        line=line.replace('GDPpc'        ,'GDP per capita'              )
+        line=line.replace('TeenBirths'   ,'Teen Births'                 )
+        line=line.replace('percentattend','Percent Attended Births'     )
+        line=line.replace('population'   ,'Population'                  )
+        line=line.replace('fertility'    ,'Fertility'                   )
+        line=line.replace('yr_sch_pri'   ,'Years of Primary Education'  )
+        line=line.replace('yr_sch_sec'   ,'Years of Secondary Education')
+        line=line.replace('yr_sch_ter'   ,'Years of Tertiary Education' )
+        line=line.replace('yr_sch'       ,'Total Years of Education'    )
+        line=line.replace('lp'           ,'Percent Primary'             )
+        line=line.replace('ls'           ,'Percent Secondary'           )
+        line=line.replace('lh'           ,'Percent Tertiary'            )
+        line=line.replace('lu'           ,'Percent No Education'        )
 
         if ftype=='tex':
             line=re.sub('Total','\\midrule\\multicolumn{6}{l}{\\\\textsc{'+
@@ -157,3 +156,56 @@ if ftype=='tex':
     '\\end{tabular}\\end{center}\\end{table}')
 
 summo.close()
+
+#-------------------------------------------------------------------------------
+# --- (4) MMR tables
+#-------------------------------------------------------------------------------
+mmri = open(result + mmra, 'r')
+mmro = open(tables + 'MMRpercent.' + end, 'w')
+
+if ftype=='tex':
+    mmro.write('\\begin{landscape}\\begin{table}[htpb!]\\begin{center}'
+    '\\caption{Cross-Country Results of MMR and Female Educational Attainment}'
+    '\\label{MMRtab:MMRpercent}\\begin{tabular}{lcccccccc}\\toprule')
+for i,line in enumerate(mmri):
+    if i<=32:
+        line = re.sub(r"\t",dd,line)
+        line = re.sub(r"^&&","&",line)
+
+        #line=re.sub(r"&$", ls+ls, line)
+
+        line = line.replace('&LABELS','')
+        line = line.replace('Percent ever enrolled in','')
+        line = line.replace('ls& secondary','Secondary Education (\\% Population)')
+        line = line.replace('lp& primary','Primary Education (\\% Population)')
+        line = line.replace('lh& tertiary','Tertiary Education (\\% Population)')
+        line = line.replace('_year2&year==  1995.0000','year==1995')
+        line = line.replace('_year3&year==  2000.0000','year==2000')
+        line = line.replace('_year4&year==  2005.0000','year==2005')
+        line = line.replace('_year5&year==  2010.0000','year==2010')
+        line = line.replace('ln_GDPpc&','')
+        line = line.replace('Immunization&','')
+        line = line.replace('percentattend&','')
+        line = line.replace('fertility&(mean) fertility','Fertility')
+        line = line.replace('TeenBirths&','')
+        line = line.replace('Constant&Constant','Constant')
+        line = line.replace('BLcode&','countries')
+        line = line.replace('\n','\\\\')
+        line = line.replace('MMR\\\\','MMR\\\\ \\midrule')
+        line = line.replace('Observations&','Observations')
+        line = line.replace('R-squared&','R-squared')
+        mmro.write(line+'\n')
+
+mmro.write(
+mr+'\n'+mc1+cadd[1]+ccm[1]+mc3+'All regressions include fixed-effects by country.'  
+' For the full list of countries by year see table \\ref{tab:survey}.  Results are' 
+' for the percent of the female population between the ages of 15 and 39 with each'
+' level of education in each country.  A full description of control variables is '
+'available in section \\ref{scn:data}, and as the note to table \\ref{MMRtab:sumstats}.'  
+'Standard errors clustered at the level of the country are diplayed.\n'+foot)
+if ftype=='tex':
+    mmro.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
+    '\\end{tabular}\\end{center}\\end{table}\\end{landscape}')
+
+mmro.close()
+
