@@ -10,9 +10,9 @@ where MMR_it refers to the rate of maternal mortality in region i in time t, and
 educ_it refers to educational outcomes of women of fertile age in the same regi-
 on at the same time.
 
-Data used here comes from the following scripts:
+Data and source code used here comes from the following scripts:
    > setupMMR.do
-   >
+   > UNESCO_naming.do
 
 contact mailto:damian.clarke@economics.ox.ac.uk
 */
@@ -49,12 +49,12 @@ local xv3 yr_sch yr_sch_sq
 
 
 **SWITCHES (set 1 to run, else 0)
-local full   0
-local summ   0
-local MMRall 0
-local MMRreg 0
-local MMRinc 0
-local Zsc    0
+local full   1
+local summ   1
+local MMRall 1
+local MMRreg 1
+local MMRinc 1
+local Zsc    1
 local cntry  1
 
 foreach a in outreg2 arrowplot {
@@ -324,9 +324,9 @@ if `cntry'==1 {
      note("107 countries have a negative trend, 39 have a positive trend.")
     
     graph export "$OUT/graphs/countries.eps", as(eps) replace
+    preserve
+    collapse MMRcoefs, by(country)
+    count if MMRcoefs<0
+    count if MMRcoefs>=0
+    restore
 }
-
-
-
-
-
