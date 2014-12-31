@@ -55,7 +55,8 @@ local MMRall 0
 local MMRreg 0
 local MMRinc 0
 local Zsc    0
-local cntry  1
+local cntry  0
+local MMRgen 1
 
 foreach a in outreg2 arrowplot {
     cap which `a'
@@ -115,7 +116,7 @@ if `full'==1 {
 *** (4) Create macro dataset (NB: age all is)
 ********************************************************************************
 keep if age_fert==1
-collapse `mmr' `cov' `edu', by(country year `reg')
+collapse `mmr' `cov' `edu' M_*, by(country year `reg')
 
 lab var yr_sch_pri    "Primary Education (yrs)"
 lab var yr_sch_sec    "Seconday Education (yrs)"	
@@ -130,6 +131,7 @@ lab var ls            "Percent ever enrolled in secondary"
 lab var lh            "Percent ever enrolled in tertiary"
 
 gen yr_sch_sq=yr_sch*yr_sch
+gen M_yr_sch_sq=M_yr_sch*M_yr_sch
 gen yr_pri_sq=yr_sch_pri*yr_sch_pri
 gen yr_sec_sq=yr_sch_sec*yr_sch_sec
 gen yr_ter_sq=yr_sch_ter*yr_sch_ter
@@ -233,7 +235,7 @@ if `MMRall'==1 {
 
         foreach num of numlist 1(1)7 {
             xi: xtreg ln_MMR `trend' ``x'' `cont`num'' if e(sample), `opts'
-            outreg2 ``x'' `cont`num'' using "$OUT/tables/`n2'", excel append label
+            outreg2 ``x'' `cont`num'' using "$OUT/tables/`n1'", excel append label
         }
         local ++iter
     }
@@ -333,4 +335,43 @@ if `cntry'==1 {
      note("`neg' countries have a negative trend, `pos' have a positive trend.")
     
     graph export "$OUT/graphs/countries.eps", as(eps) replace
+}
+
+********************************************************************************
+*** (11) Female versus Male education
+********************************************************************************
+local xv1G lp ls lh M_lp M_ls M_lh
+local xv2G yr_sch M_yr_sch
+local xv3G yr_sch yr_sch_sq M_yr_sch M_yr_sch_sq
+
+
+if `MMRgen'==1 {
+    local iter = 1
+    foreach x in xv1G xv2G xv3G {
+        if `iter'==1 local n1 CrossCountry_gender.xls
+        if `iter'==2 local n1 CrossCountry_gender_yrs.xls
+        if `iter'==3 local n1 CrossCountry_gender_yrssq.xls
+
+        xi: xtreg MMR `trend' ``x'', `opts'
+        outreg2 ``x'' using "$OUT/tables/`n1'", excel replace label
+        qui xi: xtreg MMR ``x'' `cont7', `opts'
+
+        foreach num of numlist 1(1)7 {
+            xi: xtreg MMR `trend' ``x'' `cont`num'' if e(sample), `opts'
+            outreg2 ``x'' `cont`num'' using "$OUT/tables/`n1'", excel label
+        }
+
+        if `iter'==1 local n1 CrossCountry_ln_gender.xls
+        if `iter'==2 local n1 CrossCountry_ln_gender_yrs.xls
+        if `iter'==3 local n1 CrossCountry_ln_gender_yrssq.xls
+        xi: xtreg ln_MMR `trend' ``x'', `options'
+        outreg2 ``x'' using "$OUT/tables/`n1'", excel replace label
+        qui xi: xtreg ln_MMR ``x'' `cont7', `opts'
+
+        foreach num of numlist 1(1)7 {
+            xi: xtreg ln_MMR `trend' ``x'' `cont`num'' if e(sample), `opts'
+            outreg2 ``x'' `cont`num'' using "$OUT/tables/`n1'", excel label
+        }
+        local ++iter
+    }
 }
