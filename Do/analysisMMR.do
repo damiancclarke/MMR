@@ -49,12 +49,12 @@ local xv3 yr_sch yr_sch_sq
 
 
 **SWITCHES (set 1 to run, else 0)
-local full   1
-local summ   1
-local MMRall 1
-local MMRreg 1
-local MMRinc 1
-local Zsc    1
+local full   0
+local summ   0
+local MMRall 0
+local MMRreg 0
+local MMRinc 0
+local Zsc    0
 local cntry  1
 
 foreach a in outreg2 arrowplot {
@@ -319,14 +319,18 @@ if `Zsc'==1 {
 *** (10) Country regressions
 ********************************************************************************
 if `cntry'==1 {
-    arrowplot ln_MMR yr_sch, group(country) scheme(s1color) gen(MMRcoefs) ///
-     xtitle("Years of Schooling") ytitle("Log MMR") groupname("Country")  ///
-     note("107 countries have a negative trend, 39 have a positive trend.")
-    
-    graph export "$OUT/graphs/countries.eps", as(eps) replace
+
+    arrowplot ln_MMR yr_sch, group(country) scheme(s1color) gen(MMRcoefs)
     preserve
     collapse MMRcoefs, by(country)
     count if MMRcoefs<0
+    local neg `=`r(N)''
     count if MMRcoefs>=0
+    local pos `=`r(N)''
     restore
+    arrowplot ln_MMR yr_sch, group(country) scheme(s1color)                 ///
+     xtitle("Years of Schooling") ytitle("Log MMR") groupname("Country")    ///
+     note("`neg' countries have a negative trend, `pos' have a positive trend.")
+    
+    graph export "$OUT/graphs/countries.eps", as(eps) replace
 }
