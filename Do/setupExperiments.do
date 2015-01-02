@@ -117,106 +117,111 @@ if `Nig'==1 {
 *********************************************************************************
 *** (2b) Nigeria Controls (from Akresh et al 2012)
 *********************************************************************************
-#delimit ;
-local s1976 Cross-River Cross-River Cross-River Cross-River Imo Imo Imo Imo
-Anambra Anambra Anambra Anambra Anambra Anambra Rivers Rivers Rivers Rivers
-Bendel Bendel Bendel Bendel Lagos Lagos Ogun Ogun Ondo Ondo Ondo Ondo Oyo Oyo
-Oyo Oyo Benue Benue Plateau Plateau Plateau Plateau Kano Kano Kano Kano Kwara
-Kwara Kwara Kwara Kaduna Kaduna Kaduna Kaduna Niger Niger Sokoto Sokoto Sokoto
-Sokoto Sokoto Sokoto Bauchi Bauchi Bauchi Bauchi Borno Borno Borno Borno Gongola
-Gongola Gongola Gongola;
-local n1976 1 7 290 300 22 9 310 320 2 24 32 260 270 280 20 31 330 340 4 23 250
-350 1 360 16 370 17 33 230 240 18 28 210 220 5 180 19 35 150 160 11 25 40 100 13
-27 190 200 10 12 30 110 15 130 26 21 36 10 20 120 3 34 80 90 6 30 50 60 8 29 70
-170;
-local s1967 South-Eastern East-Central East-Central Rivers Mid-Western Lagos
-Western Western Western Benue-Plateau Benue-Plateau Kano Kwaro North-Central
-North-Western North-Western North-Eastern North-Eastern North-Eastern; 
-local n1967 Cross-River Imo Anambra Rivers Bendel Lagos Ogun Ondo Oyo Benue
-Plateau Kano Kwaro Kaduna Niger Sokoto Borno Gongola Bauchi;
-#delimit cr
-
 if `Nig'==1 {
     foreach file in mmr educ {
         use ``file''
-
         gen states1976=""
-        tokenize `n1976'
-        foreach state of local s1976 {
-            dis "state `state', from `1'"
-            replace states1976="`state'" if sstate==`1'
-            macro shift
-        }
+        replace states1976="Cross-River" if sstate==1
+        replace states1976="Cross-River" if sstate==7
+        replace states1976="Imo"         if sstate==9
+        replace states1976="Imo"         if sstate==22
+        replace states1976="Anambra"     if sstate==2
+        replace states1976="Anambra"     if sstate==24
+        replace states1976="Anambra"     if sstate==32
+        replace states1976="Rivers"      if sstate==31
+        replace states1976="Rivers"      if sstate==20
+        replace states1976="Bendel"      if sstate==23
+        replace states1976="Bendel"      if sstate==4
+        replace states1976="Lagos"       if sstate==1
+        replace states1976="Ogun"        if sstate==16
+        replace states1976="Ondo"        if sstate==33
+        replace states1976="Ondo"        if sstate==17
+        replace states1976="Oyo"         if sstate==28
+        replace states1976="Oyo"         if sstate==18
+        replace states1976="Benue"       if sstate==5
+        replace states1976="Plateau"     if sstate==35
+        replace states1976="Plateau"     if sstate==19
+        replace states1976="Kano"        if sstate==25
+        replace states1976="Kano"        if sstate==11
+        replace states1976="Kwara"       if sstate==27
+        replace states1976="Kwara"       if sstate==13
+        replace states1976="Kaduna"      if sstate==12
+        replace states1976="Kaduna"      if sstate==10
+        replace states1976="Niger"       if sstate==15
+        replace states1976="Sokoto"      if sstate==36
+        replace states1976="Sokoto"      if sstate==26
+        replace states1976="Sokoto"      if sstate==21
+        replace states1976="Bauchi"      if sstate==34
+        replace states1976="Bauchi"      if sstate==3
+        replace states1976="Borno"       if sstate==6
+        replace states1976="Borno"       if sstate==30
+        replace states1976="Gongola"     if sstate==8
+        replace states1976="Gongola"     if sstate==29
+
+        replace states1976="Cross-River" if sstate1==300
+        replace states1976="Cross-River" if sstate1==290
+        replace states1976="Imo"         if sstate1==320
+        replace states1976="Imo"         if sstate1==310
+        replace states1976="Anambra"     if sstate1==280
+        replace states1976="Anambra"     if sstate1==270
+        replace states1976="Anambra"     if sstate1==260
+        replace states1976="Rivers"      if sstate1==340
+        replace states1976="Rivers"      if sstate1==330
+        replace states1976="Bendel"      if sstate1==350
+        replace states1976="Bendel"      if sstate1==250
+        replace states1976="Lagos"       if sstate1==360
+        replace states1976="Ogun"        if sstate1==370
+        replace states1976="Ondo"        if sstate1==240
+        replace states1976="Ondo"        if sstate1==230
+        replace states1976="Oyo"         if sstate1==220
+        replace states1976="Oyo"         if sstate1==210
+        replace states1976="Benue"       if sstate1==180
+        replace states1976="Plateau"     if sstate1==160
+        replace states1976="Plateau"     if sstate1==150
+        replace states1976="Kano"        if sstate1==100
+        replace states1976="Kano"        if sstate1==40
+        replace states1976="Kwara"       if sstate1==200
+        replace states1976="Kwara"       if sstate1==190
+        replace states1976="Kaduna"      if sstate1==110
+        replace states1976="Kaduna"      if sstate1==30
+        replace states1976="Niger"       if sstate1==130
+        replace states1976="Sokoto"      if sstate1==120
+        replace states1976="Sokoto"      if sstate1==20
+        replace states1976="Sokoto"      if sstate1==10
+        replace states1976="Bauchi"      if sstate1==90
+        replace states1976="Bauchi"      if sstate1==80
+        replace states1976="Borno"       if sstate1==60
+        replace states1976="Borno"       if sstate1==50
+        replace states1976="Gongola"     if sstate1==170
+        replace states1976="Gongola"     if sstate1==70
 
         gen states1967=""
-        tokenize `n1967'
-        foreach state of local s1967 {
-            dis "state `state', from `1'"
-            replace states1967="`state'" if states1976=="`1'"
-            macro shift
-        }
-        drop states1976 states1967
-        gen states1976=""
-        replace states1976="Cross-River" if sstate==1|sstate==7
-        replace states1976="Imo" if sstate==22|sstate==9
-        replace states1976="Anambra" if sstate==2|sstate==24|sstate==32
-        replace states1976="Rivers" if sstate==20|sstate==31
-        replace states1976="Bendel" if sstate==4|sstate==23
-        replace states1976="Lagos" if sstate==1
-        replace states1976="Ogun" if sstate==16
-        replace states1976="Ondo" if sstate==17|sstate==33
-        replace states1976="Oyo" if sstate==18|sstate==28
-        replace states1976="Benue" if sstate==5
-        replace states1976="Plateau" if sstate==19|sstate==35
-        replace states1976="Kano" if sstate==11|sstate==25
-        replace states1976="Kwara" if sstate==13|sstate==27
-        replace states1976="Kaduna" if sstate==10|sstate==12
-        replace states1976="Niger" if sstate==15
-        replace states1976="Sokoto" if sstate==26|sstate==21|sstate==36
-        replace states1976="Bauchi" if sstate==3|sstate==34
-        replace states1976="Borno" if sstate==6|sstate==30
-        replace states1976="Gongola" if sstate==8|sstate==29
-
-        replace states1976="Cross-River" if sstate1==290|sstate1==300
-        replace states1976="Imo" if sstate1==310|sstate1==320
-        replace states1976="Anambra" if sstate1==260|sstate1==270|sstate1==280
-        replace states1976="Rivers" if sstate1==330|sstate1==340
-        replace states1976="Bendel" if sstate1==250|sstate1==350
-        replace states1976="Lagos" if sstate1==360
-        replace states1976="Ogun" if sstate1==370
-        replace states1976="Ondo" if sstate1==230|sstate1==240
-        replace states1976="Oyo" if sstate1==210|sstate1==220
-        replace states1976="Benue" if sstate1==180
-        replace states1976="Plateau" if sstate1==150|sstate1==160
-        replace states1976="Kano" if sstate1==40|sstate1==100
-        replace states1976="Kwara" if sstate1==190|sstate1==200
-        replace states1976="Kaduna" if sstate1==30|sstate1==110
-        replace states1976="Niger" if sstate1==130
-        replace states1976="Sokoto" if sstate1==10|sstate1==20|sstate1==120
-        replace states1976="Bauchi" if sstate1==80|sstate1==90
-        replace states1976="Borno" if sstate1==50|sstate1==60
-        replace states1976="Gongola" if sstate1==70|sstate1==170
-
-        gen states1967=""
-        replace states1967="South-Eastern" if states1976=="Cross-River"
-        replace states1967="East Central" if states1976=="Imo" | states1976=="Anambra"
-        replace states1967="Rivers" if states1976=="Rivers"
-        replace states1967="Mid Western" if states1976=="Bendel"
-        replace states1967="Lagos" if states1976=="Lagos"
-        replace states1967="Western" if states1976=="Ogun" | states1976=="Ondo" |states1976=="Oyo"
-        replace states1967="Benue-Plateau" if states1976=="Benue"|states1976=="Plateau"
-        replace states1967="Kano" if states1976=="Kano"
-        replace states1967="Kwaro" if states1976=="Kwara"
-        replace states1967="North Central" if states1976=="Kaduna"
-        replace states1967="North Western" if states1976=="Niger"|states1976=="Sokoto"
-        replace states1967="North Eastern" if states1976=="Bauchi"|states1976=="Borno"|states1976=="Gongola"
+        replace states1967="South-Eastern"  if states1976=="Cross-River"
+        replace states1967="East Central"   if states1976=="Anambra"
+        replace states1967="East Central"   if states1976=="Imo"
+        replace states1967="Rivers"         if states1976=="Rivers"
+        replace states1967="Mid Western"    if states1976=="Bendel"
+        replace states1967="Lagos"          if states1976=="Lagos"
+        replace states1967="Western"        if states1976=="Oyo"
+        replace states1967="Western"        if states1976=="Ondo"
+        replace states1967="Western"        if states1976=="Ogun"
+        replace states1967="Benue-Plateau"  if states1976=="Plateau"
+        replace states1967="Benue-Plateau"  if states1976=="Benue"
+        replace states1967="Kano"           if states1976=="Kano"
+        replace states1967="Kwaro"          if states1976=="Kwara"
+        replace states1967="North Central"  if states1976=="Kaduna"
+        replace states1967="North Western"  if states1976=="Sokoto"
+        replace states1967="North Western"  if states1976=="Niger"
+        replace states1967="North Eastern"  if states1976=="Gongola"
+        replace states1967="North Eastern"  if states1976=="Borno"
+        replace states1967="North Eastern"  if states1976=="Bauchi"
 
         encode states1976, gen(stcode1976)
         encode states1967, gen(stcode1967)
 
         gen capexp53=.
-        replace capexp53=0.014032 if states1976=="Oyo"
-        replace capexp53=0.019337 if states1976=="Ogun"
+        replace capexp53=0.014032  if states1976=="Oyo"
+        replace capexp53=0.019337  if states1976=="Ogun"
         replace capexp53=0.0326675 if states1976=="Ondo"
         replace capexp53=0.3346587 if states1976=="Borno"
         replace capexp53=0.3906393 if states1976=="Anambra"
@@ -226,14 +231,14 @@ if `Nig'==1 {
         replace capexp53=0.8833631 if states1976=="Imo"
         replace capexp53=0.9319166 if states1976=="Kano"
         replace capexp53=0.9527855 if states1976=="Sokoto"
-        replace capexp53=1.011883 if states1976=="Kwara"
-        replace capexp53=1.022602 if states1976=="Bauchi"
-        replace capexp53=1.050629 if states1976=="Gongola"
-        replace capexp53=1.322434 if states1976=="Bendel"
-        replace capexp53=1.580796 if states1976=="Niger"
-        replace capexp53=1.631959 if states1976=="Plateau"
-        replace capexp53=1.9002 if states1976=="Benue"
-        replace capexp53=2.195955 if states1976=="Cross-River"
+        replace capexp53=1.011883  if states1976=="Kwara"
+        replace capexp53=1.022602  if states1976=="Bauchi"
+        replace capexp53=1.050629  if states1976=="Gongola"
+        replace capexp53=1.322434  if states1976=="Bendel"
+        replace capexp53=1.580796  if states1976=="Niger"
+        replace capexp53=1.631959  if states1976=="Plateau"
+        replace capexp53=1.9002    if states1976=="Benue"
+        replace capexp53=2.195955  if states1976=="Cross-River"
 
         gen capexp63=.
         replace capexp63=0.24 if states1976=="Oyo"
@@ -255,172 +260,178 @@ if `Nig'==1 {
         replace capexp63=2.20 if states1976=="Plateau"
         replace capexp63=0.92 if states1976=="Benue"
         replace capexp63=2.43 if states1976=="Cross-River"
+
+        gen ethnicity=1 if (s119==94&DHSyear==1999)|(s119==138&DHSyear==2008)
+        replace ethnicity=2 if DHSyear==2008&(s119==21|s119==85|s119==91|/*
+        */s119==133|s119==140|s119==153|s119==154|s119==241|s119==283)
+        replace ethnicity=2 if DHSyear==1999&(s119==1|s119==8|s119==55|s119==58/*
+        */|s119==90|s119==95|s119==96|s119==97|s119==175|s119==203)
+        replace ethnicity=3 if (s119==86&DHSyear==1999)|(s119==130&DHSyear==2008)
+        replace ethnicity=4 if (s119==218&DHSyear==1999)|(s119==298&DHSyear==2008)
+        replace ethnicity=5 if ethnicity==.
+
+        gen religion=1 if (v130==4&DHSyear==1999)|(v130==3&DHSyear==2008)
+        replace religion=2 if (v130==1&DHSyear==1999)|(v130==1&DHSyear==2008)
+        replace religion=3 if (v130==3&DHSyear==1999)|(v130==2&DHSyear==2008)
+        replace religion=4 if (v130==5&DHSyear==1999)|(v130==4&DHSyear==2008)
+        replace religion=5 if religion==.
+
+        gen west=states1976=="Lagos"|states1976=="Ogun"|states1976=="Ondo"|/*
+        */states1976=="Oyo"
+        gen nonwest=west==0
+        gen SE=states1976=="Cross-River"|states1976=="Anambra"|states1976=="Imo"/*
+        */|states1976=="Rivers"
+        gen SW=states1976=="Lagos"|states1976=="Ogun"|states1976=="Oyo"|/*
+        */states1976=="Ondo"|states1976=="Bendel"
+        gen nonwest_noSE=(nonwest==1&SE==0)
+        gen war_region=states1976=="Cross-River"|states1976=="Anambra"|/*
+        */states1976=="Imo"|states1976=="Rivers"
+
+        gen yr5055=yearbirth>=1950&yearbirth<=1955
+        gen yr5664=yearbirth>=1956&yearbirth<=1964
+        gen yr5660=yearbirth>=1956&yearbirth<=1960
+        gen yr5661=yearbirth>=1956&yearbirth<=1961
+        gen yr6064=yearbirth>=1960&yearbirth<=1964
+        gen yr7075=yearbirth>=1970&yearbirth<=1975
+        gen yr7175=yearbirth>=1971&yearbirth<=1975
+        gen yr6575=yearbirth>=1965&yearbirth<=1975
+        gen yr6265=yearbirth>=1962&yearbirth<=1965
+        gen yr7072=yearbirth>=1970&yearbirth<=1972
+        gen yr7073=yearbirth>=1970&yearbirth<=1973
+        gen yr6569=yearbirth>=1965&yearbirth<=1969
+        gen yr6769=yearbirth>=1967&yearbirth<=1969
+
+        gen main_exposure=1 if yearbirth==1975
+        replace main_exposure=2 if yearbirth==1974
+        replace main_exposure=3 if yearbirth==1973
+        replace main_exposure=4 if yearbirth==1972
+        replace main_exposure=5 if yearbirth==1971
+        replace main_exposure=5 if yearbirth==1970
+        replace main_exposure=0 if main_exposure==.
+
+        gen main_exposure_fake=1 if yearbirth==1956
+        replace main_exposure_fake=2 if yearbirth==1957
+        replace main_exposure_fake=3 if yearbirth==1958
+        replace main_exposure_fake=4 if yearbirth==1959
+        replace main_exposure_fake=5 if yearbirth==1960
+        replace main_exposure_fake=0 if main_exposure_fake==.
+
+        gen pre_exposure=1 if yearbirth==1966
+        replace pre_exposure=2 if yearbirth==1967
+        replace pre_exposure=3 if yearbirth==1968
+        replace pre_exposure=4 if yearbirth==1969
+        replace pre_exposure=0 if pre_exposure==.
+
+        dis "mexp0"
+        gen mexp0=1 if v009==8&yearbirth==1967
+        replace mexp0=2 if v009==9&yearbirth==1967
+        replace mexp0=3 if v009==10&yearbirth==1967
+        replace mexp0=4 if v009==11&yearbirth==1967
+        replace mexp0=5 if v009==12&yearbirth==1967
+        replace mexp0=6 if v009==1&yearbirth==1968
+        replace mexp0=7 if v009==2&yearbirth==1968
+        replace mexp0=8 if v009==3&yearbirth==1968
+        replace mexp0=9 if v009==4&yearbirth==1968
+        replace mexp0=9 if yearbirth==1968&mexp0==.
+        replace mexp0=9 if yearbirth==1969&v009<3
+        replace mexp0=8 if v009==3&yearbirth==1969
+        replace mexp0=7 if v009==4&yearbirth==1969
+        replace mexp0=6 if v009==5&yearbirth==1969
+        replace mexp0=5 if v009==6&yearbirth==1969
+        replace mexp0=4 if v009==7&yearbirth==1969
+        replace mexp0=3 if v009==8&yearbirth==1969
+        replace mexp0=2 if v009==9&yearbirth==1969
+        replace mexp0=1 if v009==10&yearbirth==1969
+        replace mexp0=0 if mexp0==.
+
+        dis "mexp1"
+        gen mexp1=v009-7 if yearbirth==1964&v009>7
+        replace mexp1=v009+5 if yearbirth==1965
+        replace mexp1=v009+17 if yearbirth==1966
+        replace mexp1=30 if yearbirth==1967&(v009==1|v009==8)
+        replace mexp1=31 if yearbirth==1967&v009>1&v009<8
+        replace mexp1=38-v009 if yearbirth==1967&v009>9
+        replace mexp1=26-v009 if yearbirth==1968
+        replace mexp1=14-v009 if yearbirth==1969
+        replace mexp1=1 if yearbirth==1970&v009==1
+        replace mexp1=0 if mexp1==.
+
+        dis "mexp2"
+        gen mexp2=v009-7 if yearbirth==1961&v009>7
+        replace mexp2=v009+5 if yearbirth==1962
+        replace mexp2=v009+17 if yearbirth==1963
+        replace mexp2=30 if yearbirth==1964&(v009==1|v009==8)
+        replace mexp2=31 if yearbirth==1964&v009>1&v009<8
+        replace mexp2=38-v009 if yearbirth==1964&v009>9
+        replace mexp2=26-v009 if yearbirth==1965
+        replace mexp2=14-v009 if yearbirth==1966
+        replace mexp2=1 if yearbirth==1967&v009==1
+        replace mexp2=0 if mexp2==.
+
+        dis "mexp3"
+        gen mexp3=v009-7 if yearbirth==1955&v009>7
+        replace mexp3=v009+5 if yearbirth==1956
+        replace mexp3=v009+17 if yearbirth==1957
+        replace mexp3=30 if yearbirth==1958&v009==1
+        replace mexp3=31 if yearbirth==1958&v009>1
+        replace mexp3=31 if yearbirth==1959
+        replace mexp3=31 if yearbirth==1960
+        replace mexp3=31 if yearbirth==1961&v009<8
+        replace mexp3=38-v009 if yearbirth==1961&v009>7
+        replace mexp3=26-v009 if yearbirth==1962
+        replace mexp3=14-v009 if yearbirth==1963
+        replace mexp3=1 if yearbirth==1964&v009==1
+        replace mexp3=0 if mexp3==.
+
+        dis "mexp4"
+        gen mexp4=v009-7 if yearbirth==1951&v009>7
+        replace mexp4=v009+5 if yearbirth==1952
+        replace mexp4=v009+17 if yearbirth==1953
+        replace mexp4=30 if yearbirth==1954&v009==1
+        replace mexp4=31 if yearbirth==1954&v009!=1
+        replace mexp4=31 if yearbirth==1955&v009<8
+        replace mexp4=38-v009 if yearbirth==1955&v009>7
+        replace mexp4=26-v009 if yearbirth==1956
+        replace mexp4=14-v009 if yearbirth==1957
+        replace mexp4=1 if yearbirth==1958&v009==1
+        replace mexp4=0 if mexp4==.
+
+
+        gen yr5660nonwest=yr5660*nonwest
+        gen yr5661nonwest=yr5661*nonwest
+        gen yr6265nonwest=yr6265*nonwest
+        gen yr7075nonwest=yr7075*nonwest
+        gen yr6569nonwest=yr6569*nonwest
+        gen yr5660capexp53=yr5660*capexp53
+        gen yr5661capexp53=yr5661*capexp53
+        gen yr6265capexp53=yr6265*capexp53
+        gen yr7075capexp53=yr7075*capexp53
+        gen yr6569capexp53=yr6569*capexp53
+        gen yr5661capexp63=yr5661*capexp63
+        gen yr6265capexp63=yr6265*capexp63
+        gen yr7075capexp63=yr7075*capexp63
+        gen yr6569capexp63=yr6569*capexp63
+        gen nonwest_main_exposure=nonwest*main_exposure
+        gen nonwest_pre_exposure=nonwest*pre_exposure
+        gen nonwest_main_exposure_fake=nonwest*main_exposure_fake
+        gen capexp53_main_exposure=capexp53*main_exposure
+        gen capexp53_pre_exposure=capexp53*pre_exposure
+        gen capexp63_main_exposure=capexp63*main_exposure
+        gen capexp63_pre_exposure=capexp63*pre_exposure
+        gen capexp53_main_exposure_fake=capexp53*main_exposure_fake
+
+        gen yr6769southeast=yr6769*SE
+        gen yr6769nonwest_noSE=yr6769*nonwest_noSE
+        gen reg_mexp0=war_region*mexp0
+        gen reg_mexp1=war_region*mexp1
+        gen reg_mexp2=war_region*mexp2
+        gen reg_mexp3=war_region*mexp3
+        gen reg_mexp4=war_region*mexp4
+
+        qui sum yearbirth
+        gen trend=yearbirth-(r(min)-1)
 	
-gen ethnicity=1 if (s119==94&DHSyear==1999)|(s119==138&DHSyear==2008)
-replace ethnicity=2 if ((s119==21|s119==85|s119==91|s119==133|s119==140|s119==153|s119==154|s119==241|s119==283)&DHSyear==2008)
-replace ethnicity=2 if ((s119==1|s119==8|s119==55|s119==58|s119==90|s119==95|s119==96|s119==97|s119==175|s119==203)&DHSyear==1999)
-replace ethnicity=3 if (s119==86&DHSyear==1999)|(s119==130&DHSyear==2008)
-replace ethnicity=4 if (s119==218&DHSyear==1999)|(s119==298&DHSyear==2008)
-replace ethnicity=5 if ethnicity==.
-
-gen religion=1 if (v130==4&DHSyear==1999)|(v130==3&DHSyear==2008)
-replace religion=2 if (v130==1&DHSyear==1999)|(v130==1&DHSyear==2008)
-replace religion=3 if (v130==3&DHSyear==1999)|(v130==2&DHSyear==2008)
-replace religion=4 if (v130==5&DHSyear==1999)|(v130==4&DHSyear==2008)
-replace religion=5 if religion==.
-
-gen west=(states1976=="Lagos"|states1976=="Ogun"|states1976=="Ondo"|states1976=="Oyo")
-gen nonwest=west==0
-gen SE=(states1976=="Cross-River"|states1976=="Anambra"|states1976=="Imo"|states1976=="Rivers")
-gen SW=(states1976=="Lagos"|states1976=="Ogun"|states1976=="Oyo"|states1976=="Ondo"|states1976=="Bendel")
-gen nonwest_noSE=(nonwest==1&SE==0)
-
-gen yr5055=yearbirth>=1950&yearbirth<=1955
-gen yr5664=yearbirth>=1956&yearbirth<=1964
-gen yr5660=yearbirth>=1956&yearbirth<=1960
-gen yr5661=yearbirth>=1956&yearbirth<=1961
-gen yr6064=yearbirth>=1960&yearbirth<=1964
-gen yr7075=yearbirth>=1970&yearbirth<=1975
-gen yr7175=yearbirth>=1971&yearbirth<=1975
-gen yr6575=yearbirth>=1965&yearbirth<=1975
-gen yr6265=yearbirth>=1962&yearbirth<=1965
-gen yr7072=yearbirth>=1970&yearbirth<=1972
-gen yr7073=yearbirth>=1970&yearbirth<=1973
-gen yr6569=yearbirth>=1965&yearbirth<=1969
-gen yr6769=yearbirth>=1967&yearbirth<=1969
-
-gen main_exposure=1 if yearbirth==1975
-replace main_exposure=2 if yearbirth==1974
-replace main_exposure=3 if yearbirth==1973
-replace main_exposure=4 if yearbirth==1972
-replace main_exposure=5 if yearbirth==1971
-replace main_exposure=5 if yearbirth==1970
-replace main_exposure=0 if main_exposure==.
-
-gen main_exposure_fake=1 if yearbirth==1956
-replace main_exposure_fake=2 if yearbirth==1957
-replace main_exposure_fake=3 if yearbirth==1958
-replace main_exposure_fake=4 if yearbirth==1959
-replace main_exposure_fake=5 if yearbirth==1960
-replace main_exposure_fake=0 if main_exposure_fake==.
-
-gen pre_exposure=1 if yearbirth==1966
-replace pre_exposure=2 if yearbirth==1967
-replace pre_exposure=3 if yearbirth==1968
-replace pre_exposure=4 if yearbirth==1969
-replace pre_exposure=0 if pre_exposure==.
-
-	dis "mexp0"
-gen mexp0=1 if v009==8&yearbirth==1967
-replace mexp0=2 if v009==9&yearbirth==1967
-replace mexp0=3 if v009==10&yearbirth==1967
-replace mexp0=4 if v009==11&yearbirth==1967
-replace mexp0=5 if v009==12&yearbirth==1967
-replace mexp0=6 if v009==1&yearbirth==1968
-replace mexp0=7 if v009==2&yearbirth==1968
-replace mexp0=8 if v009==3&yearbirth==1968
-replace mexp0=9 if v009==4&yearbirth==1968
-replace mexp0=9 if yearbirth==1968&mexp0==.
-replace mexp0=9 if yearbirth==1969&v009<3
-replace mexp0=8 if v009==3&yearbirth==1969
-replace mexp0=7 if v009==4&yearbirth==1969
-replace mexp0=6 if v009==5&yearbirth==1969
-replace mexp0=5 if v009==6&yearbirth==1969
-replace mexp0=4 if v009==7&yearbirth==1969
-replace mexp0=3 if v009==8&yearbirth==1969
-replace mexp0=2 if v009==9&yearbirth==1969
-replace mexp0=1 if v009==10&yearbirth==1969
-replace mexp0=0 if mexp0==.
-
-	dis "mexp1"
-gen mexp1=v009-7 if yearbirth==1964&v009>7
-replace mexp1=v009+5 if yearbirth==1965
-replace mexp1=v009+17 if yearbirth==1966
-replace mexp1=30 if yearbirth==1967&(v009==1|v009==8)
-replace mexp1=31 if yearbirth==1967&v009>1&v009<8
-replace mexp1=38-v009 if yearbirth==1967&v009>9
-replace mexp1=26-v009 if yearbirth==1968
-replace mexp1=14-v009 if yearbirth==1969
-replace mexp1=1 if yearbirth==1970&v009==1
-replace mexp1=0 if mexp1==.
-
-	dis "mexp2"
-gen mexp2=v009-7 if yearbirth==1961&v009>7
-replace mexp2=v009+5 if yearbirth==1962
-replace mexp2=v009+17 if yearbirth==1963
-replace mexp2=30 if yearbirth==1964&(v009==1|v009==8)
-replace mexp2=31 if yearbirth==1964&v009>1&v009<8
-replace mexp2=38-v009 if yearbirth==1964&v009>9
-replace mexp2=26-v009 if yearbirth==1965
-replace mexp2=14-v009 if yearbirth==1966
-replace mexp2=1 if yearbirth==1967&v009==1
-replace mexp2=0 if mexp2==.
-
-	dis "mexp3"
-gen mexp3=v009-7 if yearbirth==1955&v009>7
-replace mexp3=v009+5 if yearbirth==1956
-replace mexp3=v009+17 if yearbirth==1957
-replace mexp3=30 if yearbirth==1958&v009==1
-replace mexp3=31 if yearbirth==1958&v009>1
-replace mexp3=31 if yearbirth==1959
-replace mexp3=31 if yearbirth==1960
-replace mexp3=31 if yearbirth==1961&v009<8
-replace mexp3=38-v009 if yearbirth==1961&v009>7
-replace mexp3=26-v009 if yearbirth==1962
-replace mexp3=14-v009 if yearbirth==1963
-replace mexp3=1 if yearbirth==1964&v009==1
-replace mexp3=0 if mexp3==.
-
-	dis "mexp4"
-gen mexp4=v009-7 if yearbirth==1951&v009>7
-replace mexp4=v009+5 if yearbirth==1952
-replace mexp4=v009+17 if yearbirth==1953
-replace mexp4=30 if yearbirth==1954&v009==1
-replace mexp4=31 if yearbirth==1954&v009!=1
-replace mexp4=31 if yearbirth==1955&v009<8
-replace mexp4=38-v009 if yearbirth==1955&v009>7
-replace mexp4=26-v009 if yearbirth==1956
-replace mexp4=14-v009 if yearbirth==1957
-replace mexp4=1 if yearbirth==1958&v009==1
-replace mexp4=0 if mexp4==.
-
-gen war_region=(states1976=="Cross-River"|states1976=="Anambra"|states1976=="Imo"|states1976=="Rivers")
-
-gen yr5660nonwest=yr5660*nonwest
-gen yr5661nonwest=yr5661*nonwest
-gen yr6265nonwest=yr6265*nonwest
-gen yr7075nonwest=yr7075*nonwest
-gen yr6569nonwest=yr6569*nonwest
-gen yr5660capexp53=yr5660*capexp53
-gen yr5661capexp53=yr5661*capexp53
-gen yr6265capexp53=yr6265*capexp53
-gen yr7075capexp53=yr7075*capexp53
-gen yr6569capexp53=yr6569*capexp53
-gen yr5661capexp63=yr5661*capexp63
-gen yr6265capexp63=yr6265*capexp63
-gen yr7075capexp63=yr7075*capexp63
-gen yr6569capexp63=yr6569*capexp63
-gen nonwest_main_exposure=nonwest*main_exposure
-gen nonwest_pre_exposure=nonwest*pre_exposure
-gen nonwest_main_exposure_fake=nonwest*main_exposure_fake
-gen capexp53_main_exposure=capexp53*main_exposure
-gen capexp53_pre_exposure=capexp53*pre_exposure
-gen capexp63_main_exposure=capexp63*main_exposure
-gen capexp63_pre_exposure=capexp63*pre_exposure
-gen capexp53_main_exposure_fake=capexp53*main_exposure_fake
-
-gen yr6769southeast=yr6769*SE
-gen yr6769nonwest_noSE=yr6769*nonwest_noSE
-gen reg_mexp0=war_region*mexp0
-gen reg_mexp1=war_region*mexp1
-gen reg_mexp2=war_region*mexp2
-gen reg_mexp3=war_region*mexp3
-gen reg_mexp4=war_region*mexp4
-
-qui sum yearbirth
-gen trend=yearbirth-(r(min)-1)
-	
-save "$OUT/Nigeria/`file'", replace
+        save "$OUT/Nigeria/`file'", replace
     }
 }
 exit
