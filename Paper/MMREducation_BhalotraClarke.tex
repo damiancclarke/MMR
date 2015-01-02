@@ -1,7 +1,5 @@
 \documentclass{article}[12pt,subeqn]
 
-%\usepackage{fancyhdr}
-%\pagestyle{fancy}
 \usepackage[pdftex]{graphicx}
 \usepackage{setspace}
 \usepackage{subfloat}
@@ -14,8 +12,6 @@
 \date{September 1, 2013}
 
 \setlength\topmargin{-0.375in}
-%\setlength\headheight{20pt}
-%\setlength\headwidth{5.8in}
 \setlength\textheight{8.8in}
 \setlength\textwidth{5.8in}
 \setlength\oddsidemargin{0.4in}
@@ -28,9 +24,9 @@
 \bibpunct{(}{)}{;}{a}{,}{,}
 
 \usepackage{hyperref}
-\usepackage{nohyperref}
 \usepackage{lscape}
 \usepackage{rotating}
+\usepackage[usenames, dvipsnames]{color} 
 %\usepackage{multirow}
 \usepackage{rotating,capt-of}
 \usepackage{array}
@@ -38,12 +34,22 @@
 %\usepackage{lineno}
 \usepackage[update,prepend]{epstopdf}
 
-\usepackage[font=sc]{caption}
+%\usepackage[font=sc]{caption}
 
 %NEW COMMANDS
 \newcommand{\Lagr}{\mathcal{L}}
 \newcommand{\vect}[1]{\mathbf{#1}}
 \newcolumntype{P}[1]{>{\raggedright}p{#1\linewidth}}
+\newcommand{\MMRfolder}{"/home/damiancclarke/investigacion/Activa/MMR"}
+
+
+\hypersetup{                                                                                                    
+    colorlinks=true,   
+    linkcolor=BlueViolet,
+    citecolor=BlueViolet,
+    filecolor=BlueViolet,
+    urlcolor=BlueViolet
+}  
 
 %\usepackage{appendix}
 \usepackage{booktabs}
@@ -226,7 +232,7 @@ education. In these country case studies, we construct comparable subgroups of w
 either side of an important educational reform.  We exploit variation in the intensity of treatment between 
 regions and cohorts of birth to estimate the effect of educational expansions on maternal mortality.
 
-Prominent educational reforms discussed in the economics literature are listed below in table \ref{EducExp}.  
+Prominent educational reforms discussed in the economics literature are listed below in table \ref{MMRtab:EducExp}.  
 Of the reforms listed here, we identify three which are suitable to use as natural experiments to identify
 the effect of education on maternal mortality.  There are Nigeria, Zimbabwe, and Kenya.  Of the other three
 cases listed, they were either not examined as they occurred too recently to observe the outcome of interest 
@@ -359,7 +365,7 @@ download from the authors' webpage.
 The estimation sample with non-missing data for all relevant variables contains 108 countries observed
 quinquennially through 1990-2010. The panel is unbalanced containing gaps in years in which attended
 births or adolescent fertility observations are not available. A full list of countries and years of availability is
-presented in table 6 in appendix B, and summary statistics are presented in table \ref{tab:sumstats} below.
+presented in table 6 in appendix B, and summary statistics are presented in table \ref{MMRtab:sumstats} below.
 
 Trends in maternal mortality and education in the cross-country sample are displayed in figures 
 \ref{fig:EducRegion}-\ref{fig:MMRRegion}.  There is considerable variation both across time and continents, 
@@ -674,7 +680,8 @@ largely unrecognised contribution to the dramatic declines in maternal mortality
 \input{Figures.tex}
 
 \section*{Tables}
-\input{Tables.tex}
+%\input{\MMRfolder/Paper/Tables.tex}
+\input{\MMRfolder/Paper/tables/Tables.tex}
 
 
 
@@ -700,7 +707,8 @@ periods (1990, 1995, 2000, 2005, 2010), for each of these years where the fifth 
 \newpage
 \section{Appendix Tables}
 \label{scn:coutriesappendix}
-\input{Appendix_Tables.tex}
+\input{\MMRfolder/Paper/tables/Appendix_Tables.tex}
+%\input{\MMRfolder/Paper/Appendix_Tables.tex}
 
 \end{spacing}
 \end{document}

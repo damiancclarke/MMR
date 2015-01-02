@@ -34,7 +34,7 @@ sums = 'SumStats.xls'
 mmra = 'CrossCountry_female.txt'
 regn = 'CrossCountry_region.txt'
 incm = 'CrossCountry_income.txt'
-corr = 'Zscores_female.xls'
+corr = 'Zscores_female.txt'
 gend = 'CrossCountry_gender.txt'
 mmry = 'CrossCountry_female_yrs.txt'
 mmrs = 'CrossCountry_female_yrssq.txt'
@@ -60,9 +60,9 @@ if ftype=='tex':
     mcbf = '}{l}{\\textbf{'
     mc2  = '}}'
     mc3  = '{\\begin{footnotesize}\\textsc{Notes:} '
-    cadd = ['6','9','9','9','8','5']
+    cadd = ['6','9','9','9','8','5','6']
     ccm  = ['}{p{12.5cm}}','}{p{20cm}}','}{p{17.2cm}}','}{p{18.8cm}}',
-    '}{p{20cm}}','}{p{12.5cm}}']
+    '}{p{20cm}}','}{p{12.5cm}}','}{p{17.7cm}}']
 
 elif ftyoe=='csv':
     dd = ';'
@@ -555,3 +555,44 @@ mmro.close()
 #-------------------------------------------------------------------------------
 # --- (6) Z-score table
 #-------------------------------------------------------------------------------
+zsci = open(result + corr, 'r')
+zsco = open(tables + 'correlatedEffects.' + end, 'w')
+
+if ftype=='tex':
+    zsco.write('\\begin{landscape}\\begin{table}[htpb!]\\begin{center}'
+    '\\caption{Correlations between Education and Health/Development Outcomes}'
+    '\\label{MMRtab:Zscore}\\begin{tabular}{lccccc}'
+    '\\toprule \n &(1)&(2)&(3)&(4)&(5)\\\\' 
+    'VARIABLES&Fertility&Immunization&Percent Attend&ln(GDP pc)& Teen Births\\\\'
+    '\\midrule\n \\vspace{4pt}&')
+    zsco.write('\\begin{footnotesize}\\end{footnotesize}&'*4+
+    '\\begin{footnotesize}\\end{footnotesize}\\\\')
+
+for i,line in enumerate(zsci):
+    if i>2 and i<14:
+        line = re.sub(r"\t",dd,line)
+        line = re.sub(r"^&&","&",line)
+
+        line = line.replace('ls','Secondary Education (\\% Population) ')
+        line = line.replace('lp','Primary Education (\\% Population) ')
+        line = line.replace('lh','Tertiary Education (\\% Population) ')
+        line = line.replace('Constant&Constant'         ,'Constant')
+        line = line.replace('\n'                        ,'\\\\')
+        line = line.replace(')\\\\'                     ,')'+dd3+'\\\\')
+        line = line.replace('(8)'                       ,'(8) ')
+        line = line.replace('&('                        ,dd1+'(')
+        line = line.replace(')&'                        ,')'+dd2)
+        zsco.write(line+'\n')
+
+zsco.write(
+mr+'\n'+mc1+cadd[6]+ccm[6]+mc3+'Each regression includes fixed effects by '
+'country, and heteroscedasticity robust standard errors.  Each dependent '
+'variable has been transformed to a z-score by subtracting its global mean'
+' and dividing by its standard deviation.  Education measures are for the '
+'female population between 15 and 39. For discussion of the effect size, see'
+' section \\ref{ssscn:effects}.\n'+foot)
+if ftype=='tex':
+    zsco.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
+    '\\end{tabular}\\end{center}\\end{table}\\end{landscape}')
+
+zsco.close()
