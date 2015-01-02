@@ -17,13 +17,16 @@ set maxvar 20000
 *********************************************************************************
 global DAT "~/database/DHS/DHS_Data"
 global OUT "~/investigacion/Activa/MMR/Data"
+global LOG "~/investigacion/Activa/MMR/Log"
+
+log using "$LOG/setupExperiments.txt", text replace
 
 local Ken 0
 local Nig 1
 local Zim 0
 
 *********************************************************************************
-*** (2) Nigeria
+*** (2a) Nigeria Generate
 *********************************************************************************
 if `Nig'==1 {
     local sy 41 52
@@ -109,167 +112,149 @@ if `Nig'==1 {
     tempfile mmr
     save `mmr'
 }
-exit
 
 
 *********************************************************************************
-*** (2b) MMR Bases
+*** (2b) Nigeria Controls (from Akresh et al 2012)
 *********************************************************************************
-foreach y of numlist 1999 2008 {		
-	if `"`y'"'=="1999" local survey=41
-	else if `"`y'"'=="2008" local survey=52
-	
-	use "$DATA/Nigeria/`y'/NGIR`survey'DT"
-	keep caseid v005 mm* sstate s119 v130 v007
+#delimit ;
+local s1976 Cross-River Cross-River Cross-River Cross-River Imo Imo Imo Imo
+Anambra Anambra Anambra Anambra Anambra Anambra Rivers Rivers Rivers Rivers
+Bendel Bendel Bendel Bendel Lagos Lagos Ogun Ogun Ondo Ondo Ondo Ondo Oyo Oyo
+Oyo Oyo Benue Benue Plateau Plateau Plateau Plateau Kano Kano Kano Kano Kwara
+Kwara Kwara Kwara Kaduna Kaduna Kaduna Kaduna Niger Niger Sokoto Sokoto Sokoto
+Sokoto Sokoto Sokoto Bauchi Bauchi Bauchi Bauchi Borno Borno Borno Borno Gongola
+Gongola Gongola Gongola;
+local n1976 1 7 290 300 22 9 310 320 2 24 32 260 270 280 20 31 330 340 4 23 250
+350 1 360 16 370 17 33 230 240 18 28 210 220 5 180 19 35 150 160 11 25 40 100 13
+27 190 200 10 12 30 110 15 130 26 21 36 10 20 120 3 34 80 90 6 30 50 60 8 29 70
+170;
+local s1967 South-Eastern East-Central East-Central Rivers Mid-Western Lagos
+Western Western Western Benue-Plateau Benue-Plateau Kano Kwaro North-Central
+North-Western North-Western North-Eastern North-Eastern North-Eastern; 
+local n1967 Cross-River Imo Anambra Rivers Bendel Lagos Ogun Ondo Oyo Benue
+Plateau Kano Kwaro Kaduna Niger Sokoto Borno Gongola Bauchi;
+#delimit cr
 
-	local MMRvars mmidx_ mm1_ mm2_ mm3_ mm4_ mm5_ mm6_ mm7_ mm8_ mm9_ mm10_ /*
-   */ mm11_ mm12_ mm13_ mm14_ mm15_
-	foreach var of local MMRvars  { 
-		foreach num of numlist 1(1)9 { 
-			rename `var'0`num' `var'`num'
-		}
-	}
-	cap drop  mmc1- mmc5
+if `Nig'==1 {
+    foreach file in mmr educ {
+        use ``file''
 
-	reshape long `MMRvars', i(caseid) j(sister)
-	drop if mmidx==.
-	
-	gen mmr=1 if (mm9_>1 & mm9_<7) & mm1_==2
-	gen mmr_alt=1 if mm9_==2|mm9_==3
-	replace mmr=0 if mmr!=1 & mm1_==2 & mm9_!=99
-	replace mmr_alt=0 if mmr_alt!=1&mm9==.&mm1_==2&mm2_==1
-	gen numkids=mm14_
-	keep if mm1_==2
-		
-	gen yearbirth=int((mm4_-1)/12)
-	gen v009=mm4_-(yearbirth*12)
-	replace yearbirth=yearbirth+1900 if yearbirth<200
-	sum yearbirth
+        gen states1976=""
+        tokenize `n1976'
+        foreach state of local s1976 {
+            dis "state `state', from `1'"
+            replace states1976="`state'" if sstate==`1'
+            macro shift
+        }
 
-	gen yearinterview=v007
-	replace yearinterview=1900+yearinterview if yearinterview<120
-	gen age=yearinterview-yearbirth
-	gen mmr_25=1 if (mm9_>1 & mm9_<7)&mm1_==2&mm7_<=25
-	replace mmr_25=0 if mmr_25!=1&mm1_==2&mm9_!=99
+        gen states1967=""
+        tokenize `n1967'
+        foreach state of local s1967 {
+            dis "state `state', from `1'"
+            replace states1967="`state'" if states1976=="`1'"
+            macro shift
+        }
+        drop states1976 states1967
+        gen states1976=""
+        replace states1976="Cross-River" if sstate==1|sstate==7
+        replace states1976="Imo" if sstate==22|sstate==9
+        replace states1976="Anambra" if sstate==2|sstate==24|sstate==32
+        replace states1976="Rivers" if sstate==20|sstate==31
+        replace states1976="Bendel" if sstate==4|sstate==23
+        replace states1976="Lagos" if sstate==1
+        replace states1976="Ogun" if sstate==16
+        replace states1976="Ondo" if sstate==17|sstate==33
+        replace states1976="Oyo" if sstate==18|sstate==28
+        replace states1976="Benue" if sstate==5
+        replace states1976="Plateau" if sstate==19|sstate==35
+        replace states1976="Kano" if sstate==11|sstate==25
+        replace states1976="Kwara" if sstate==13|sstate==27
+        replace states1976="Kaduna" if sstate==10|sstate==12
+        replace states1976="Niger" if sstate==15
+        replace states1976="Sokoto" if sstate==26|sstate==21|sstate==36
+        replace states1976="Bauchi" if sstate==3|sstate==34
+        replace states1976="Borno" if sstate==6|sstate==30
+        replace states1976="Gongola" if sstate==8|sstate==29
 
-	label var mmr "Sibling death related to child birth"
-	label var yearbirth "year of birth of sibling"
+        replace states1976="Cross-River" if sstate1==290|sstate1==300
+        replace states1976="Imo" if sstate1==310|sstate1==320
+        replace states1976="Anambra" if sstate1==260|sstate1==270|sstate1==280
+        replace states1976="Rivers" if sstate1==330|sstate1==340
+        replace states1976="Bendel" if sstate1==250|sstate1==350
+        replace states1976="Lagos" if sstate1==360
+        replace states1976="Ogun" if sstate1==370
+        replace states1976="Ondo" if sstate1==230|sstate1==240
+        replace states1976="Oyo" if sstate1==210|sstate1==220
+        replace states1976="Benue" if sstate1==180
+        replace states1976="Plateau" if sstate1==150|sstate1==160
+        replace states1976="Kano" if sstate1==40|sstate1==100
+        replace states1976="Kwara" if sstate1==190|sstate1==200
+        replace states1976="Kaduna" if sstate1==30|sstate1==110
+        replace states1976="Niger" if sstate1==130
+        replace states1976="Sokoto" if sstate1==10|sstate1==20|sstate1==120
+        replace states1976="Bauchi" if sstate1==80|sstate1==90
+        replace states1976="Borno" if sstate1==50|sstate1==60
+        replace states1976="Gongola" if sstate1==70|sstate1==170
 
-	replace v007=v007+1900 if v007<100&v007>1
-	replace v007=v007+2000 if v007<2
-	gen age_sib_atinterview=v007-yearbirth
-		
-	gen DHSyear=`y'
-	if `"`y'"'=="2008" rename sstate sstate1
-		
-	keep mmr* v005 sstate* yearbirth DHSyear s119 v009 v130 numkids mmr_alt yearinterview age
-	save `mmr`y''
-}
-	
-append using `mmr1999'
-save `mmr'
+        gen states1967=""
+        replace states1967="South-Eastern" if states1976=="Cross-River"
+        replace states1967="East Central" if states1976=="Imo" | states1976=="Anambra"
+        replace states1967="Rivers" if states1976=="Rivers"
+        replace states1967="Mid Western" if states1976=="Bendel"
+        replace states1967="Lagos" if states1976=="Lagos"
+        replace states1967="Western" if states1976=="Ogun" | states1976=="Ondo" |states1976=="Oyo"
+        replace states1967="Benue-Plateau" if states1976=="Benue"|states1976=="Plateau"
+        replace states1967="Kano" if states1976=="Kano"
+        replace states1967="Kwaro" if states1976=="Kwara"
+        replace states1967="North Central" if states1976=="Kaduna"
+        replace states1967="North Western" if states1976=="Niger"|states1976=="Sokoto"
+        replace states1967="North Eastern" if states1976=="Bauchi"|states1976=="Borno"|states1976=="Gongola"
 
-foreach file in mmr educ {
-use ``file''		
-gen states1976=""
-replace states1976="Cross-River" if sstate==1|sstate==7
-replace states1976="Imo" if sstate==22|sstate==9
-replace states1976="Anambra" if sstate==2|sstate==24|sstate==32
-replace states1976="Rivers" if sstate==20|sstate==31
-replace states1976="Bendel" if sstate==4|sstate==23
-replace states1976="Lagos" if sstate==1
-replace states1976="Ogun" if sstate==16
-replace states1976="Ondo" if sstate==17|sstate==33
-replace states1976="Oyo" if sstate==18|sstate==28
-replace states1976="Benue" if sstate==5
-replace states1976="Plateau" if sstate==19|sstate==35
-replace states1976="Kano" if sstate==11|sstate==25
-replace states1976="Kwara" if sstate==13|sstate==27
-replace states1976="Kaduna" if sstate==10|sstate==12
-replace states1976="Niger" if sstate==15
-replace states1976="Sokoto" if sstate==26|sstate==21|sstate==36
-replace states1976="Bauchi" if sstate==3|sstate==34
-replace states1976="Borno" if sstate==6|sstate==30
-replace states1976="Gongola" if sstate==8|sstate==29
+        encode states1976, gen(stcode1976)
+        encode states1967, gen(stcode1967)
 
-replace states1976="Cross-River" if sstate1==290|sstate1==300
-replace states1976="Imo" if sstate1==310|sstate1==320
-replace states1976="Anambra" if sstate1==260|sstate1==270|sstate1==280
-replace states1976="Rivers" if sstate1==330|sstate1==340
-replace states1976="Bendel" if sstate1==250|sstate1==350
-replace states1976="Lagos" if sstate1==360
-replace states1976="Ogun" if sstate1==370
-replace states1976="Ondo" if sstate1==230|sstate1==240
-replace states1976="Oyo" if sstate1==210|sstate1==220
-replace states1976="Benue" if sstate1==180
-replace states1976="Plateau" if sstate1==150|sstate1==160
-replace states1976="Kano" if sstate1==40|sstate1==100
-replace states1976="Kwara" if sstate1==190|sstate1==200
-replace states1976="Kaduna" if sstate1==30|sstate1==110
-replace states1976="Niger" if sstate1==130
-replace states1976="Sokoto" if sstate1==10|sstate1==20|sstate1==120
-replace states1976="Bauchi" if sstate1==80|sstate1==90
-replace states1976="Borno" if sstate1==50|sstate1==60
-replace states1976="Gongola" if sstate1==70|sstate1==170
+        gen capexp53=.
+        replace capexp53=0.014032 if states1976=="Oyo"
+        replace capexp53=0.019337 if states1976=="Ogun"
+        replace capexp53=0.0326675 if states1976=="Ondo"
+        replace capexp53=0.3346587 if states1976=="Borno"
+        replace capexp53=0.3906393 if states1976=="Anambra"
+        replace capexp53=0.5194563 if states1976=="Lagos"
+        replace capexp53=0.7643318 if states1976=="Kaduna"
+        replace capexp53=0.8127252 if states1976=="Rivers"
+        replace capexp53=0.8833631 if states1976=="Imo"
+        replace capexp53=0.9319166 if states1976=="Kano"
+        replace capexp53=0.9527855 if states1976=="Sokoto"
+        replace capexp53=1.011883 if states1976=="Kwara"
+        replace capexp53=1.022602 if states1976=="Bauchi"
+        replace capexp53=1.050629 if states1976=="Gongola"
+        replace capexp53=1.322434 if states1976=="Bendel"
+        replace capexp53=1.580796 if states1976=="Niger"
+        replace capexp53=1.631959 if states1976=="Plateau"
+        replace capexp53=1.9002 if states1976=="Benue"
+        replace capexp53=2.195955 if states1976=="Cross-River"
 
-gen states1967=""
-replace states1967="South-Eastern" if states1976=="Cross-River"
-replace states1967="East Central" if states1976=="Imo" | states1976=="Anambra"
-replace states1967="Rivers" if states1976=="Rivers"
-replace states1967="Mid Western" if states1976=="Bendel"
-replace states1967="Lagos" if states1976=="Lagos"
-replace states1967="Western" if states1976=="Ogun" | states1976=="Ondo" |states1976=="Oyo"
-replace states1967="Benue-Plateau" if states1976=="Benue"|states1976=="Plateau"
-replace states1967="Kano" if states1976=="Kano"
-replace states1967="Kwaro" if states1976=="Kwara"
-replace states1967="North Central" if states1976=="Kaduna"
-replace states1967="North Western" if states1976=="Niger"|states1976=="Sokoto"
-replace states1967="North Eastern" if states1976=="Bauchi"|states1976=="Borno"|states1976=="Gongola"
-
-encode states1976, gen(stcode1976)
-encode states1967, gen(stcode1967)
-
-gen capexp53=.
-replace capexp53=0.014032 if states1976=="Oyo"
-replace capexp53=0.019337 if states1976=="Ogun"
-replace capexp53=0.0326675 if states1976=="Ondo"
-replace capexp53=0.3346587 if states1976=="Borno"
-replace capexp53=0.3906393 if states1976=="Anambra"
-replace capexp53=0.5194563 if states1976=="Lagos"
-replace capexp53=0.7643318 if states1976=="Kaduna"
-replace capexp53=0.8127252 if states1976=="Rivers"
-replace capexp53=0.8833631 if states1976=="Imo"
-replace capexp53=0.9319166 if states1976=="Kano"
-replace capexp53=0.9527855 if states1976=="Sokoto"
-replace capexp53=1.011883 if states1976=="Kwara"
-replace capexp53=1.022602 if states1976=="Bauchi"
-replace capexp53=1.050629 if states1976=="Gongola"
-replace capexp53=1.322434 if states1976=="Bendel"
-replace capexp53=1.580796 if states1976=="Niger"
-replace capexp53=1.631959 if states1976=="Plateau"
-replace capexp53=1.9002 if states1976=="Benue"
-replace capexp53=2.195955 if states1976=="Cross-River"
-
-gen capexp63=.
-replace capexp63=0.24 if states1976=="Oyo"
-replace capexp63=0.15 if states1976=="Ogun"
-replace capexp63=0.19 if states1976=="Ondo"
-replace capexp63=6.19 if states1976=="Borno"
-replace capexp63=1.64 if states1976=="Anambra"
-replace capexp63=0.76 if states1976=="Lagos"
-replace capexp63=2.15 if states1976=="Kaduna"
-replace capexp63=2.41 if states1976=="Rivers"
-replace capexp63=2.26 if states1976=="Imo"
-replace capexp63=1.49 if states1976=="Kano"
-replace capexp63=1.31 if states1976=="Sokoto"
-replace capexp63=3.95 if states1976=="Kwara"
-replace capexp63=0.87 if states1976=="Bauchi"
-replace capexp63=1.02 if states1976=="Gongola"
-replace capexp63=2.91 if states1976=="Bendel"
-replace capexp63=1.20 if states1976=="Niger"
-replace capexp63=2.20 if states1976=="Plateau"
-replace capexp63=0.92 if states1976=="Benue"
-replace capexp63=2.43 if states1976=="Cross-River"
+        gen capexp63=.
+        replace capexp63=0.24 if states1976=="Oyo"
+        replace capexp63=0.15 if states1976=="Ogun"
+        replace capexp63=0.19 if states1976=="Ondo"
+        replace capexp63=6.19 if states1976=="Borno"
+        replace capexp63=1.64 if states1976=="Anambra"
+        replace capexp63=0.76 if states1976=="Lagos"
+        replace capexp63=2.15 if states1976=="Kaduna"
+        replace capexp63=2.41 if states1976=="Rivers"
+        replace capexp63=2.26 if states1976=="Imo"
+        replace capexp63=1.49 if states1976=="Kano"
+        replace capexp63=1.31 if states1976=="Sokoto"
+        replace capexp63=3.95 if states1976=="Kwara"
+        replace capexp63=0.87 if states1976=="Bauchi"
+        replace capexp63=1.02 if states1976=="Gongola"
+        replace capexp63=2.91 if states1976=="Bendel"
+        replace capexp63=1.20 if states1976=="Niger"
+        replace capexp63=2.20 if states1976=="Plateau"
+        replace capexp63=0.92 if states1976=="Benue"
+        replace capexp63=2.43 if states1976=="Cross-River"
 	
 gen ethnicity=1 if (s119==94&DHSyear==1999)|(s119==138&DHSyear==2008)
 replace ethnicity=2 if ((s119==21|s119==85|s119==91|s119==133|s119==140|s119==153|s119==154|s119==241|s119==283)&DHSyear==2008)
@@ -435,9 +420,10 @@ gen reg_mexp4=war_region*mexp4
 qui sum yearbirth
 gen trend=yearbirth-(r(min)-1)
 	
-save $PATH/Data/Nigeria/`file', replace
+save "$OUT/Nigeria/`file'", replace
+    }
 }
-}
+exit
 
 *********************************************************************************
 *** (3) Zimbabwe
