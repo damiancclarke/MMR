@@ -221,7 +221,7 @@ if `Zim'==1 {
 }
 
 ********************************************************************************
-*** (2b) Zimbabwe Estimates MMR
+*** (3b) Zimbabwe Estimates MMR
 ********************************************************************************
 if `Zim'==1 {
     use "$DAT/Zimbabwe/mmr", clear
@@ -259,30 +259,29 @@ if `Zim'==1 {
     graph export "$OUT/graphs/Zimbabwe_mmr.eps", as(eps) replace
 }
 
+********************************************************************************
+*** (4a) Kenya Estimates Education
+********************************************************************************
+local Kcont age age2 age3 trend trend2 rural i.ethnicity i.birthquarter
+local wt    [pw=v005]
+local se    cluster(quarter)
+
+if `Ken'==1 {
+    use "$DAT/Kenya/educ", clear
+    replace education = . if education > 25
+
+    estpost sum educ treat yearbirth
+    estout using "$OUT/tables/SumStats_experiment.xls", append `opts'
+
+    reg educ treat `Kcont' `wt', `se'
+    outreg2 treat using "$OUT/tables/Kenya.xls", excel replace
+
+    reg educ treat_false `Kcont' `wt', `se'
+    outreg2 treat using "$OUT/tables/KenyaPlacebo.xls", excel replace
+    
+    
+}
 exit
-
-
-if `"`regs'"'=="yes" {
-reg mmr dumage dumageXage1980less14 invdumageXage1980less14 i.v024 rural [pw=v005] if age1980>=6&age1980<=22, cluster(v024)
-outreg2 dumage dumageXage1980less14 invdumageXage1980less14 using "$RESULTS/Zimbabwe.xls", excel append
-
-reg mmr dumage_alt dumageXage1980less7_alt invdumageXage1980less7_alt i.v024 rural [pw=v005] if age1980>=6&age1980<=22, cluster(v024)
-outreg2 dumage_alt dumageXage1980less7_alt invdumageXage1980less7_alt using "$RESULTS/Zimbabwe_check.xls", excel append
-}
-
-if `"`graphs'"'=="yes" {
-
-}
-	collapse mmr, by(yearbirth) 
-	keep if year>1930
-	egen mmr_ma=ma(mmr)
-	graph twoway line mmr_ma yearbir if yearbirth>1952&yearbirth<1990, scheme(s1color) ytitle("Maternal Mortality") ///
-	xline(1966, lcolor(black) lpattern(dot)) ///
-	|| lfit mmr_ma yearbirth if yearbirth<=1966&yearbirth>1952, lcolor(black) lpattern(dash) legend(off) ///
-	|| lfit mmr_ma yearbirth if yearbirth>=1966&yearbirth<1990, lcolor(black) lpattern(dash) ///
-	note("Series is a 3 year moving average of maternal deaths per woman")
-	graph export $RESULTS/Zimbabwe_mmr.eps, as(eps) replace
-}
 
 
 if `"`Kenya'"'=="yes" {
