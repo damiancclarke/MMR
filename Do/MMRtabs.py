@@ -32,8 +32,8 @@ tables = '/home/damiancclarke/investigacion/Activa/MMR/Paper/tables/'
 
 sums = 'SumStats.xls'
 mmra = 'CrossCountry_female.txt'
-regn = 'CrossCountry_region.xls'
-incm = 'CrossCountry_income.xls'
+regn = 'CrossCountry_region.txt'
+incm = 'CrossCountry_income.txt'
 corr = 'Zscores_female.xls'
 gend = 'CrossCountry_gender.txt'
 mmry = 'CrossCountry_female_yrs.txt'
@@ -60,8 +60,9 @@ if ftype=='tex':
     mcbf = '}{l}{\\textbf{'
     mc2  = '}}'
     mc3  = '{\\begin{footnotesize}\\textsc{Notes:} '
-    cadd = ['6','9','9','9']
-    ccm  = ['}{p{12.5cm}}','}{p{20cm}}','}{p{17.2cm}}','}{p{18.8cm}}']
+    cadd = ['6','9','9','9','8','5']
+    ccm  = ['}{p{12.5cm}}','}{p{20cm}}','}{p{17.2cm}}','}{p{18.8cm}}',
+    '}{p{20cm}}','}{p{12.5cm}}']
 
 elif ftyoe=='csv':
     dd = ';'
@@ -399,7 +400,6 @@ for i,line in enumerate(mmri):
         line = re.sub(r"\t",dd,line)
         line = re.sub(r"^&&","&",line)
 
-        print line
         line = line.replace('&LABELS','')
         line = line.replace('M_yr_sch_sq&'       ,'Years of Education Squared (Male) ')
         line = line.replace('M_yr_sch&(mean) M_yr_sch'  ,'Years of Education (Male) ')
@@ -447,4 +447,111 @@ mmro.close()
 
 #-------------------------------------------------------------------------------
 # --- (5) MMR grouped tables
+#-------------------------------------------------------------------------------
+mmri = open(result + regn, 'r')
+mmro = open(tables + 'MMRregion.' + end, 'w')
+
+if ftype=='tex':
+    mmro.write('\\begin{subtables}\\begin{landscape}\\begin{table}[htpb!]'
+    '\\begin{center}'
+    '\\caption{Cross-Country Results of MMR and Female Educational Attainment By Region}'
+    '\\label{MMRtab:MMRregion}\\begin{tabular}{lccccccc}\\toprule'
+    '&(1)&(2)&(3)&(4)&(5)&(6)&(7)\\\\'
+    '&Advanced&East Asia&Europe and&Latin Amer-&Middle East&South&Sub-Saharan\\\\'
+    'VARIABLES&Economies&and the&Central &ica and the&and North&Asia&Africa\\\\'
+    '&&Pacific&Asia&Caribbean&Africa&&\\\\ \\midrule \n \\vspace{4pt}&')
+    mmro.write('\\begin{footnotesize}\\end{footnotesize}&'*6+
+    '\\begin{footnotesize}\\end{footnotesize}\\\\')
+
+
+
+for i,line in enumerate(mmri):
+    if i>2 and i<=14:
+        line = re.sub(r"\t",dd,line)
+        line = re.sub(r"^&&","&",line)
+
+        #line=re.sub(r"&$", ls+ls, line)
+
+        line = line.replace('Percent ever enrolled in','')
+        line = line.replace('ls& secondary','Secondary Education (\\% Population) ')
+        line = line.replace('lp& primary','Primary Education (\\% Population) ')
+        line = line.replace('lh& tertiary','Tertiary Education (\\% Population) ')
+        line = line.replace('Constant&Constant'         ,'Constant')
+        line = line.replace('BLcode&'                   ,'countries')
+        line = line.replace('\n'                        ,'\\\\')
+        line = line.replace(')\\\\'                     ,')'+dd3+'\\\\')
+        line = line.replace('(8)'                       ,'(8) ')
+        line = line.replace('&('                        ,dd1+'(')
+        line = line.replace(')&'                        ,')'+dd2)
+        line = line.replace('MMR\\\\'                   ,'MMR\\\\ \\midrule')
+        line = line.replace('Observations&'             ,'Observations')
+        line = line.replace('R-squared&'                ,'R-squared')
+        mmro.write(line+'\n')
+
+mmro.write(
+mr+'\n'+mc1+cadd[4]+ccm[4]+mc3+'All regressions include fixed-effects by country.  '
+'Results are for average years of education of females between the ages of 15 and 39'
+' in each country.  Results are reported for specification (2) from table '
+'\\ref{MMRtab:MMRpercent} which includes country and year fixed effects.  Standard '
+'errors are clustered by country.\n'+foot)
+if ftype=='tex':
+    mmro.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
+    '\\end{tabular}\\end{center}\\end{table}\\end{landscape}')
+
+mmro.close()
+
+
+## INCOME
+mmri = open(result + incm, 'r')
+mmro = open(tables + 'MMRincome.' + end, 'w')
+
+if ftype=='tex':
+    mmro.write('\\begin{table}[htpb!]\\begin{center}'
+    '\\caption{Cross-Country Results of MMR and Female Educational Attainment By Income Group}'
+    '\\label{MMRtab:MMRincome}\\begin{tabular}{lcccc}'
+    '\\toprule \n &(1)&(2)&(3)&(4)\\\\' 
+    'VARIABLES&Low&Lower&Upper&High\\\\'
+    '&&Middle&Middle&\\\\ \\midrule\n \\vspace{4pt}&')
+    mmro.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
+    '\\begin{footnotesize}\\end{footnotesize}\\\\')
+
+for i,line in enumerate(mmri):
+    if i>2 and i<=14:
+        line = re.sub(r"\t",dd,line)
+        line = re.sub(r"^&&","&",line)
+
+        #line=re.sub(r"&$", ls+ls, line)
+
+        line = line.replace('Percent ever enrolled in','')
+        line = line.replace('ls& secondary','Secondary Education (\\% Population) ')
+        line = line.replace('lp& primary','Primary Education (\\% Population) ')
+        line = line.replace('lh& tertiary','Tertiary Education (\\% Population) ')
+        line = line.replace('Constant&Constant'         ,'Constant')
+        line = line.replace('BLcode&'                   ,'countries')
+        line = line.replace('\n'                        ,'\\\\')
+        line = line.replace(')\\\\'                     ,')'+dd3+'\\\\')
+        line = line.replace('(8)'                       ,'(8) ')
+        line = line.replace('&('                        ,dd1+'(')
+        line = line.replace(')&'                        ,')'+dd2)
+        line = line.replace('MMR\\\\'                   ,'MMR\\\\ \\midrule')
+        line = line.replace('Observations&'             ,'Observations')
+        line = line.replace('R-squared&'                ,'R-squared')
+        mmro.write(line+'\n')
+
+mmro.write(
+mr+'\n'+mc1+cadd[5]+ccm[5]+mc3+'All regressions include fixed-effects by country.  '
+'Results are for average years of education of females between the ages of 15 and 39'
+' in each country.  Results are reported for specification (2) from table '
+'\\ref{MMRtab:MMRpercent} which includes country and year fixed effects.  Countries '
+'are classified according to World Bank income groups, and standard errors are '
+'clustered by country.\n'+foot)
+if ftype=='tex':
+    mmro.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
+    '\\end{tabular}\\end{center}\\end{table}\\end{subtables}')
+
+mmro.close()
+
+
+#-------------------------------------------------------------------------------
+# --- (6) Z-score table
 #-------------------------------------------------------------------------------
