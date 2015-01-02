@@ -22,8 +22,8 @@ global LOG "~/investigacion/Activa/MMR/Log"
 log using "$LOG/setupExperiments.txt", text replace
 
 local Ken 0
-local Nig 1
-local Zim 0
+local Nig 0
+local Zim 1
 
 *********************************************************************************
 *** (2a) Nigeria Generate
@@ -434,130 +434,135 @@ if `Nig'==1 {
         save "$OUT/Nigeria/`file'", replace
     }
 }
-exit
 
 *********************************************************************************
 *** (3) Zimbabwe
 *********************************************************************************
-if `"`Zimbabwe'"'=="yes" {
+if `Zim'==1 {
 	tempfile educ1994 educ1999 educ2005 educ2010
 	tempfile mmr1994 mmr1999 mmr2005 mmr2010
-	
-	foreach y of numlist 1994 1999 2005 2010 {
-	if `"`y'"'=="1994" local survey=31
-	else if `"`y'"'=="1999" local survey=42
-	else if `"`y'"'=="2005" local survey=51
-	else if `"`y'"'=="2010" local survey=61		
+
+  local syears 31 42 51 62
+	tokenize `syears'
+
+	foreach y of numlist 1994 1999 2005 2010 {		
+      dis "survey `y', code `1'"
+      use "$DAT/Zimbabwe/`y'/ZWIR`1'DT"
+
+      if `y'==1994 {
+          replace v007=v007+1900
+          replace v010=v010+1900	
+      }
+      rename v133 education
+      rename v010 yearbirth
+      rename v009 monthbirth
+      rename v012 age
+      rename v007 yearinterview
+      rename v006 monthinterview 
+      gen highschool=v106==2|v106==3
+      gen rural=v025==2
+
+      keep education yearbirth monthbirth age yearinterview /*
+      */ monthinterview highschool rural v024 v005 mm* caseid
+      gen age1980=age-((yearinterview-1980)+((monthinterview-1)/12))
+      replace age1980=floor(age1980)
+
+      gen dumage=age1980<=14
+      gen age1980less14=age1980-14
+
+      gen dumageXage1980less14=dumage*age1980less14
+      gen invdumageXage1980less14=(1-dumage)*age1980less14
+      gen dumage14sq=dumageXage1980less14^2
+      gen invdumage14sq=invdumageXage1980less14^2
+      gen dumage14th=dumageXage1980less14^3
+      gen invdumage14th=invdumageXage1980less14^3
+
+      gen dumage_alt=age1980<=20
+      gen age1980less20=age1980-20
+
+      gen dumageXage1980less20_alt=dumage_alt*age1980less20
+      gen invdumageXage1980less20_alt=(1-dumage_alt)*age1980less20
+      gen dumage20sq=dumageXage1980less20^2
+      gen invdumage20sq=invdumageXage1980less20^2
+      gen dumage20th=dumageXage1980less20^3
+      gen invdumage20th=invdumageXage1980less20^3
 		
-	use "$DATA/Zimbabwe/`y'/ZWIR`survey'DT"
+      gen DHSyear=`y'
+      preserve
+      drop mm*
+      save `educ`y''
+      restore
+      
+      keep caseid v005 mm* yearinterview monthinterview v024 rural
 
-	if `"`y'"'=="1994" {
-		replace v007=v007+1900
-		replace v010=v010+1900	
-	}
-	rename v133 education
-	rename v010 yearbirth
-	rename v009 monthbirth
-	rename v012 age
- 	rename v007 yearinterview
-	rename v006 monthinterview 
-	gen highschool=(v106==2|v106==3)
-	gen rural=v025==2
+      local Mvars1 mmidx_ mm1_ mm2_ mm3_ mm4_ mm5_ mm6_ mm7_ mm8_ mm9_
+      local Mvars2 mm10_  mm11_ mm12_ mm13_ mm14_ mm15_
+      local MMRvars `Mvars1' `Mvars2'
+      foreach var of local MMRvars  { 
+          foreach num of numlist 1(1)9 { 
+              rename `var'0`num' `var'`num'
+          }
+      }
+      cap drop  mmc1- mmc5
 
-	keep education yearbirth monthbirth age yearinterview /*
-	*/ monthinterview highschool rural v024 v005 mm* caseid
-	gen age1980=age-((yearinterview-1980)+((monthinterview-1)/12))
-	replace age1980=floor(age1980)
-
-	gen dumage=age1980<=14
-	gen age1980less14=age1980-14
-
-	gen dumageXage1980less14=dumage*age1980less14
-	gen invdumageXage1980less14=(1-dumage)*age1980less14
- 	gen dumage14sq=dumageXage1980less14^2
-	gen invdumage14sq=invdumageXage1980less14^2
- 	gen dumage14th=dumageXage1980less14^3
-	gen invdumage14th=invdumageXage1980less14^3
-
-	gen dumage_alt=age1980<=20
-	gen age1980less20=age1980-20
-
-	gen dumageXage1980less20_alt=dumage_alt*age1980less20
-	gen invdumageXage1980less20_alt=(1-dumage_alt)*age1980less20
- 	gen dumage20sq=dumageXage1980less20^2
-	gen invdumage20sq=invdumageXage1980less20^2
- 	gen dumage20th=dumageXage1980less20^3
-	gen invdumage20th=invdumageXage1980less20^3
-		
-	gen DHSyear=`y'	
-	save `educ`y''	
-		
- 	keep caseid v005 mm* yearinterview monthinterview v024 rural
-	local MMRvars mmidx_ mm1_ mm2_ mm3_ mm4_ mm5_ mm6_ mm7_ mm8_ mm9_ mm10_ /*
-   */ mm11_ mm12_ mm13_ mm14_ mm15_
-	foreach var of local MMRvars  { 
-		foreach num of numlist 1(1)9 { 
-			rename `var'0`num' `var'`num'
-		}
-	}
- 	cap drop  mmc1- mmc5
-
-	reshape long `MMRvars', i(caseid) j(sister)
-	drop if mmidx==.
+      reshape long `MMRvars', i(caseid) j(sister)
+      drop if mmidx==.
  
-	gen mmr=1 if (mm9_>1 & mm9_<7) & mm1_==2
-	replace mmr=0 if mmr!=1 & mm1_==2 & mm9_!=99
-	gen numkids=mm14_
-	keep if mm1_==2
+      gen mmr=1 if (mm9_>1 & mm9_<7) & mm1_==2
+      replace mmr=0 if mmr!=1 & mm1_==2 & mm9_!=99
+      gen numkids=mm14_
+      keep if mm1_==2
 
-	gen yearbirth=int((mm4_-1)/12)
-	gen monthbirth=mm4_-(yearbirth*12)
-	replace yearbirth=yearbirth+1900 if yearbirth<200
+      gen yearbirth=int((mm4_-1)/12)
+      gen monthbirth=mm4_-(yearbirth*12)
+      replace yearbirth=yearbirth+1900 if yearbirth<200
 	
-	label var mmr "Sibling death related to child birth"
-	label var yearbirth "year of birth of sibling"
+      label var mmr "Sibling death related to child birth"
+      label var yearbirth "year of birth of sibling"
 
-	replace yearinterview=1900+yearinterview if yearinterview<120
-	gen age=(yearinterview-yearbirth)+((monthinterview-monthbirth)/12)
-	gen mmr_25=1 if (mm9_>1 & mm9_<7)&mm1_==2&mm7_<=25
-	replace mmr_25=0 if mmr_25!=1&mm1_==2&mm9_!=99
+      replace yearinterview=1900+yearinterview if yearinterview<120
+      gen age=(yearinterview-yearbirth)+((monthinterview-monthbirth)/12)
+      gen mmr_25=1 if (mm9_>1 & mm9_<7)&mm1_==2&mm7_<=25
+      replace mmr_25=0 if mmr_25!=1&mm1_==2&mm9_!=99
 
-	gen age1980=age-((yearinterview-1980)+((monthinterview-1)/12))
-	replace age1980=floor(age1980)
+      gen age1980=age-((yearinterview-1980)+((monthinterview-1)/12))
+      replace age1980=floor(age1980)
 
-	gen dumage=age1980<=14
-	gen age1980less14=age1980-14
+      gen dumage=age1980<=14
+      gen age1980less14=age1980-14
 	
-	gen dumageXage1980less14=dumage*age1980less14
-	gen invdumageXage1980less14=(1-dumage)*age1980less14
- 	gen dumage14sq=dumageXage1980less14^2
-	gen invdumage14sq=invdumageXage1980less14^2
- 	gen dumage14th=dumageXage1980less14^3
-	gen invdumage14th=invdumageXage1980less14^3
+      gen dumageXage1980less14=dumage*age1980less14
+      gen invdumageXage1980less14=(1-dumage)*age1980less14
+      gen dumage14sq=dumageXage1980less14^2
+      gen invdumage14sq=invdumageXage1980less14^2
+      gen dumage14th=dumageXage1980less14^3
+      gen invdumage14th=invdumageXage1980less14^3
 				
-	gen dumage_alt=age1980<=20
-	gen age1980less20=age1980-20
+      gen dumage_alt=age1980<=20
+      gen age1980less20=age1980-20
 
-	gen dumageXage1980less20_alt=dumage_alt*age1980less20
-	gen invdumageXage1980less20_alt=(1-dumage_alt)*age1980less20
- 	gen dumage20sq=dumageXage1980less20^2
-	gen invdumage20sq=invdumageXage1980less20^2
- 	gen dumage20th=dumageXage1980less20^3
-	gen invdumage20th=invdumageXage1980less20^3
+      gen dumageXage1980less20_alt=dumage_alt*age1980less20
+      gen invdumageXage1980less20_alt=(1-dumage_alt)*age1980less20
+      gen dumage20sq=dumageXage1980less20^2
+      gen invdumage20sq=invdumageXage1980less20^2
+      gen dumage20th=dumageXage1980less20^3
+      gen invdumage20th=invdumageXage1980less20^3
 		
-	gen DHSyear=`y'
-
-	save `mmr`y''
+      gen DHSyear=`y'
+      
+      save `mmr`y''
+      macro shift
 	}
 
-	use `educ1994'
-	append using `educ1999' `educ2005' `educ2010'
-	save $PATH/Data/Zimbabwe/educ, replace
+  clear
+	append using `educ1994' `educ1999' `educ2005' `educ2010'
+	save "$OUT/Zimbabwe/educ", replace
 
-	use `mmr1994'
-	append using `mmr1999' `mmr2005' `mmr2010'
-	save $PATH/Data/Zimbabwe/mmr, replace
+  clear
+	append using `mmr1994' `mmr1999' `mmr2005' `mmr2010'
+	save "$OUT/Zimbabwe/mmr", replace
 }
+exit
 
 *********************************************************************************
 *** (4) Kenya
