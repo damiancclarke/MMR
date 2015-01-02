@@ -163,11 +163,50 @@ if `Nig'==1 {
     note("Series is a 3 year moving average of maternal deaths per woman")
     graph export "$OUT/graphs/Nigeria_mmr.eps", as(eps) replace        
 }
-exit
-    
+
 ********************************************************************************
 *** (3a) Zimbabwe Estimates Education
 ********************************************************************************
+local Zcont   i.v024 age1980 rural i.DHSyear
+local treat   dumage dumageXage1980less14 invdumageXage1980less14
+local tcon2   dumage14sq invdumage14sq
+local tcon3   dumage14sq invdumage14sq dumage14th invdumage14th
+local tsamp   if age1980>=6&age1980<=22
+
+local se      cluster(v024)
+local placebo dumage_alt dumageXage1980less20 invdumageXage1980less20
+local pcon2   dumage20sq invdumage20sq
+local pcon3   dumage20sq invdumage20sq dumage20th invdumage20th
+local psamp   if age1980>=12&age1980<=28
+
+if `Zim'==1 {
+    use "$DAT/Zimbabwe/educ", clear
+    foreach o in Zimbabwe ZimbabwePlacebo {
+        cap rm "$OUT/tables/`o'.xls"
+        cap rm "$OUT/tables/`o'.txt"
+    }
+    
+    **TREATMENT
+    foreach y of varlist education highschool {
+        reg `y' `treat' `Zcont' if `tsamp', `se'
+        outreg2 `treat' using "$OUT/tables/Zimbabwe.xls", excel
+        reg `y' `treat' `Zcont' `tcon2' if `tsamp', `se'
+        outreg2 `treat' using "$OUT/tables/Zimbabwe.xls", excel
+        reg `y' `treat' `Zcont' `tcon3' if `tsamp', `se'
+        outreg2 `treat' using "$OUT/tables/Zimbabwe.xls", excel
+    }
+
+    **PLACEBO
+    foreach y of varlist education highschool {
+        reg `y' `placebo' `Zcont' if `psamp', `se'
+        outreg2 `placebo' using "$OUT/tables/ZimbabwePlacebo.xls", excel
+        reg `y' `placebo' `Zcont' `pcon2' if `psamp', `se'
+        outreg2 `placebo' using "$OUT/tables/ZimbabwePlacebo.xls", excel
+        reg `y' `placebo' `Zcont' `pcon3' if `psamp', `se'
+        outreg2 `placebo' using "$OUT/tables/ZimbabwePlacebo.xls", excel
+    }
+}
+exit
 
 
 if `"`Zimbabwe'"'=="yes" {
