@@ -41,8 +41,8 @@ log using "$LOG/naturalExperiments.txt", text replace
 
 **switches
 local Nig 0
-local Zim 1
-local Ken 0
+local Zim 0
+local Ken 1
 
 local opts cells("count mean sd min max")
 local linef lcolor(black) lpattern(dash)
@@ -228,7 +228,7 @@ if `Zim'==1 {
     replace age=floor(age)
     
     estpost sum mmr mmr_25 dumage yearbirth if `tsamp'
-    estout using "$OUT/tables/SumStats_experiment.xls", append `opts'
+    estout using "$OUT/tables/sumStatsCountry.xls", append `opts'
 
     **TREATMENT
     reg mmr `treat' `Zcont' if `tsamp', `se'
@@ -271,49 +271,49 @@ if `Ken'==1 {
     replace education = . if education > 25
 
     estpost sum educ treat yearbirth
-    estout using "$OUT/tables/SumStats_experiment.xls", append `opts'
+    estout using "$OUT/tables/sumStatsCountry.xls", append `opts'
 
     reg educ treat `Kcont' `wt', `se'
     outreg2 treat using "$OUT/tables/Kenya.xls", excel replace
-
     reg educ treat_false `Kcont' `wt', `se'
     outreg2 treat using "$OUT/tables/KenyaPlacebo.xls", excel replace
+
+    collapse educ, by(yearbirth)
+    graph twoway line educ yearbir, scheme(s1color) legend(off)       ///
+    ytitle("Years of Education") xtitle("Respondent's Year of Birth") ///
+    xline(1963, lcolor(black) lpattern(dot))                          ///
+    xline(1972, lcolor(black) lpattern(dot))                          ///
+    || lfit educ yearbirth if yearbirth<=1963, `linef'                ///
+    || lfit educ yearbirth if yearbirth>=1972, `linef'                ///
+    || lfit educ yearbirth if yearbirth<=1972&yearbirth>=1963, `linef'
+    graph export "$OUT/graphs/Kenya_educ.eps", as(eps) replace
     
+}
+
+********************************************************************************
+*** (4b) Kenya Estimates MMR
+********************************************************************************
+if `Ken'==1 {
+    use "$DAT/Kenya/mmr", clear
+
+    estpost sum mmr mmr_25 treat yearbirth
+    estout using "$OUT/tables/sumStatsCountry.xls", append `opts'
+
+    reg mmr treat `Kcont' `wt', `se'
+    outreg2 treat using "$OUT/tables/Kenya.xls", excel replace
+    reg mmr treat_false `Kcont' `wt', `se'
+    outreg2 treat using "$OUT/tables/KenyaPlacebo.xls", excel replace
+
+    **GRAPHS
+    collapse mmr [pw=v005], by(yearbirth)
+    egen mmr_ma=ma(mmr)
+    graph twoway line mmr yearbirth, scheme(s1color) legend(off)      ///
+    ytitle("Maternal Mortality")                                      ///
+    xline(1963, lcolor(black) lpattern(dot))                          ///
+    xline(1972, lcolor(black) lpattern(dot))                          ///
+    || lfit mmr yearbirth if yearbirth<=1963, `linef'                 ///
+    || lfit mmr yearbirth if yearbirth>=1972, `linef'                 ///
+    || lfit mmr yearbirth if yearbirth<=1972&yearbirth>=1963, `linef'
+    graph export "$OUT/graphs/Kenya_mmr.eps", as(eps) replace
     
-}
-exit
-
-
-if `"`Kenya'"'=="yes" {
-use "$DAT/Kenya/educ", clear
-if `"`regs'"'=="yes" {
-	reg educ treat age age2 age3 trend trend2 rural i.quarter [pw=v005], cluster(v024)
-	outreg2 treat using "$RESULTS/Kenya.xls", excel replace
-}
-if `"`graphs'"'=="yes" {
-	collapse educ, by(yearbirth) 
-	graph twoway line educ yearbir, scheme(s1color) ytitle("Years of Education") ///
-	xtitle("Respondent's Year of Birth") xline(1963, lcolor(black) lpattern(dot)) ///
-	xline(1972, lcolor(black) lpattern(dot)) ///
-	|| lfit educ yearbirth if yearbirth<=1963, lcolor(black) lpattern(dash) legend(off) ///
-	|| lfit educ yearbirth if yearbirth>=1972, lcolor(black) lpattern(dash) ///
-	|| lfit educ yearbirth if yearbirth<=1972&yearbirth>=1963, lcolor(black) lpattern(dash)
-	graph export $RESULTS/Kenya_educ.eps, as(eps) replace
-}
-
-	use "$DAT/Kenya/mmr", clear
-if `"`regs'"'=="yes" {
-	reg mmr treat age age2 age3 trend trend2 rural i.quarter [pw=v005], cluster(v024)
-	outreg2 treat using "$RESULTS/Kenya.xls", excel append
-}
-if `"`graphs'"'=="yes" {
-	collapse mmr, by(yearbirth) 
-	graph twoway line mmr yearbir, scheme(s1color) ytitle("Maternal Mortality") ///
-	xline(1963, lcolor(black) lpattern(dot)) xline(1972, lcolor(black) lpattern(dot)) ///
-	|| lfit mmr yearbirth if yearbirth<=1963, lcolor(black) lpattern(dash) legend(off) ///
-	|| lfit mmr yearbirth if yearbirth>=1972, lcolor(black) lpattern(dash) ///
-	|| lfit mmr yearbirth if yearbirth<=1972&yearbirth>=1963, lcolor(black) lpattern(dash)
-
-	graph export $RESULTS/Kenya_mmr.eps, as(eps) replace
-}
 }
