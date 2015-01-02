@@ -56,7 +56,7 @@ local MMRreg 0
 local MMRinc 0
 local Zsc    0
 local cntry  0
-local MMRgen 1
+local MMRgen 0
 
 foreach a in outreg2 arrowplot {
     cap which `a'
@@ -148,8 +148,10 @@ if `summ'==1 {
     local educsum yr_sch yr_sch_pr yr_sch_se yr_sch_te lp ls lh lu
     local title "Summary Stats for All Countries"
 
+    replace population=population/1000000    
     estpost sum `mmr' `cov' `educsum'
     estout using "$OUT/tables/SumStats.xls", replace `opts' title(`title')
+    replace population=population*1000000
 
     foreach year of numlist 1990(5)2010 {
         local title "Summary Stats for All Countries (`year')"
@@ -267,12 +269,12 @@ if `MMRreg'==1 {
         qui xi: xtreg MMR `xv1' `cont7' if region_code=="`r`num''", `opts'
 	
         xi: xtreg MMR `xv1' `cont2' if region_c=="`r`num''"&e(sample), `opts'
-        outreg2 using "`name'", excel append label ctitle("`r`num''")
+        outreg2 `xv1' using "`name'", excel append label ctitle("`r`num''")
     }
 
     foreach num of numlist 1(1)7 {
         xi: xtreg MMR `xv1' `cont7' if region_code=="`r`num''", `opts'
-        outreg2 using `name', excel append label ctitle("`r`num''")
+        *outreg2 using `name', excel append label ctitle("`r`num''")
 	}
 }
 
@@ -292,12 +294,12 @@ if `MMRinc'==1 {
         qui xi: xtreg MMR `xv1' `cont7' if income2=="`i'", `opts'
 	
         xi: xtreg MMR `xv1' `cont2' if e(sample)&income2=="`i'", `opts'
-        outreg2 using "`name'", excel append label ctitle("`i'")
+        outreg2 `xv1' using "`name'", excel append label ctitle("`i'")
     }
 
     foreach i in Low LM UM High {
         xi: xtreg MMR `xv1' `cont7' if income2=="`i'", `opts'
-        outreg2 using "`name'", excel append label ctitle("`i'")
+        *outreg2 using "`name'", excel append label ctitle("`i'")
     }
 }
 
@@ -375,3 +377,10 @@ if `MMRgen'==1 {
         local ++iter
     }
 }
+
+reg yr_sch M_yr_sch
+
+********************************************************************************
+*** (12) close
+********************************************************************************
+log close

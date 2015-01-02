@@ -129,7 +129,7 @@ for i,line in enumerate(summi):
         line=line.replace('GDPpc'        ,'GDP per capita'              )
         line=line.replace('TeenBirths'   ,'Teen Births'                 )
         line=line.replace('percentattend','Percent Attended Births'     )
-        line=line.replace('population'   ,'Population'                  )
+        line=line.replace('population'   ,'Population (Millions) '      )
         line=line.replace('fertility'    ,'Fertility'                   )
         line=line.replace('yr_sch_pri'   ,'Years of Primary Education'  )
         line=line.replace('yr_sch_sec'   ,'Years of Secondary Education')

@@ -1,0 +1,171 @@
+\begin{table}[htpb]
+\begin{center}
+\caption{Educational Experiments: treatment and control groups}
+\label{MMRtab:EducExp}
+\begin{tabular}{lclcc}
+\toprule
+Country & Year & Expansion & Treatment Years & Control Years \\ 
+\midrule
+Indonesia & 1973-78 & Primary school construction & 1968-72 & 1957-62  \\
+Nigeria & 1976 & Universal Primary Education & 1970-75 & 1956-61 \\
+Zimbabwe & 1980 & High school education expansion & 1966 & 1965 \\
+Kenya & 1985 & Additional year of primary school & post-1972 & pre-1963 \\
+Botswana & 1986 & High school year rearrangement & pre-1970, post 1982  & 1974 \\
+Sierra Leone & 2001 & Free Primary Education & 1990-93 & 1980-86 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{subtables}
+\input{\MMRfolder/Paper/tables/sumStats.tex}
+%\end{subtables}
+
+
+\begin{table}[htpb!]											
+\begin{center}											
+\caption{Summary Statistics – Natural Experiments}											
+\label{MMRtab:sumstatsexperiment}											
+\begin{tabular}{l c c c c c}											
+& & & & & \\											
+\toprule											
+Variable	&	Obs	&	Mean	&	Std. Dev.	&	Min	&	Max	\\
+\midrule
+\multicolumn{6}{l}{\textsc{Panel A – Nigeria}}  \\											
+Years of Education	&	13221	&	4.822	&	5.349	&	0	&	22	\\
+Investment per Capita	&	12748	&	0.881	&	0.545	&	0.014	&	2.195	\\
+Non-West State	&	13235	&	0.828	&	0.377	&	0	&	1	\\
+Year of Birth (education)	&	13235	&	1968.329	&	5.119	&	1956	&	1975	\\
+Maternal Mortality	&	25354	&	0.019	&	0.137	&	0	&	1	\\
+Under 25 Maternal Mortality	&	29676	&	0.006	&	0.074	&	0	&	1	\\
+Year of Birth (MM)	&	29967	&	1968.472	&	5.381	&	1956	&	1975	\\
+\midrule											
+\multicolumn{6}{l}{\textsc{Panel B – Zimbabwe}}  \\											
+Years of Education	&	10195	&	7.023	&	3.788	&	0	&	21	\\
+High School Enrollment	&	10195	&	0.439	&	0.496	&	0	&	1	\\
+Treated	&	10201	&	0.622	&	0.485	&	0	&	1	\\
+Year of Birth (education)	&	10201	&	1966.128	&	4.786	&	1956	&	1974	\\
+Maternal Mortality	&	23699	&	0.013	&	0.115	&	0	&	1	\\
+Under 25 Maternal Mortality	&	28631	&	0.003	&	0.055	&	0	&	1	\\
+Year of Birth (MM)	&	28842	&	1966.023	&	4.736	&	1957	&	1974	\\
+\midrule											
+\multicolumn{6}{l}{\textsc{Panel C – Kenya}}  \\											
+Years of Education	&	13712	&	7.168	&	4.149	&	0	&	23	\\
+Treated	&	13712	&	0.575	&	0.443	&	0	&	1	\\
+Year of Birth (education)	&	13712	&	1968.389	&	8.147	&	1950	&	1980	\\
+Maternal Mortality	&	22738	&	0.014	&	0.116	&	0	&	1	\\
+Under 25 Maternal Mortality	&	25616	&	0.006	&	0.076	&	0	&	1	\\
+Year of Birth (MM)	&	25686	&	1967.686	&	7.770	&	1950	&	1980	\\
+\midrule											
+\multicolumn{6}{p{12cm}}{\begin{footnotesize}\textsc{Notes:}  Year of birth (education) refers to the birth cohorts of respondents to the DHS surveys for whom we observe educational attainment.  Year of birth (MM) refers to the birth cohorts in the maternal mortality data, who are sisters of DHS respondents.  In panel A investment per capita refers to federal funds dispersed for school construction in 1976 (in naira).  We do not observe this for the state Abuja which has existed since 1991 only.  In all panels maternal mortality and under 25 maternal mortality refers deaths due to pregnancy divided by the total number of women. \end{footnotesize}} \\											
+\bottomrule											
+\end{tabular}											
+\end{center}											
+\end{table}											
+\end{subtables}
+
+
+
+
+
+\input{\MMRfolder/Paper/tables/MMRpercent.tex}
+\input{\MMRfolder/Paper/tables/MMRregion.tex}
+\input{\MMRfolder/Paper/tables/MMRincome.tex}
+\input{\MMRfolder/Paper/tables/MMRpercentGender.tex}
+
+\input{\MMRfolder/Paper/tables/correlatedEffects.tex}
+
+\begin{subtables}
+\begin{table}[htpb!]									
+\begin{center}									
+\caption{Effect of 1976 Educational Expansion: Nigeria}									
+\label{MMRtab:Nigeria}									
+\begin{tabular}{p{5cm}cccc}	\toprule								
+	&	(1)	&	(2)	&	(3)	&	(4)	\\ \midrule
+\multicolumn{5}{l}{\textsc{Panel A: Outcome -- Education}}									\\  
+\vspace{4pt}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	 \\
+Intensity 70-75	&	1.108**	&	2.179***	&	0.0658	&	0.198***	 \\
+	& \begin{footnotesize}	(0.535)	\end{footnotesize} & \begin{footnotesize}	(0.806)	\end{footnotesize} & \begin{footnotesize}	(0.0571)	\end{footnotesize} & \begin{footnotesize}	(0.0455)	\end{footnotesize} \\
+Intensity 65-69	&	0.739**	&	1.059**	&	0.104	&	0.217***	 \\
+	& \begin{footnotesize}	(0.368)	\end{footnotesize} & \begin{footnotesize}	(0.455)	\end{footnotesize} & \begin{footnotesize}	(0.0652)	\end{footnotesize} & \begin{footnotesize}	(0.0533)	\end{footnotesize} \\
+Intensity  	&	0.425	&		&		&		 \\
+	& \begin{footnotesize}	(0.491)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} \\
+\vspace{4pt}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	 \\
+Obs	&	12,735	&	12,735	&	12,735	&	12,735	\\  
+$R^2$	&	0.427	&	0.425	&	0.428	&	0.429	\\ \midrule
+\multicolumn{5}{l}{\textsc{Panel B: Outcome – MMR}}									\\  
+\vspace{4pt}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	 \\
+Intensity 70-75	&	0.000722	&	-0.0156	&	-0.000596	&	2.37e-05	 \\
+	& \begin{footnotesize}	(0.00980)	\end{footnotesize} & \begin{footnotesize}	(0.0135)	\end{footnotesize} & \begin{footnotesize}	(0.00101)	\end{footnotesize} & \begin{footnotesize}	(0.000887)	\end{footnotesize} \\
+Intensity 65-69	&	0.00107	&	-0.0106	&	0.00286	&	0.00249*	 \\
+	& \begin{footnotesize}	(0.00731)	\end{footnotesize} & \begin{footnotesize}	(0.00880)	\end{footnotesize} & \begin{footnotesize}	(0.00213)	\end{footnotesize} & \begin{footnotesize}	(0.00150)	\end{footnotesize} \\
+Intensity  	&	-0.000767	&		&		&		 \\
+	& \begin{footnotesize}	(0.00942)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} \\
+\vspace{4pt}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	 \\
+Obs	&	28,694	&	28,694	&	28,694	&	28,694	\\  
+$R^2$	&	0.008	&	0.008	&	0.013	&	0.013	\\ \midrule
+\multicolumn{5}{l}{\textsc{Panel C: Outcome – MMR (Under 25)}}									\\  
+\vspace{4pt}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	 \\
+Intensity 70-75	&	0.00190	&	-0.0192**	&	-0.00127*	&	-0.00123***	 \\
+	& \begin{footnotesize}	(0.00607)	\end{footnotesize} & \begin{footnotesize}	(0.00951)	\end{footnotesize} & \begin{footnotesize}	(0.000652)	\end{footnotesize} & \begin{footnotesize}	(0.000320)	\end{footnotesize} \\
+Intensity 65-69	&	-2.52e-05	&	-0.0118**	&	-0.000707	&	-0.00145***	 \\
+	& \begin{footnotesize}	(0.00405)	\end{footnotesize} & \begin{footnotesize}	(0.00518)	\end{footnotesize} & \begin{footnotesize}	(0.000708)	\end{footnotesize} & \begin{footnotesize}	(0.000479)	\end{footnotesize} \\
+Intensity  	&	-0.00705	&		&		&		 \\
+	& \begin{footnotesize}	(0.00619)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} \\
+\vspace{4pt}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	 \\
+Obs	&	28,694	&	28,694	&	28,694	&	28,694	\\  
+$R^2$	&	0.005	&	0.005	&	0.007	&	0.007	\\ \midrule
+\multicolumn{5}{c}{\begin{footnotesize} *** p$<$0.01, ** p$<$0.05, * p$<$0.1\end{footnotesize}} \\									
+\multicolumn{5}{p{12.7cm}}{\begin{footnotesize}\textsc{Notes:} Columns (1)-(4) represent different measures of treatment intensity. Column (1) uses capital expenditure on school construction in 1976 in each individual's state as their treatment intensity, column (2) uses a dummy for residence in non-West (high-intensity) states, column (3) uses the number of years exposed to the reform interacted with the high-intensity state dummy as the intensity measure, and column (4) uses capital expenditure interacted with the high-intensity state dummy.  The effect of the reform is identified for 1970-1975 birth cohorts (who are fully affected), and 1965-1969 cohorts, who are affected partially via over-age enrollments. Panel A shows the effect of the education reforms on educational attainment, panel B shows the effect on life-time maternal mortality, and panel C the effect on maternal mortality under the age of 25.  All regressions are double-differences, however in columns (2)-(4) the intensity dummy is captured by state of residence fixed effects. Additional controls include religion, ethnicity and year of birth fixed effects, plus time trends by state, and controls for the length of exposure to the civil war in Biafra \citep{Akreshetal2012}.  Standard errors are clustered by state and birth cohort. \end{footnotesize}} \\									
+\bottomrule									
+\end{tabular}									
+\end{center}									
+\end{table}									
+
+
+\begin{landscape}														
+\begin{table}[htpb!]														
+\begin{center}														
+\caption{Effect of 1980 Educational Expansion: Zimbabwe}														
+\label{MMRtab:Zimbabwe}														
+\begin{tabular}{lcccp{0.3cm}ccc}	\toprule													
+& 	\multicolumn{3}{c}{Years of Education}					& &\multicolumn{3}{c}{Maternal Mortality }	\\	
+VARIABLES & 		(1)	&	(2)	&	(3)	&&	(4)	&	(5)	&	(6)	\\ \cline{1-4} \cline{6-8}	
+\vspace{4pt}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	& \begin{footnotesize}\end{footnotesize} &	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&		\begin{footnotesize}\end{footnotesize}	 \\
+DumAge  	&	1.148***	&	0.428**	&	0.629*	&&	-0.00413**	&	-0.000283	&	0.00265	 \\	
+	& \begin{footnotesize}	(0.167)	\end{footnotesize} & \begin{footnotesize}	(0.170)	\end{footnotesize} & \begin{footnotesize}	(0.318)	\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}	(0.00143)	\end{footnotesize} & \begin{footnotesize}	(0.00451)	\end{footnotesize} & \begin{footnotesize}	(0.00701)	\end{footnotesize} \\	
+DumAge$\times$(Age1980-14)	&	-0.194***	&	-0.552***	&	-0.842***	&&	0.000155	&	0.000186	&	0.000582	 \\	
+	& \begin{footnotesize}	(0.0250)	\end{footnotesize} & \begin{footnotesize}	(0.0704)	\end{footnotesize} & \begin{footnotesize}	(0.154)	\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}	(0.000311)	\end{footnotesize} & \begin{footnotesize}	(0.00107)	\end{footnotesize} & \begin{footnotesize}	(0.00227)	\end{footnotesize} \\	
+(1-DumAge)$\times$(Age1980-14)	&	-0.148***	&	-0.313**	&	0.0633	&&	-0.000249	&	0.00219	&	0.00516	 \\	
+	& \begin{footnotesize}	(0.0248)	\end{footnotesize} & \begin{footnotesize}	(0.114)	\end{footnotesize} & \begin{footnotesize}	(0.294)	\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}	(0.000432)	\end{footnotesize} & \begin{footnotesize}	(0.00235)	\end{footnotesize} & \begin{footnotesize}	(0.00676)	\end{footnotesize} \\	
+\vspace{4pt}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	& \begin{footnotesize}\end{footnotesize} &	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&		\begin{footnotesize}\end{footnotesize}	 \\
+Obs	&	10,195	&	10,195	&	10,195	&&	28,631	&	28,631	&	28,631	\\	
+$R^2$	&	0.268	&	0.271	&	0.272	&&	0.002	&	0.002	&	0.002	\\ \midrule	
+\multicolumn{8}{c}{\begin{footnotesize} *** p$<$0.01, ** p$<$0.05, * p$<$0.1\end{footnotesize}} \\														
+\multicolumn{8}{p{16cm}}{\begin{footnotesize}\textsc{Notes:} Columns (1) and (4) include a linear trend for age, columns (2) and (5) a quadratic, and columns (3) and (6) a cubic trend.  DumAge (treatment) refers to the birth cohort which was 14 years old at the time of the reform (1980).  Additional controls included are survey, region and birth cohort fixed effects, along with a rural dummy variable. Standard errors are clustered at region of residence. \end{footnotesize}}\\														
+\bottomrule														
+\end{tabular}														
+\end{center}														
+\end{table}														
+\end{landscape}														
+
+\begin{table}[htpb!]					
+\begin{center}					
+\caption{Effect of 1985 Educational Expansion: Kenya}					
+\label{MMRtab:Kenya}					
+\begin{tabular}{p{3cm}cc}	\toprule				
+	&	(1)	&	(2)	\\
+VARIABLES	&	Years of Education	&	Maternal Mortality	\\ \midrule
+\vspace{4pt}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	 \\
+Treatment	&	0.953***	&	0.00689	\\
+	& \begin{footnotesize}	(0.265)	\end{footnotesize} & \begin{footnotesize}	(0.00553)	\end{footnotesize} \\
+\vspace{4pt}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	 \\
+Observations	&	13,703	&	25,602	\\
+$R^2$	&	0.203	&	0.031	\\ \midrule
+\multicolumn{3}{c}{\begin{footnotesize} *** p$<$0.01, ** p$<$0.05, * p$<$0.1\end{footnotesize}} \\					
+\multicolumn{3}{p{9.6cm}}{\begin{footnotesize}\textsc{Notes:} Each regression includes a cubic term for age at time of reform, a cuadratic trend for quarter of birth, fixed effects by quarter of birth and ethnicity, and a dummy for rural or urban residence.  The nature of the treatment variable is defined in section \ref{ssscn:empiricsKenya}.\end{footnotesize}} \\					
+\bottomrule					
+\end{tabular}					
+\end{center}					
+\end{table}					
+\end{subtables}
