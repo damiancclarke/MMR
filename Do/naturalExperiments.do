@@ -168,12 +168,13 @@ if `Nig'==1 {
 *** (3a) Zimbabwe Estimates Education
 ********************************************************************************
 local Zcont   i.v024 age1980 rural i.DHSyear
+local se      cluster(v024)
+
 local treat   dumage dumageXage1980less14 invdumageXage1980less14
 local tcon2   dumage14sq invdumage14sq
 local tcon3   dumage14sq invdumage14sq dumage14th invdumage14th
 local tsamp   age1980>=6&age1980<=22
 
-local se      cluster(v024)
 local placebo dumage_alt dumageXage1980less20 invdumageXage1980less20
 local pcon2   dumage20sq invdumage20sq
 local pcon3   dumage20sq invdumage20sq dumage20th invdumage20th
@@ -218,33 +219,49 @@ if `Zim'==1 {
     || lfit educ yearbirth if yearbirth>=1966, `linef'
     graph export "$OUT/graphs/Zimbabwe_educ.eps", as(eps) replace
 }
+
+********************************************************************************
+*** (2b) Zimbabwe Estimates MMR
+********************************************************************************
+if `Zim'==1 {
+    use "$DAT/Zimbabwe/mmr", clear
+    replace age=floor(age)
+    
+    estpost sum mmr mmr_25 dumage yearbirth if `tsamp'
+    estout using "$OUT/tables/SumStats_experiment.xls", append `opts'
+
+    **TREATMENT
+    reg mmr `treat' `Zcont' if `tsamp', `se'
+    outreg2 `treat' using "$OUT/tables/Zimbabwe.xls", excel
+    reg mmr `treat' `Zcont' `tcon2' if `tsamp', `se'
+    outreg2 `treat' using "$OUT/tables/Zimbabwe.xls", excel
+    reg mmr `treat' `Zcont' `tcon3' if `tsamp', `se'
+    outreg2 `treat' using "$OUT/tables/Zimbabwe.xls", excel
+
+    **PLACEBO
+    reg mmr `placebo' `Zcont' if `psamp', `se'
+    outreg2 `placebo' using "$OUT/tables/ZimbabwePlacebo.xls", excel
+    reg mmr `placebo' `Zcont' `pcon2' if `psamp', `se'
+    outreg2 `placebo' using "$OUT/tables/ZimbabwePlacebo.xls", excel
+    reg mmr `placebo' `Zcont' `pcon3' if `psamp', `se'
+    outreg2 `placebo' using "$OUT/tables/ZimbabwePlacebo.xls", excel
+
+    **GRAPHS
+    collapse mmr [pw=v005], by(yearbirth)
+    keep if year>1930
+    egen mmr_ma=ma(mmr)
+    graph twoway line mmr_ma yearbir if yearbirth>1952&yearbirth<1990,  ///
+    scheme(s1color) ytitle("Maternal Mortality")                        ///
+    xline(1966, lcolor(black) lpattern(dot)) legend(off)                ///
+    || lfit mmr_ma yearbirth if yearbirth<=1966&yearbirth>1952, `linef' ///
+    || lfit mmr_ma yearbirth if yearbirth>=1966&yearbirth<1990, `linef' ///
+    note("Series is a 3 year moving average of maternal deaths per woman")
+    graph export "$OUT/graphs/Zimbabwe_mmr.eps", as(eps) replace
+}
+
 exit
 
 
-if `"`Zimbabwe'"'=="yes" {
-use "$DAT/Zimbabwe/educ", clear
-if `"`regs'"'=="yes" {
-reg education dumage dumageXage1980less14 invdumageXage1980less14 i.v024 rural [pw=v005] if age1980>=6&age1980<=22, cluster(v024)
-outreg2 dumage dumageXage1980less14 invdumageXage1980less14 using "$RESULTS/Zimbabwe.xls", excel replace
-reg highschool dumage dumageXage1980less14 invdumageXage1980less14 i.v024 rural [pw=v005] if age1980>=6&age1980<=22, cluster(v024)
-outreg2 dumage dumageXage1980less14 invdumageXage1980less14 using "$RESULTS/Zimbabwe.xls", excel append
-
-reg education dumage_alt dumageXage1980less7_alt invdumageXage1980less7_alt i.v024 rural [pw=v005] if age1980>=6&age1980<=22, cluster(v024)
-outreg2 dumage_alt dumageXage1980less7_alt invdumageXage1980less7_alt using "$RESULTS/Zimbabwe_check.xls", excel replace
-reg highschool dumage_alt dumageXage1980less7_alt invdumageXage1980less7_alt i.v024 rural [pw=v005] if age1980>=6&age1980<=22, cluster(v024)
-outreg2 dumage_alt dumageXage1980less7_alt invdumageXage1980less7_alt using "$RESULTS/Zimbabwe_check.xls", excel append
-}
-
-if `"`graphs'"'=="yes" {
-	collapse educ, by(yearbirth) 
-	graph twoway line educ yearbir, scheme(s1color) ytitle("Years of Education") ///
-	xtitle("Respondent's Year of Birth") xline(1966, lcolor(black) lpattern(dot)) ///
-	|| lfit educ yearbirth if yearbirth<=1966, lcolor(black) lpattern(dash) legend(off) ///
-	|| lfit educ yearbirth if yearbirth>=1966, lcolor(black) lpattern(dash)
-	graph export $RESULTS/Zimbabwe_educ.eps, as(eps) replace
-}
-
-use "$DAT/Zimbabwe/mmr", clear
 if `"`regs'"'=="yes" {
 reg mmr dumage dumageXage1980less14 invdumageXage1980less14 i.v024 rural [pw=v005] if age1980>=6&age1980<=22, cluster(v024)
 outreg2 dumage dumageXage1980less14 invdumageXage1980less14 using "$RESULTS/Zimbabwe.xls", excel append
