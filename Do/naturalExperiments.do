@@ -14,7 +14,8 @@ erature).
      Specification as per Chicoine (2011)
 
 In each case, data comes from DHS education (IR) and maternal mortality modules.
-Full generating details of this data can be found in the files...
+Full generating details of the data can be found in the file setupExperiments.do
+which uses each DHS (IR) survey for the country in question.
 
 
 contact: mailto:damian.clarke@economics.ox.ac.uk
@@ -40,9 +41,9 @@ cap mkdir "$OUT/graphs"
 log using "$LOG/naturalExperiments.txt", text replace
 
 **switches
-local Nig 0
-local Zim 0
 local Ken 1
+local Nig 1
+local Zim 1
 
 local opts cells("count mean sd min max")
 local linef lcolor(black) lpattern(dash)
@@ -78,7 +79,7 @@ if `Nig'==1 {
     estpost sum educ capexp53 yearbirth if (yr6575==1|yr5661==1)
     estout using "$OUT/tables/sumStatsCountry.xls", replace `opts'
 
-        
+
     **TREATMENT
     xi: reg educ `treat1' `Ncont' `Biafra1' `wt' if `sampT', robust `se'
     outreg2 `treat1' using "$OUT/tables/Nigeria.xls", excel replace
@@ -276,7 +277,7 @@ if `Ken'==1 {
     reg educ treat `Kcont' `wt', `se'
     outreg2 treat using "$OUT/tables/Kenya.xls", excel replace
     reg educ treat_false `Kcont' `wt', `se'
-    outreg2 treat using "$OUT/tables/KenyaPlacebo.xls", excel replace
+    outreg2 treat_false using "$OUT/tables/KenyaPlacebo.xls", excel replace
 
     collapse educ, by(yearbirth)
     graph twoway line educ yearbir, scheme(s1color) legend(off)       ///
@@ -300,9 +301,9 @@ if `Ken'==1 {
     estout using "$OUT/tables/sumStatsCountry.xls", append `opts'
 
     reg mmr treat `Kcont' `wt', `se'
-    outreg2 treat using "$OUT/tables/Kenya.xls", excel replace
+    outreg2 treat using "$OUT/tables/Kenya.xls", excel append
     reg mmr treat_false `Kcont' `wt', `se'
-    outreg2 treat using "$OUT/tables/KenyaPlacebo.xls", excel replace
+    outreg2 treat_false using "$OUT/tables/KenyaPlacebo.xls", excel append
 
     **GRAPHS
     collapse mmr [pw=v005], by(yearbirth)
@@ -317,3 +318,8 @@ if `Ken'==1 {
     graph export "$OUT/graphs/Kenya_mmr.eps", as(eps) replace
     
 }
+
+********************************************************************************
+*** (5) Clean up
+********************************************************************************
+log close

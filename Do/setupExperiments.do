@@ -1,9 +1,16 @@
 /* setupExperiments.do v1.00     damiancclarke             yyyy-mm-dd:2014-12-26
 ----|----1----|----2----|----3----|----4----|----5----|----6----|----7----|----8
 
+This file takes raw DHS survey data and converts it into output files to test t-
+he effect of education expansions on rates of maternal mortality. It uses IR da-
+ta from each survey wave of Nigeria, Zimbabwe and Kenya, and creates output fil-
+es with one line for each woman's educational attainment or maternal mortality
+status (of sisters of survey respondents). Full details can be found in the data
+appendix of the paper "Maternal Education and Maternal Mortality...".
 
+The files created are subsequently used by the file naturalExperiments.do.
 
-
+contact: mailto:damian.clarke@economics.ox.ac.uk
 */
 
 vers 11
@@ -21,8 +28,8 @@ global LOG "~/investigacion/Activa/MMR/Log"
 
 log using "$LOG/setupExperiments.txt", text replace
 
-local Ken 0
-local Nig 0
+local Ken 1
+local Nig 1
 local Zim 1
 
 *********************************************************************************
@@ -430,7 +437,8 @@ if `Nig'==1 {
 
         qui sum yearbirth
         gen trend=yearbirth-(r(min)-1)
-	
+
+        lab dat "`file' data for Nigeria from DHS IR (Bhalotra and Clarke, 2015)"
         save "$OUT/Nigeria/`file'", replace
     }
 }
@@ -556,121 +564,131 @@ if `Zim'==1 {
 
   clear
 	append using `educ1994' `educ1999' `educ2005' `educ2010'
+  lab dat "Education data for Zimbabwe from DHS IR (Bhalotra and Clarke, 2015)"
 	save "$OUT/Zimbabwe/educ", replace
 
   clear
 	append using `mmr1994' `mmr1999' `mmr2005' `mmr2010'
+  lab dat "MMR data for Zimbabwe from DHS IR (Bhalotra and Clarke, 2015)"
 	save "$OUT/Zimbabwe/mmr", replace
 }
-exit
 
 *********************************************************************************
 *** (4) Kenya
 *********************************************************************************
-if `"`Kenya'"'=="yes" {
+if `Ken'==1 {
 	tempfile educ1993 educ1998 educ2003 educ2008
 	tempfile mmr1993 mmr1998 mmr2003 mmr2008
-	foreach y of numlist 1998 2003 2008 {
 
-		if `"`y'"'=="1993" local survey=33
-		else if `"`y'"'=="1998" local survey 3A
-		else if `"`y'"'=="2003" local survey=42
-		else if `"`y'"'=="2008" local survey=52
+  local syears 3A 42 52
+  tokenize `syears'
+  foreach y of numlist 1998 2003 2008 {
+      dis "survey year `y', code `1'"
+      use $DAT/Kenya/`y'/KEIR`1'DT
+
+      rename v133 education
+      rename v010 yearbirth
+      rename v009 monthbirth
+      rename v012 age
+      rename v007 yearinterview
+      rename v006 monthinterview
+      gen highschool=(v106==2|v106==3)
+      gen rural=v025==2
+      rename v131 ethnicity
+      replace ethnicity=. if ethnicity==99
+
+      keep caseid education yearbirth monthbirth age yearinterview monthinterview /*
+      */ highschool rural ethnicity v005 v024 mm*
+      gen birthquarter=1 if monthbirth<4
+      replace birthquarter=2 if monthbirth>=4&monthbirth<7
+      replace birthquarter=3 if monthbirth>=7&monthbirth<10
+      replace birthquarter=4 if monthbirth>=10&monthbirth<13
+
+      replace yearbirth=yearbirth+1900 if yearbirth<200
+      keep if yearbirth>1949&yearbirth<1981
+      gen quarter=(yearbirth-1950)*4+birthquarter
+      gen treat=0 if yearbirth<=1963
+      replace treat=(quarter-56)*(1/32) if yearbirth>1963&yearbirth<1972
+      replace treat=1 if yearbirth>=1972
+      gen treat_false=0 if yearbirth<=1955
+      replace treat_false=(quarter-24)*(1/32) if yearbirth>1955&yearbirth<1964
+      replace treat_false=1 if yearbirth>=1964
 		
-		use $DATA/Kenya/`y'/KEIR`survey'DT
+      gen DHSyear=`y'
+      gen age2=age^2
+      gen age3=age^3
+      gen trend=quarter
+      gen trend2=trend^2
+      save `educ`y''
 
-		rename v133 education
-		rename v010 yearbirth
-		rename v009 monthbirth
-		rename v012 age
-		rename v007 yearinterview
-		rename v006 monthinterview
-		gen highschool=(v106==2|v106==3)
-		gen rural=v025==2
-		rename v131 ethnicity
-		replace ethnicity=. if ethnicity==99
+      keep caseid v005 mm* yearinterview monthinterview v024 rural ethnicity
+      local Mvars1 mmidx_ mm1_ mm2_ mm3_ mm4_ mm5_ mm6_ mm7_ mm8_ mm9_
+      local Mvars2 mm10_ mm11_ mm12_ mm13_ mm14_ mm15_
+      local MMRvars `Mvars1' `Mvars2'
+      foreach var of local MMRvars  { 
+          foreach num of numlist 1(1)9 { 
+              rename `var'0`num' `var'`num'
+          }
+      }
+      cap drop  mmc1- mmc5
 
-		keep caseid education yearbirth monthbirth age yearinterview monthinterview /*
-		*/ highschool rural ethnicity v005 v024 mm*
-		gen birthquarter=1 if monthbirth<4
-		replace birthquarter=2 if monthbirth>=4&monthbirth<7
-		replace birthquarter=3 if monthbirth>=7&monthbirth<10
-		replace birthquarter=4 if monthbirth>=10&monthbirth<13
-
-		replace yearbirth=yearbirth+1900 if yearbirth<200
-		keep if yearbirth>1949&yearbirth<1981
-		gen quarter=(yearbirth-1950)*4+birthquarter
-		gen treat=0 if yearbirth<=1963
-		replace treat=(quarter-56)*(1/32) if yearbirth>1963&yearbirth<1972
-		replace treat=1 if yearbirth>=1972
-		gen treat_false=0 if yearbirth<=1955
- 		replace treat_false=(quarter-24)*(1/32) if yearbirth>1955&yearbirth<1964
-		replace treat_false=1 if yearbirth>=1964
-		
-		gen DHSyear=`y'
-		gen age2=age^2
-		gen age3=age^3
-		gen trend=quarter
-		gen trend2=trend^2
-		save `educ`y''
-
-		keep caseid v005 mm* yearinterview monthinterview v024 rural ethnicity
-		local MMRvars mmidx_ mm1_ mm2_ mm3_ mm4_ mm5_ mm6_ mm7_ mm8_ mm9_ mm10_ /*
-		*/ mm11_ mm12_ mm13_ mm14_ mm15_
-		foreach var of local MMRvars  { 
-			foreach num of numlist 1(1)9 { 
-				rename `var'0`num' `var'`num'
-			}
-		}
-		cap drop  mmc1- mmc5
-
-		*NB: mm8 is age at death
-		reshape long `MMRvars', i(caseid) j(sister)
-		drop if mmidx==.
+      *NB: mm8 is age at death
+      reshape long `MMRvars', i(caseid) j(sister)
+      drop if mmidx==.
  
-		gen mmr=1 if (mm9_>1 & mm9_<7) & mm1_==2
-		replace mmr=0 if mmr!=1 & mm1_==2 & mm9_!=99
-		gen numkids=mm14_
-		keep if mm1_==2
+      gen mmr=1 if (mm9_>1 & mm9_<7) & mm1_==2
+      replace mmr=0 if mmr!=1 & mm1_==2 & mm9_!=99
+      gen numkids=mm14_
+      keep if mm1_==2
 		
-		gen yearbirth=int((mm4_-1)/12)
-		gen monthbirth=mm4_-(yearbirth*12)
-		replace yearbirth=yearbirth+1900 if yearbirth<200
+      gen yearbirth=int((mm4_-1)/12)
+      gen monthbirth=mm4_-(yearbirth*12)
+      replace yearbirth=yearbirth+1900 if yearbirth<200
 
-		replace yearinterview=1900+yearinterview if yearinterview<120
-		gen age=yearinterview-yearbirth
-		gen mmr_25=1 if (mm9_>1 & mm9_<7)&mm1_==2&mm7_<=25
-		replace mmr_25=0 if mmr_25!=1&mm1_==2&mm9_!=99
+      replace yearinterview=1900+yearinterview if yearinterview<120
+      gen age=yearinterview-yearbirth
+      gen mmr_25=1 if (mm9_>1 & mm9_<7)&mm1_==2&mm7_<=25
+      replace mmr_25=0 if mmr_25!=1&mm1_==2&mm9_!=99
 	
-		label var mmr "Sibling death related to child birth"
-		label var yearbirth "year of birth of sibling"
+      label var mmr "Sibling death related to child birth"
+      label var yearbirth "year of birth of sibling"
 
-		gen birthquarter=1 if monthbirth<4
-		replace birthquarter=2 if monthbirth>=4&monthbirth<7
-		replace birthquarter=3 if monthbirth>=7&monthbirth<10
-		replace birthquarter=4 if monthbirth>=10&monthbirth<13
+      gen birthquarter=1 if monthbirth<4
+      replace birthquarter=2 if monthbirth>=4&monthbirth<7
+      replace birthquarter=3 if monthbirth>=7&monthbirth<10
+      replace birthquarter=4 if monthbirth>=10&monthbirth<13
 
-		replace yearbirth=yearbirth+1900 if yearbirth<200
-		keep if yearbirth>1949&yearbirth<1981
-		gen quarter=(yearbirth-1950)*4+birthquarter
-		gen treat=0 if yearbirth<=1963
-		replace treat=(quarter-56)*(1/32) if yearbirth>1963&yearbirth<1972
-		replace treat=1 if yearbirth>=1972
-		gen treat_false=0 if yearbirth<=1955
- 		replace treat_false=(quarter-24)*(1/32) if yearbirth>1955&yearbirth<1964
-		replace treat_false=1 if yearbirth>=1964
+      replace yearbirth=yearbirth+1900 if yearbirth<200
+      keep if yearbirth>1949&yearbirth<1981
+      gen quarter=(yearbirth-1950)*4+birthquarter
+      gen treat=0 if yearbirth<=1963
+      replace treat=(quarter-56)*(1/32) if yearbirth>1963&yearbirth<1972
+      replace treat=1 if yearbirth>=1972
+      gen treat_false=0 if yearbirth<=1955
+      replace treat_false=(quarter-24)*(1/32) if yearbirth>1955&yearbirth<1964
+      replace treat_false=1 if yearbirth>=1964
 		
-		gen age2=age^2
-		gen age3=age^3
-		gen trend=quarter
-		gen trend2=trend^2
-		save `mmr`y''
-	}
-	use `educ1998'
-	append using `educ2003' `educ2008'
-	save $PATH/Data/Kenya/educ, replace
+      gen age2=age^2
+      gen age3=age^3
+      gen trend=quarter
+      gen trend2=trend^2
 
-	use `mmr1998'
-	append using `mmr2003' `mmr2008'
-	save $PATH/Data/Kenya/mmr, replace	
+      save `mmr`y''
+      macro shift
+	}
+
+	clear
+	append using `educ1998' `educ2003' `educ2008'
+  lab dat "Education data for Kenya from DHS IR (Bhalotra and Clarke, 2015)"
+	save "$OUT/Kenya/educ", replace
+
+  clear
+	append using `mmr1998' `mmr2003' `mmr2008'
+  lab dat "MMR data for Kenya from DHS IR (Bhalotra and Clarke, 2015)"
+	save "$OUT/Kenya/mmr", replace	
 }
+
+********************************************************************************
+*** (5) Clean up
+********************************************************************************
+log close
