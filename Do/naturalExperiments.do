@@ -40,8 +40,8 @@ cap mkdir "$OUT/graphs"
 log using "$LOG/naturalExperiments.txt", text replace
 
 **switches
-local Nig 1
-local Zim 0
+local Nig 0
+local Zim 1
 local Ken 0
 
 local opts cells("count mean sd min max")
@@ -171,16 +171,19 @@ local Zcont   i.v024 age1980 rural i.DHSyear
 local treat   dumage dumageXage1980less14 invdumageXage1980less14
 local tcon2   dumage14sq invdumage14sq
 local tcon3   dumage14sq invdumage14sq dumage14th invdumage14th
-local tsamp   if age1980>=6&age1980<=22
+local tsamp   age1980>=6&age1980<=22
 
 local se      cluster(v024)
 local placebo dumage_alt dumageXage1980less20 invdumageXage1980less20
 local pcon2   dumage20sq invdumage20sq
 local pcon3   dumage20sq invdumage20sq dumage20th invdumage20th
-local psamp   if age1980>=12&age1980<=28
+local psamp   age1980>=12&age1980<=28
 
 if `Zim'==1 {
     use "$DAT/Zimbabwe/educ", clear
+    estpost sum education highschool dumage yearbirth if age1980>=6&age1980<=22
+    estout using "$OUT/tables/sumStatsCountry.xls", append `opts'
+
     foreach o in Zimbabwe ZimbabwePlacebo {
         cap rm "$OUT/tables/`o'.xls"
         cap rm "$OUT/tables/`o'.txt"
@@ -205,6 +208,15 @@ if `Zim'==1 {
         reg `y' `placebo' `Zcont' `pcon3' if `psamp', `se'
         outreg2 `placebo' using "$OUT/tables/ZimbabwePlacebo.xls", excel
     }
+
+    **GRAPHICAL
+    collapse education, by(yearbirth)
+    graph twoway line education yearbirth, scheme(s1color)            ///
+    ytitle("Years of Education") xtitle("Respondent's Year of Birth") ///
+    xline(1966, lcolor(black) lpattern(dot)) legend(off)              ///
+    || lfit educ yearbirth if yearbirth<=1966, `linef'                ///
+    || lfit educ yearbirth if yearbirth>=1966, `linef'
+    graph export "$OUT/graphs/Zimbabwe_educ.eps", as(eps) replace
 }
 exit
 
