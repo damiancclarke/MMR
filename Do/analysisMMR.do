@@ -255,7 +255,8 @@ if `MMRreg'==1 {
     replace region_UNESCO=subinstr(region_UNESCO, " ", "", .)
     replace region_UNESCO=subinstr(region_UNESCO, "-", "", .)
     levelsof region_UNESCO, local(region)
-
+    local opt2 fe nonest dfadj vce(bootstrap, reps(100) seed(2727)) cluster(BLcode)
+    
     local r1 "Advanced Economies"
     local r2 "East Asia and the Pacific"
     local r3 "Europe and Central Asia"
@@ -276,8 +277,10 @@ if `MMRreg'==1 {
         outreg2 `xv1' using "`name'", excel append label ctitle("`r`num''")
 
         dis "Wild Bootstrapped Standard Errors"
-        xi: cgmwildboot MMR `xv1' `cont2' i.country if region_c=="`r`num''"&/*
-        */e(sample), cluster(country) bootcluster(country) seed(2727)
+        *cgmwildboot MMR `xv1' `cont2' i.BLcode if region_c=="`r`num''"&/*
+        **/e(sample), cluster(country) bootcluster(BLcode) seed(2727) reps(50)
+        xi: xtreg MMR `xv1' `cont2' if region_c=="`r`num''"&e(sample), `opt2'
+        xi: xtreg MMR `xv1' `cont2' if region_c=="`r`num''"&e(sample), fe robust
     }
 
     foreach num of numlist 1(1)7 {
