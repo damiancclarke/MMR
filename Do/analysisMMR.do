@@ -8,7 +8,9 @@ maternal mortality.  Regressions of the following form are run:
 
 where MMR_it refers to the rate of maternal mortality in region i in time t, and
 educ_it refers to educational outcomes of women of fertile age in the same regi-
-on at the same time.
+on at the same time.  Note that some regressions in this file require Wild boot-
+strapping of standard errors.  A Stata program cgmwildboot is downloadable from
+https://sites.google.com/site/judsoncaskey/data.
 
 Data and source code used here comes from the following scripts:
    > setupMMR.do
@@ -52,16 +54,18 @@ local xv3 yr_sch yr_sch_sq
 local full   0
 local summ   0
 local MMRall 0
-local MMRreg 0
+local MMRreg 1
 local MMRinc 0
 local Zsc    0
 local cntry  0
 local MMRgen 0
 
-foreach a in outreg2 arrowplot {
+foreach a in outreg2 arrowplot unique {
     cap which `a'
     if _rc!=0 ssc install `a'
 }
+cap which cgmwildboot
+if _rc !=0 display "No Wild Bootstrapping ado installed. Reverting to clusters"
 
 ********************************************************************************
 **** (2) Use and rename
@@ -270,6 +274,10 @@ if `MMRreg'==1 {
 	
         xi: xtreg MMR `xv1' `cont2' if region_c=="`r`num''"&e(sample), `opts'
         outreg2 `xv1' using "`name'", excel append label ctitle("`r`num''")
+
+        dis "Wild Bootstrapped Standard Errors"
+        xi: cgmwildboot MMR `xv1' `cont2' i.country if region_c=="`r`num''"&/*
+        */e(sample), cluster(country) bootcluster(country) seed(2727)
     }
 
     foreach num of numlist 1(1)7 {
