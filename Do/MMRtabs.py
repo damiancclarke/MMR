@@ -39,6 +39,8 @@ gend = 'CrossCountry_gender.txt'
 mmry = 'CrossCountry_female_yrs.txt'
 mmrs = 'CrossCountry_female_yrssq.txt'
 gens = 'CrossCountry_gender_yrssq.txt'
+ngra = 'Nigeria.txt'
+ngaP = 'NigeriaPlacebo.txt'
 
 #-------------------------------------------------------------------------------
 # --- (2) csv or tex options
@@ -60,9 +62,9 @@ if ftype=='tex':
     mcbf = '}{l}{\\textbf{'
     mc2  = '}}'
     mc3  = '{\\begin{footnotesize}\\textsc{Notes:} '
-    cadd = ['6','9','9','9','8','5','6']
+    cadd = ['6','9','9','9','8','5','6','5','5']
     ccm  = ['}{p{12.5cm}}','}{p{20cm}}','}{p{17.2cm}}','}{p{18.8cm}}',
-    '}{p{20cm}}','}{p{12.5cm}}','}{p{17.7cm}}']
+    '}{p{20cm}}','}{p{12.5cm}}','}{p{17.7cm}}','}{p{12.7cm}}','}{p{12cm}}']
 
 elif ftyoe=='csv':
     dd = ';'
@@ -204,7 +206,7 @@ for i,line in enumerate(mmri):
 
 mmro.write(
 mr+'\n'+mc1+cadd[1]+ccm[1]+mc3+'All regressions include fixed-effects by '  
-'country. For the full list of countries by year see table \\ref{tab:survey}.' 
+'country. For the full list of countries by year see table \\ref{MMRtab:survey}.' 
 '  Results are for the percent of the female population between the ages of '
 ' 15 and 39 with each level of education in each country.  A full description'
 ' of control variables is available in section \\ref{scn:data}, and as the note'  
@@ -265,7 +267,7 @@ for i,line in enumerate(mmri):
 
 mmro.write(
 mr+'\n'+mc1+cadd[1]+ccm[1]+mc3+'All regressions include fixed-effects by '  
-'country. For the full list of countries by year see table \\ref{tab:survey}.' 
+'country. For the full list of countries by year see table \\ref{MMRtab:survey}.' 
 ' Educational variables are the same as those in table \\ref{MMRtab:MMRpercent}'
 ' however include both female and male figures for each variable (ages 15-39).'
 ' A full description'
@@ -430,7 +432,7 @@ for i,line in enumerate(mmri):
 
 mmro.write(
 mr+'\n'+mc1+cadd[1]+ccm[1]+mc3+'All regressions include fixed-effects by '  
-'country. For the full list of countries by year see table \\ref{tab:survey}.' 
+'country. For the full list of countries by year see table \\ref{MMRtab:survey}.' 
 ' Educational variables are the same as those in table \\ref{MMRtab:MMRpercent}'
 ' however include both female and male figures for each variable (ages 15-39).'
 ' A full description'
@@ -596,3 +598,193 @@ if ftype=='tex':
     '\\end{tabular}\\end{center}\\end{table}\\end{landscape}')
 
 zsco.close()
+
+#-------------------------------------------------------------------------------
+# --- (7) Nigeria tables
+#-------------------------------------------------------------------------------
+ngai = open(result + ngra, 'r')
+ngao = open(tables + 'Nigeria.' + end, 'w')
+
+if ftype=='tex':
+    ngao.write('\\begin{subtables}\\begin{table}[htpb!]\\begin{center}'
+    '\\caption{Effect of 1976 Educational Expansion: Nigeria}'
+    '\\label{MMRtab:Nigeria}\\begin{tabular}{p{5cm}cccc}\\toprule'
+    '&(1)&(2)&(3)&(4)\\\\ \\midrule'
+    '\\multicolumn{5}{l}{\\textsc{Panel A: Outcome -- Education}}\\\\')
+    ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
+    '\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
+
+edB  = []
+MMB  = []
+MM2B = []
+edS  = []
+MMS  = []
+MM2S = []
+nums = [[2, 9],[8,13],[12,17],[16,21]]
+for i,line in enumerate(ngai):
+    for n in range(0,4):
+        if i>nums[n][0] and i<nums[n][1] and i%2==1:
+            s=line.split()
+            edB.append(s[1])
+            MMB.append(s[2])
+            MM2B.append(s[3])
+        if i>nums[n][0] and i<nums[n][1] and i%2==0:
+            s=line.split()
+            edS.append(s[0])
+            MMS.append(s[1])
+            MM2S.append(s[2])
+
+    if i==24:
+        obs = line.split()
+    if i==25:
+        R   = line.split()
+
+ngao.write('Intensity 70-75&'+edB[0]+'&'+edB[3]+'&'+edB[5]+'&'+edB[7]+'\\\\ \n')
+ngao.write('               &'+edS[0]+'&'+edS[3]+'&'+edS[5]+'&'+edS[7]+'\\\\ \n')
+ngao.write('Intensity 65-69&'+edB[1]+'&'+edB[4]+'&'+edB[6]+'&'+edB[8]+'\\\\ \n')
+ngao.write('               &'+edS[1]+'&'+edS[4]+'&'+edS[6]+'&'+edS[8]+'\\\\ \n')
+ngao.write('Intensity      &'+edB[2]+'&'+       '&'+       '&'+       '\\\\ \n')
+ngao.write('               &'+edS[2]+'&'+       '&'+       '&'+       '\\\\ \n')
+ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
+'\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
+ngao.write('Observations&'+obs[1]+'&'+obs[2]+'&'+obs[3]+'&'+obs[4]+'\\\\ \n')
+ngao.write('R-squared&'+R[1]+'&'+R[2]+'&'+R[3]+'&'+R[4]+'\\\\ \\midrule \n')
+
+ngao.write('\\multicolumn{5}{l}{\\textsc{Panel B: Outcome -- MMR}}\\\\ \n')
+ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
+'\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
+ngao.write('Intensity 70-75&'+MMB[0]+'&'+MMB[3]+'&'+MMB[5]+'&'+MMB[7]+'\\\\ \n')
+ngao.write('               &'+MMS[0]+'&'+MMS[3]+'&'+MMS[5]+'&'+MMS[7]+'\\\\ \n')
+ngao.write('Intensity 65-69&'+MMB[1]+'&'+MMB[4]+'&'+MMB[6]+'&'+MMB[8]+'\\\\ \n')
+ngao.write('               &'+MMS[1]+'&'+MMS[4]+'&'+MMS[6]+'&'+MMS[8]+'\\\\ \n')
+ngao.write('Intensity      &'+MMB[2]+'&'+       '&'+       '&'+       '\\\\ \n')
+ngao.write('               &'+MMS[2]+'&'+       '&'+       '&'+       '\\\\ \n')
+ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
+'\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
+ngao.write('Observations&'+obs[5]+'&'+obs[6]+'&'+obs[7]+'&'+obs[8]+'\\\\ \n')
+ngao.write('R-squared&'+R[5]+'&'+R[6]+'&'+R[7]+'&'+R[8]+'\\\\ \\midrule \n')
+
+ngao.write('\\multicolumn{5}{l}{\\textsc{Panel C: Outcome -- MMR (Under 25)}}\\\\ \n')
+ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
+'\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
+ngao.write('Intensity 70-75&'+MM2B[0]+'&'+MM2B[3]+'&'+MM2B[5]+'&'+MM2B[7]+'\\\\ \n')
+ngao.write('               &'+MM2S[0]+'&'+MM2S[3]+'&'+MM2S[5]+'&'+MM2S[7]+'\\\\ \n')
+ngao.write('Intensity 65-69&'+MM2B[1]+'&'+MM2B[4]+'&'+MM2B[6]+'&'+MM2B[8]+'\\\\ \n')
+ngao.write('               &'+MM2S[1]+'&'+MM2S[4]+'&'+MM2S[6]+'&'+MM2S[8]+'\\\\ \n')
+ngao.write('Intensity      &'+MM2B[2]+'&'+       '&'+       '&'+       '\\\\ \n')
+ngao.write('               &'+MM2S[2]+'&'+       '&'+       '&'+       '\\\\ \n')
+ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
+'\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
+ngao.write('Observations&'+obs[9]+'&'+obs[10]+'&'+obs[11]+'&'+obs[12]+'\\\\ \n')
+ngao.write('R-squared&'+R[9]+'&'+R[10]+'&'+R[11]+'&'+R[12]+'\\\\ \n')
+
+
+ngao.write(mr+'\n'+mc1+cadd[7]+ccm[7]+mc3+'Columns (1)-(4) represent '
+'different measures of treatment intensity. Column (1) uses capital '
+'expenditure on school construction in 1976 in each individual\'s state'
+' as their treatment intensity, column (2) uses a dummy for residence in'
+' non-West (high-intensity) states, column (3) uses the number of years '
+'exposed to the reform interacted with the high-intensity state dummy as'
+' the intensity measure, and column (4) uses capital expenditure '
+'interacted with the high-intensity state dummy.  The effect of the '
+'reform is identified for 1970-1975 birth cohorts (who are fully affected)'
+', and 1965-1969 cohorts, who are affected partially via over-age '
+'enrollments. Panel A shows the effect of the education reforms on '
+'educational attainment, panel B shows the effect on life-time maternal '
+'mortality, and panel C the effect on maternal mortality under the age of'
+' 25.  All regressions are double-differences, however in columns (2)-(4)'
+' the intensity dummy is captured by state of residence fixed effects. '
+'Additional controls include religion, ethnicity and year of birth fixed '
+'effects, plus time trends by state, and controls for the length of '
+'exposure to the civil war in Biafra \\citep{Akreshetal2012}.  Standard '
+'errors are clustered by state and birth cohort.\n'+foot)
+if ftype=='tex':
+    ngao.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
+   '\\end{tabular}\\end{center}\\end{table}')
+
+ngao.close()
+
+
+##PLACEBO
+ngai = open(result + ngaP, 'r')
+ngao = open(tables + 'NigeriaPlacebo.' + end, 'w')
+
+if ftype=='tex':
+    ngao.write('\\begin{subtables}\\begin{table}[htpb!]\\begin{center}'
+    '\\caption{1976 Educational Expansion Placebo: Nigeria}'
+    '\\label{MMRtab:NigeriaPlacebo}\\begin{tabular}{p{5cm}cccc}\\toprule'
+    '&(1)&(2)&(3)&(4)\\\\ \\midrule'
+    '\\multicolumn{5}{l}{\\textsc{Panel A: Outcome -- Education}}\\\\')
+    ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
+    '\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
+
+edB  = []
+MMB  = []
+MM2B = []
+edS  = []
+MMS  = []
+MM2S = []
+nums = [[2, 7],[6,9],[8,11],[10,13]]
+for i,line in enumerate(ngai):
+    for n in range(0,4):
+        if i>nums[n][0] and i<nums[n][1] and i%2==1:
+            s=line.split()
+            edB.append(s[1])
+            MMB.append(s[2])
+            MM2B.append(s[3])
+        if i>nums[n][0] and i<nums[n][1] and i%2==0:
+            s=line.split()
+            edS.append(s[0])
+            MMS.append(s[1])
+            MM2S.append(s[2])
+
+    if i==16:
+        obs = line.split()
+    if i==17:
+        R   = line.split()
+
+ngao.write('Intensity 56-60&'+edB[0]+'&'+edB[2]+'&'+edB[3]+'&'+edB[4]+'\\\\ \n')
+ngao.write('               &'+edS[0]+'&'+edS[2]+'&'+edS[3]+'&'+edS[4]+'\\\\ \n')
+ngao.write('Intensity      &'+edB[1]+'&'+       '&'+       '&'+       '\\\\ \n')
+ngao.write('               &'+edS[1]+'&'+       '&'+       '&'+       '\\\\ \n')
+ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
+'\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
+ngao.write('Observations&'+obs[1]+'&'+obs[2]+'&'+obs[3]+'&'+obs[4]+'\\\\ \n')
+ngao.write('R-squared&'+R[1]+'&'+R[2]+'&'+R[3]+'&'+R[4]+'\\\\ \\midrule \n')
+
+ngao.write('\\multicolumn{5}{l}{\\textsc{Panel B: Outcome -- MMR}}\\\\ \n')
+ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
+'\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
+ngao.write('Intensity 56-60&'+MMB[0]+'&'+MMB[2]+'&'+MMB[3]+'&'+MMB[4]+'\\\\ \n')
+ngao.write('               &'+MMS[0]+'&'+MMS[2]+'&'+MMS[3]+'&'+MMS[4]+'\\\\ \n')
+ngao.write('Intensity      &'+MMB[1]+'&'+       '&'+       '&'+       '\\\\ \n')
+ngao.write('               &'+MMS[1]+'&'+       '&'+       '&'+       '\\\\ \n')
+ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
+'\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
+ngao.write('Observations&'+obs[5]+'&'+obs[6]+'&'+obs[7]+'&'+obs[8]+'\\\\ \n')
+ngao.write('R-squared&'+R[5]+'&'+R[6]+'&'+R[7]+'&'+R[8]+'\\\\ \\midrule \n')
+
+ngao.write('\\multicolumn{5}{l}{\\textsc{Panel C: Outcome -- MMR (Under 25)}}\\\\ \n')
+ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
+'\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
+ngao.write('Intensity 56-60&'+MM2B[0]+'&'+MM2B[2]+'&'+MM2B[3]+'&'+MM2B[4]+'\\\\ \n')
+ngao.write('               &'+MM2S[0]+'&'+MM2S[2]+'&'+MM2S[3]+'&'+MM2S[4]+'\\\\ \n')
+ngao.write('Intensity      &'+MM2B[1]+'&'+       '&'+       '&'+       '\\\\ \n')
+ngao.write('               &'+MM2S[1]+'&'+       '&'+       '&'+       '\\\\ \n')
+ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
+'\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
+ngao.write('Observations&'+obs[9]+'&'+obs[10]+'&'+obs[11]+'&'+obs[12]+'\\\\ \n')
+ngao.write('R-squared&'+R[9]+'&'+R[10]+'&'+R[11]+'&'+R[12]+'\\\\ \n')
+
+
+ngao.write(mr+'\n'+mc1+cadd[8]+ccm[8]+mc3+'For a full description '
+'of outcomes and treatments see Table \\ref{MMRtab:Nigeria}. A '
+'placebo treatment here is defined by comparing two groups who had '
+'already left primary school by the time of the reform.  The birth '
+'cohorts from 1956-1961 were defined as the placebo `treatment\' '
+'and the cohorts from 1950-1955 were defined as controls.\n'+foot)
+if ftype=='tex':
+    ngao.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
+   '\\end{tabular}\\end{center}\\end{table}')
+
+ngao.close()
