@@ -162,11 +162,13 @@ be similar for men and women, at least in richer countries \citep{LlerasMuney200
 CutlerLlerasMuney2010}.
 
 The proximate causes of maternal mortality are pregnancy complications such as 
-pre-eclampsia, bleeding, infections and unsafe abortion. To the extent that 
-educated women are more likely to adopt simple and low-cost practices to maintain 
-hygiene, are more able to react to symptoms such as bleeding or high blood
-pressure, more likely to assess the information on abortion and place of abortion, 
-and more willing to accept
+pre-eclampsia, bleeding, infections and unsafe abortion.\footnote{We provide a
+more extensive discussion of the medical literature related to maternal mortality
+and death in and surrounding childbirth in appendix \ref{scn:medliterature}.} To 
+the extent that educated women are more likely to adopt simple and low-cost 
+practices to maintain hygiene, are more able to react to symptoms such as bleeding 
+or high blood pressure, more likely to assess the information on abortion and place 
+of abortion, and more willing to accept
 treatment and birth attendance, education may plausibly cause declines in maternal 
 mortality. Moreover, if these are the mechanisms by which it acts then education 
 may have an impact on maternal mortality conditional upon the state of health 
@@ -238,10 +240,11 @@ country (allowing for the stochastic term $u_{it}$ to be correlated over time fo
 each $i$.)\footnote{In certain cases when we restrict to only certain sub-groups
 of countries, the number of countries in each regression is less than 50.  Rule
 of thumb-type considerations suggest that clustering standard errors using less
-than 50 clusters is not optimal \citep{AngristPischke2009,NicholsSchaffer2007}.  
+than around 50 clusters is not optimal \citep{AngristPischke2009,NicholsSchaffer2007}.  
 In these cases we also estimate using heteroscedasticity robust standar errors, 
-and wild bootstrapped standard errors \citep{MackinnonWebb2014}. To be 
-conservative, we always report the largest standard errors in these cases.}
+and wild bootstrapped standard errors \citep{MackinnonWebb2014,CameronMiller2015}. 
+To be conservative, we always report the set of estimates with the largest 
+standard errors (on our variables of interest).}
 
 We are able to estimate (\ref{eqn:panel}) for a number of different subgroups. 
 Whilst we primarily focus on women of reproductive age, our data allows us to run 
@@ -268,7 +271,7 @@ expansions on maternal mortality.
 Prominent educational reforms discussed in the economics literature are listed 
 below in table \ref{MMRtab:EducExp}.  Of the reforms listed here, we identify 
 three which are suitable to use as natural experiments to identify the effect of 
-education on maternal mortality.  There are Nigeria, Zimbabwe, and Kenya. Of the 
+education on maternal mortality.  These are Nigeria, Zimbabwe, and Kenya. Of the 
 other three cases listed, they were either not examined as they occurred too 
 recently to observe the outcome of interest (maternal mortality) or because 
 microdata for maternal mortality outcomes was not available for the country in 
@@ -506,7 +509,7 @@ for the fact that many women are interviewed before they have completed their
 fertility (younger cohorts in the sample), as a robustness check we use the 
 correction method discussed by \citet{RutsteinRojas2006} and 
 \citet{Stantonetal1997}. This involves weighting each age cohort by an adjustment 
-factor, which is calculated based upon its exposure to maternal mortality.
+factor, which is calculated based upon its exposure to maternal mortality.%
 \footnote{These adjustment factors have been calculated as 0.107, 0.206, 0.343, 
 0.503, 0.664, 0.882, and 0.900 for five age groups from 15-19 to 45-49 
 (respectively).}  We note however that in the empirical strategies outlined in 
@@ -524,8 +527,8 @@ natural experiments occurred at the secondary or upper-primary level, average
 educational attainment is approximately 7-8 years for all women in the sample, 
 while in Nigeria, where the natural experiment of interest involves primary school 
 construction, average education in the cohorts of interest is approximately 5 
-years.  In each case, over the entire range of cohorts examined, betwee 1 and 2 in 
-every 100 women dies during child birth.
+years.  In each case, over the entire range of cohorts examined, betwee 1 and 2 
+in every 100 women dies during child birth.
 
 %GDP per capita: (data.worldbank.org/indicator/NY.GDP.PCAP.CD)
 %Immunization: (http://data.worldbank.org/indicator/SH.IMM.IDPT)
@@ -539,9 +542,10 @@ every 100 women dies during child birth.
 \subsection{Global}
 \subsubsection{The Sensitivity of Maternal Mortality to Education (and Health 
 Interventions)}
-Table \ref{tab:MMR} provides results for our principal cross-country specification 
-(\ref{eqn:panel}), estimated on cross-country panel data for 108 developing 
-countries observed at five yearly intervals in 1990-2010, and using the percentage 
+Table \ref{MMRtab:MMRpercent} provides results for our principal cross-country 
+specification (\ref{eqn:panel}), estimated on cross-country panel data for 108 
+developing countries observed at five yearly intervals in 1990-2010, and using 
+the percentage 
 of people in a country and year who have attained specified levels of education. 
 We present similar results disaggregated by country income group and regional 
 classifications as tables \ref{MMRtab:MMRregion} and \ref{MMRtab:MMRincome} 
@@ -707,9 +711,83 @@ of 98 maternal deaths per 100,000 births. In the model with all controls (column
 reductions of 166 deaths and 56 deaths respectively when moving from 0 to 1 or 
 from 5 to 6 years of education.
 
+Finally, while we have only a limited number of observations for maternal
+mortality and education for each country in our cross-country data, in figure
+\ref{fig:arrows} we examine correlations between maternal mortality and 
+education both across and within countries.  The clear negative relationship
+is once again seen when plotting country averages of log MMR against years of
+schooling (the solid points in figure \ref{fig:arrows}).  However, regression
+results are not only driven by this across-country result.  Intra-country
+correlations appear to also be negative in the large majority of cases. Arrows
+overlayed on top of country averages show that, in a given country, increases
+in education are associated with reductions in log MMR in 116 of 146 cases,
+and is unrelated or positively related in only 30 cases.
+
+\subsubsection{Education, Female Education, or Male Education?}
+\label{ssscn:gender}
+Thus far, all regression results present the conditional effect of female 
+education on maternal mortality.  However, fundamentally, we have \emph{not} 
+controlled for the educational attainment of other members of the population, 
+precluding us from being able to conclude that these effects are only due to 
+\emph{women's} education.  The inclusion of women's education in a regression 
+without controlling for male education may be problematic, especially when 
+considering that levels of female and male education in a country, on average, 
+are highly correlated.\footnote{For example, in the Barro-Lee sample used in this 
+paper the $R^2$ of a regression of female to male education and an intercept is 
+0.918, while the coefficient on male education is 1.190.}
+
+In this section we turn to results which allow us to test whether increases 
+in male or in female education drive reductions in maternal mortality.  We
+run a series of regressions as per (\ref{eqn:panel}), where now the vector
+of educational variables $\mathbf{educ}_{it}$ contains measures of both male
+and female education in the population.  We can thus test whether 
+\emph{conditional} on male education, increases in female education cause
+reductions in rates of maternal mortality.  And vice versa, conditioning on
+female education, we can test whether higher levels of male education reduce
+rates of maternal mortality.
+
+In table \ref{MMRtab:MMRgender} we present results where education for each 
+group of the population is measured by the percent with each level of 
+education (primary, secondary or tertiary).  This is the analogue of table
+\ref{MMRtab:MMRpercent}, however now for both genders.  Overwhelmingly, it is
+apparent that the results we have discussed in the previous section are driven
+\emph{only} by increases in education of the cohort of fertile women.  When
+controlling for female education, the effect of the level of men's education in
+the population of interest is never significantly different from zero.
+
+Column 2 of table \ref{MMRtab:MMRgender} suggests that a 1\% increase in the
+rate of completion of primary education among women is (unconditionally) 
+associated with a reduction in the rate of maternal mortality of 11.33 per 
+100,000 live births.  Similarly higher rates of secondary and tertiary 
+completion among women reduce maternal mortality.  However, when turning to 
+rates of male education, no effect is seen (with t-statistics nearly always
+well below 1).  This result remains even when conditioning on our full set
+of controls.  Column 7 shows that a 1\% increase in female rates of primary
+education reduces MMR by 8.9 in 100,000 births, while a 1\% increase in male
+primary education has a small positive (insignificant) relationship.
+
+These results are stable regardless of the set of controls used, and also the
+way in which education is mesured.  Appendix table \ref{MMRtab:MMRgenderSq} 
+presents the same set of regressions with education measured as a quadratic
+in years for males and females.  While the effect of female education on 
+MMR---after controlling for male education---is a significant negative linear 
+and positive quadratic effect (suggesting that education reduces maternal 
+mortality, and that returns to education are diminishing)\footnote{Quadratic 
+figures have a turning point from a negative to a positive effect on MMR at 
+between 15.5 to 18.5 years of education (depending upon the set of controls 
+included).  These values of considerably higher than the maximum sample value 
+displayed in table \ref{MMRtab:sumstats}.}, the conditional effect of male 
+education on maternal mortality rates is once again insignificant at all
+levels in the sample range.  Similar effects are seen when education is
+measured simply as years of schooling, providing considerable evidence that
+it is actually the level of education of the women in the cohort that is 
+important, not total educational attainment, or the attainment of men in the 
+same cohort.
+
+
 \subsubsection{Potential Pathways and Correlated Effects}
 \label{ssscn:effects}
-The discussion in the preceding section establishes that declines in maternal 
+The discussion in the preceding sections establishes that declines in maternal 
 mortality in developing countries have been associated with gains in education, 
 improvements in public health services and declines in fertility. Since our 
 primary interest in this paper is in the benefits flowing from education, in this 
@@ -758,19 +836,6 @@ education is strongly positively correlated with health service provision
 conditional upon country fixed effects and aggregate trends. While this 
 association may not be entirely causal, causal components such as that educated 
 people demand public health services merit testing.
-
-\subsubsection{Education, Female Education, or Male Education?}
-\label{ssscn:gender}
-Thus far, all regression results present the conditional effect of female 
-education on maternal mortality.  However, fundamentally, we have \emph{not} 
-controlled for the educational attainment of other members of the population, 
-precluding us from being able to suggest that these effects are only due to 
-\emph{women's} education.  The inclusion of women's education in a regression 
-without controlling for male education may be problematic, especially when 
-considering that levels of female and male education in a country, on average, 
-are highly correlated.\footnote{For example, in the Barro-Lee sample used in this 
-paper the $R^2$ of a regression of female to male education and an intercept is 
-0.918, while the coefficient on male education is 1.190.}
 
 \subsection{Country-Specific Results}
 We take advantage of the reforms described in sections 
@@ -909,6 +974,7 @@ in recent years.
 %===============================================================================
 \section{Data Appendix}
 \label{scn:dataappendix}
+\subsection{Data for Panel Analysis}
 The variable `Percent Attended Births' represents the number of births attended 
 by a skilled physician.  This variable has been constructed from World Bank data 
 relating to births attended by skilled health staff 
@@ -928,10 +994,29 @@ MMR and Education data is available in 5 year periods (1990, 1995, 2000, 2005,
 was data in the preceeding 5 year period, the average of the preceeding 5 year 
 period was taken and used as the data point in the fifth year.
 
+\subsection{Data for Quasi-Experiments}
+Micro-level data for education and maternal mortality is used in each country.
+Both come from DHS.  For each country we pool all available DHS waves in which
+the maternal mortality module was collected.  These are, for Zimbabwe: 1994, 
+1999, 2005 and 2010; for Kenya: 1998, 2003, and 2008; and for Nigeria: 1999 and
+2008.
+
+From each respondent in the DHS Individual Recode file (ie all index women), we
+use their education, along with their region of birth and residence, data of 
+birth, and various characteristics such as ethnicity and religion.  To create a
+maternal mortality database, we take information on all of the sisters of each
+woman in the DHS data.  For these sisters, the index woman reports if they are
+alive, their data of birth, if they died during child birth, and if so, in what 
+the maternal death occurred.  From this, we generate a sisters file recording 
+maternal mortality rates for each woman, (and hence birth cohorts). Full details
+regarding all data, and data itself is available on the web
+(\url{https://github.com/damiancclarke/MMR}).
+
 %===============================================================================
 %MEDICAL LITERATURE
 %===============================================================================
 \section{Maternal Mortality in the Medical Literature}
+\label{scn:medliterature}
 The medical literature suggests that maternal mortality is principally 
 associated with labour, delivery and the early postpartum period; largely 
 occuring between the third trimester of pregnancy and the first post-partum 
@@ -971,21 +1056,29 @@ complications) conditional upon her becoming pregnant \citep{MccarthyMaine1992,
 GoodburnCampbell2001, TrusselPebley1984}.  Along with attendence and medical 
 care for mothers during pregnancy and child birth, these studies suggest that 
 altering maternal age, quantity of births, and spacing of births could have a 
-considerable effect on rates of maternal mortality.  More recent medical studies 
-also  suggest that socioeconomic factors are fundamental in the reduction of 
-maternal mortality.  \citet{Costelloetal2004}, for example, argue that the focus 
-on primary care and skilled attendance is not a sufficient strategy, citing 
-considerable reductions in maternal mortality following community-based 
-interventions\footnote{Also see \citet{Manandharetal2004} for the results of a 
-randomized trial of community-based meetings.}.  \citet{McAlisterBaskett2006} 
-suggest that social---and specifically gender-specific factors such as female 
+considerable effect on rates of maternal mortality.  
+
+More recent medical studies also suggest that socioeconomic factors are 
+fundamental in the reduction of maternal mortality.  \citet{Costelloetal2004}, 
+for example, argue that the focus on primary care and skilled attendance is 
+not a sufficient strategy, citing considerable reductions in maternal mortality 
+following community-based interventions\footnote{Also see 
+\citet{Manandharetal2004} for the results of a randomized trial of 
+community-based meetings.}.  \citet{McAlisterBaskett2006} suggest that 
+social---and specifically gender-specific factors such as female 
 education---should predict maternal mortality, demonstrating cross-country 
-correlation between these variables.  Recent work from \citet{Ahmedetal2012} 
+correlation between these variables. Recent work from \citet{Ahmedetal2012} 
 suggests that family planning inputs would allow for considerable reductions in 
 maternal deaths world-wide, with the authors estimating that the equivalent of 
 44\% of maternal deaths in 2008 were averted due to contraceptive use, and that 
-meeting unmet demand for family planning could prevent a further 29\%.
-
+meeting unmet demand for family planning could prevent a further 29\%. Finally, 
+the importance of socio-economic factors is also highlighted by 
+\citet{Ahmedetal2010} (and earlier by \citet{ShenWilliamson1999}) who suggest 
+that more educated and empowered women are more likely to utilise health 
+services related to maternal mortality such as antenatal care, and skilled 
+birth attendants, and by \citet{BhuttaBlack2013} who higlight the social 
+determinants of maternal health, and the link of poor health to poorly served 
+urban slum environments where social and educational support networks are weak.
 
 \newpage
 \section{Appendix Tables}
