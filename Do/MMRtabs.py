@@ -41,6 +41,10 @@ mmrs = 'CrossCountry_female_yrssq.txt'
 gens = 'CrossCountry_gender_yrssq.txt'
 ngra = 'Nigeria.txt'
 ngaP = 'NigeriaPlacebo.txt'
+zimb = 'Zimbabwe.txt'
+zimP = 'ZimbabwePlacebo.txt'
+keny = 'Kenya.txt'
+kenP = 'KenyaPlacebo.txt'
 
 #-------------------------------------------------------------------------------
 # --- (2) csv or tex options
@@ -62,9 +66,10 @@ if ftype=='tex':
     mcbf = '}{l}{\\textbf{'
     mc2  = '}}'
     mc3  = '{\\begin{footnotesize}\\textsc{Notes:} '
-    cadd = ['6','9','9','9','8','5','6','5','5']
+    cadd = ['6','9','9','9','8','5','6','5','5','7','3']
     ccm  = ['}{p{12.5cm}}','}{p{20cm}}','}{p{17.2cm}}','}{p{18.8cm}}',
-    '}{p{20cm}}','}{p{12.5cm}}','}{p{17.7cm}}','}{p{12.7cm}}','}{p{12cm}}']
+    '}{p{20cm}}','}{p{12.5cm}}','}{p{17.7cm}}','}{p{12.7cm}}','}{p{12cm}}',
+    '}{p{15.4cm}}','}{p{9.6cm}}']
 
 elif ftyoe=='csv':
     dd = ';'
@@ -640,11 +645,11 @@ for i,line in enumerate(ngai):
         R   = line.split()
 
 ngao.write('Intensity 70-75&'+edB[0]+'&'+edB[3]+'&'+edB[5]+'&'+edB[7]+'\\\\ \n')
-ngao.write('               &'+edS[0]+'&'+edS[3]+'&'+edS[5]+'&'+edS[7]+'\\\\ \n')
+ngao.write(dd1+edS[0]+dd3+dd1+edS[3]+dd3+dd1+edS[5]+dd3+dd1+edS[7]+dd3+'\\\\ \n')
 ngao.write('Intensity 65-69&'+edB[1]+'&'+edB[4]+'&'+edB[6]+'&'+edB[8]+'\\\\ \n')
-ngao.write('               &'+edS[1]+'&'+edS[4]+'&'+edS[6]+'&'+edS[8]+'\\\\ \n')
+ngao.write(dd1+edS[1]+dd3+dd1+edS[4]+dd3+dd1+edS[6]+dd3+dd1+edS[8]+dd3+'\\\\ \n')
 ngao.write('Intensity      &'+edB[2]+'&'+       '&'+       '&'+       '\\\\ \n')
-ngao.write('               &'+edS[2]+'&'+       '&'+       '&'+       '\\\\ \n')
+ngao.write(dd1+edS[2]+dd3+       '&'+       '&'+       '\\\\ \n')
 ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
 '\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
 ngao.write('Observations&'+obs[1]+'&'+obs[2]+'&'+obs[3]+'&'+obs[4]+'\\\\ \n')
@@ -654,11 +659,11 @@ ngao.write('\\multicolumn{5}{l}{\\textsc{Panel B: Outcome -- MMR}}\\\\ \n')
 ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
 '\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
 ngao.write('Intensity 70-75&'+MMB[0]+'&'+MMB[3]+'&'+MMB[5]+'&'+MMB[7]+'\\\\ \n')
-ngao.write('               &'+MMS[0]+'&'+MMS[3]+'&'+MMS[5]+'&'+MMS[7]+'\\\\ \n')
+ngao.write(dd1+MMS[0]+dd3+dd1+MMS[3]+dd3+dd1+MMS[5]+dd3+dd1+MMS[7]+dd3+'\\\\ \n')
 ngao.write('Intensity 65-69&'+MMB[1]+'&'+MMB[4]+'&'+MMB[6]+'&'+MMB[8]+'\\\\ \n')
-ngao.write('               &'+MMS[1]+'&'+MMS[4]+'&'+MMS[6]+'&'+MMS[8]+'\\\\ \n')
+ngao.write(dd1+MMS[1]+dd3+dd1+MMS[4]+dd3+dd1+MMS[6]+dd3+dd1+MMS[8]+dd3+'\\\\ \n')
 ngao.write('Intensity      &'+MMB[2]+'&'+       '&'+       '&'+       '\\\\ \n')
-ngao.write('               &'+MMS[2]+'&'+       '&'+       '&'+       '\\\\ \n')
+ngao.write(dd1+MMS[2]+dd3+       '&'+       '&'+       '\\\\ \n')
 ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
 '\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
 ngao.write('Observations&'+obs[5]+'&'+obs[6]+'&'+obs[7]+'&'+obs[8]+'\\\\ \n')
@@ -668,11 +673,11 @@ ngao.write('\\multicolumn{5}{l}{\\textsc{Panel C: Outcome -- MMR (Under 25)}}\\\
 ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
 '\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
 ngao.write('Intensity 70-75&'+MM2B[0]+'&'+MM2B[3]+'&'+MM2B[5]+'&'+MM2B[7]+'\\\\ \n')
-ngao.write('               &'+MM2S[0]+'&'+MM2S[3]+'&'+MM2S[5]+'&'+MM2S[7]+'\\\\ \n')
+ngao.write(dd1+MM2S[0]+dd3+dd1+MM2S[3]+dd3+dd1+MM2S[5]+dd3+dd1+MM2S[7]+dd3+'\\\\ \n')
 ngao.write('Intensity 65-69&'+MM2B[1]+'&'+MM2B[4]+'&'+MM2B[6]+'&'+MM2B[8]+'\\\\ \n')
-ngao.write('               &'+MM2S[1]+'&'+MM2S[4]+'&'+MM2S[6]+'&'+MM2S[8]+'\\\\ \n')
+ngao.write(dd1+MM2S[1]+dd3+dd1+MM2S[4]+dd3+dd1+MM2S[6]+dd3+dd1+MM2S[8]+dd3+'\\\\ \n')
 ngao.write('Intensity      &'+MM2B[2]+'&'+       '&'+       '&'+       '\\\\ \n')
-ngao.write('               &'+MM2S[2]+'&'+       '&'+       '&'+       '\\\\ \n')
+ngao.write(dd1+MM2S[2]+dd3+       '&'+       '&'+       '\\\\ \n')
 ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
 '\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
 ngao.write('Observations&'+obs[9]+'&'+obs[10]+'&'+obs[11]+'&'+obs[12]+'\\\\ \n')
@@ -744,9 +749,9 @@ for i,line in enumerate(ngai):
         R   = line.split()
 
 ngao.write('Intensity 56-60&'+edB[0]+'&'+edB[2]+'&'+edB[3]+'&'+edB[4]+'\\\\ \n')
-ngao.write('               &'+edS[0]+'&'+edS[2]+'&'+edS[3]+'&'+edS[4]+'\\\\ \n')
+ngao.write(dd1+edS[0]+dd3+dd1+edS[2]+dd3+dd1+edS[3]+dd3+dd1+edS[4]+dd3+'\\\\ \n')
 ngao.write('Intensity      &'+edB[1]+'&'+       '&'+       '&'+       '\\\\ \n')
-ngao.write('               &'+edS[1]+'&'+       '&'+       '&'+       '\\\\ \n')
+ngao.write(dd1+edS[1]+dd3+       '&'+       '&'+       '\\\\ \n')
 ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
 '\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
 ngao.write('Observations&'+obs[1]+'&'+obs[2]+'&'+obs[3]+'&'+obs[4]+'\\\\ \n')
@@ -756,9 +761,9 @@ ngao.write('\\multicolumn{5}{l}{\\textsc{Panel B: Outcome -- MMR}}\\\\ \n')
 ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
 '\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
 ngao.write('Intensity 56-60&'+MMB[0]+'&'+MMB[2]+'&'+MMB[3]+'&'+MMB[4]+'\\\\ \n')
-ngao.write('               &'+MMS[0]+'&'+MMS[2]+'&'+MMS[3]+'&'+MMS[4]+'\\\\ \n')
+ngao.write(dd1+MMS[0]+dd3+dd1+MMS[2]+dd3+dd1+MMS[3]+dd3+dd1+MMS[4]+dd3+'\\\\ \n')
 ngao.write('Intensity      &'+MMB[1]+'&'+       '&'+       '&'+       '\\\\ \n')
-ngao.write('               &'+MMS[1]+'&'+       '&'+       '&'+       '\\\\ \n')
+ngao.write(dd1+MMS[1]+dd3+       '&'+       '&'+       '\\\\ \n')
 ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
 '\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
 ngao.write('Observations&'+obs[5]+'&'+obs[6]+'&'+obs[7]+'&'+obs[8]+'\\\\ \n')
@@ -768,9 +773,9 @@ ngao.write('\\multicolumn{5}{l}{\\textsc{Panel C: Outcome -- MMR (Under 25)}}\\\
 ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
 '\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
 ngao.write('Intensity 56-60&'+MM2B[0]+'&'+MM2B[2]+'&'+MM2B[3]+'&'+MM2B[4]+'\\\\ \n')
-ngao.write('               &'+MM2S[0]+'&'+MM2S[2]+'&'+MM2S[3]+'&'+MM2S[4]+'\\\\ \n')
+ngao.write(dd1+MM2S[0]+dd3+dd1+MM2S[2]+dd3+dd1+MM2S[3]+dd3+dd1+MM2S[4]+dd3+'\\\\ \n')
 ngao.write('Intensity      &'+MM2B[1]+'&'+       '&'+       '&'+       '\\\\ \n')
-ngao.write('               &'+MM2S[1]+'&'+       '&'+       '&'+       '\\\\ \n')
+ngao.write(dd1+MM2S[1]+dd3+       '&'+       '&'+       '\\\\ \n')
 ngao.write('\\begin{footnotesize}\\end{footnotesize}&'*3+
 '\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
 ngao.write('Observations&'+obs[9]+'&'+obs[10]+'&'+obs[11]+'&'+obs[12]+'\\\\ \n')
@@ -788,3 +793,215 @@ if ftype=='tex':
    '\\end{tabular}\\end{center}\\end{table}')
 
 ngao.close()
+
+#-------------------------------------------------------------------------------
+# --- (8) Zimbabwe tables
+#-------------------------------------------------------------------------------
+zimi = open(result + zimb, 'r')
+zimo = open(tables + 'Zimbabwe.' + end, 'w')
+
+if ftype=='tex':
+    zimo.write('\\begin{landscape}\\begin{table}[htpb!]\\begin{center}\n'
+    '\\caption{Effect of 1980 Educational Expansion: Zimbabwe}\n'
+    '\\label{MMRtab:Zimbabwe}\\begin{tabular}{lcccccc}\\toprule\n'
+    '& \\multicolumn{3}{c}{Years of Education}&'
+    '\\multicolumn{3}{c}{Maternal Mortality }\\\\'
+    'VARIABLES & (1)&(2)&(3)&(4)&(5)&(6)\\\\ \\cmidrule(r){1-4} \\cmidrule(r){5-7}')
+    zimo.write('\\begin{footnotesize}\\end{footnotesize}&'*5+
+    '\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
+
+for i,line in enumerate(zimi):
+    if i>2 and i<9:
+        line = re.sub(r"\t",dd,line)
+        line = re.sub(r"^&&","&",line)
+
+        line = line.replace('\n'           ,'\\\\'        )
+        line = line.replace('dumage'       , 'DumAge'     )
+        line = line.replace('age1980less14','(Age1980-14)')
+        line = line.replace('X'            ,'$\\times$'   )
+        line = line.replace('invDumAge'    ,'(1-DumAge)'  )
+        zimo.write(line+'\n')
+
+    if i==10:
+        zimo.write('\\begin{footnotesize}\\end{footnotesize}&'*5+
+        '\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
+
+    if i>11 and i<14:
+        line = re.sub(r"\t",dd,line)
+        line = re.sub(r"^&&","&",line)
+        line = line.replace('\n'           ,'\\\\'        )
+        zimo.write(line+'\n')
+
+
+
+zimo.write(mr+'\n'+mc1+cadd[9]+ccm[9]+mc3+'Columns (1) and (4) include '
+'a linear trend for age, columns (2) and (5) a quadratic, and columns (3)'
+' and (6) a cubic trend.  DumAge (treatment) refers to the birth cohort '
+'which was 14 years old at the time of the reform (1980).  Additional '
+'controls included are survey, region and birth cohort fixed effects, along'
+' with a rural dummy variable. Standard errors are clustered at region of '
+'residence.\n'+foot)
+if ftype=='tex':
+    zimo.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
+   '\\end{tabular}\\end{center}\\end{table}\\end{landscape}')
+
+zimo.close()
+
+##PLACEBO
+zimi = open(result + zimP, 'r')
+zimo = open(tables + 'ZimbabwePlacebo.' + end, 'w')
+
+if ftype=='tex':
+    zimo.write('\\begin{landscape}\\begin{table}[htpb!]\\begin{center}\n'
+    '\\caption{1980 Educational Expansion Placebo: Zimbabwe}\n'
+    '\\label{MMRtab:ZimbabwePlacebo}\\begin{tabular}{lcccccc}\\toprule\n'
+    '& \\multicolumn{3}{c}{Years of Education}&'
+    '\\multicolumn{3}{c}{Maternal Mortality }\\\\'
+    'VARIABLES & (1)&(2)&(3)&(4)&(5)&(6)\\\\ \\cmidrule(r){1-4} \\cmidrule(r){5-7}')
+    zimo.write('\\begin{footnotesize}\\end{footnotesize}&'*5+
+    '\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
+
+for i,line in enumerate(zimi):
+    if i>2 and i<9:
+        line = re.sub(r"\t",dd,line)
+        line = re.sub(r"^&&","&",line)
+
+        line = line.replace('_alt'         ,''        )
+        line = line.replace('\n'           ,'\\\\'        )
+        line = line.replace('dumage'       , 'DumAge'     )
+        line = line.replace('age1980less14','(Age1980-14)')
+        line = line.replace('X'            ,'$\\times$'   )
+        line = line.replace('invDumAge'    ,'(1-DumAge)'  )
+        zimo.write(line+'\n')
+
+    if i==10:
+        zimo.write('\\begin{footnotesize}\\end{footnotesize}&'*5+
+        '\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
+
+    if i>11 and i<14:
+        line = re.sub(r"\t",dd,line)
+        line = re.sub(r"^&&","&",line)
+        line = line.replace('\n'           ,'\\\\'        )
+        zimo.write(line+'\n')
+
+
+
+zimo.write(mr+'\n'+mc1+cadd[9]+ccm[9]+mc3+'For a full description '
+'of outcomes and treatments see Table \\ref{MMRtab:Zimbabwe}. A '
+'placebo treatment here is defined by comparing two groups who had '
+'already left primary school by the time of the reform in 1980.  '
+'The placebo `treatment\' was defined between the cohorts born in '
+'1960 and 1961 (20 years old at the time of the reform), and the '
+'same window is used (16 years) as the real treatment in Table '
+'\\ref{MMRtab:Zimbabwe}.\n'+foot)
+if ftype=='tex':
+    zimo.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
+   '\\end{tabular}\\end{center}\\end{table}\\end{landscape}')
+
+zimo.close()
+
+
+#-------------------------------------------------------------------------------
+# --- (9) Kenya tables
+#-------------------------------------------------------------------------------
+keni = open(result + keny, 'r')
+keno = open(tables + 'Kenya.' + end, 'w')
+
+if ftype=='tex':
+    keno.write('\\begin{table}[htpb!]\\begin{center}'
+    '\\caption{Effect of 1985 Educational Expansion: Kenya}\\label{MMRtab:Kenya}'
+    '\\begin{tabular}{p{3cm}cc}\\toprule&(1)&(2)\\\\'
+    'VARIABLES&Years of Education&Maternal Mortality\\\\ \\midrule'
+    '&\\begin{footnotesize}\\end{footnotesize}&'
+    '\\begin{footnotesize}\\end{footnotesize} \\\\')
+
+for i,line in enumerate(keni):
+    if i==3:
+        s = line.split()
+        eduB= s[1]
+        mmrB= s[2]
+    if i==4:
+        s = line.split()
+        eduS= s[0]
+        mmrS= s[1]
+
+
+keno.write('Treatment&'+eduB + '&' + mmrB + '\\\\ \n')
+keno.write(dd1 + eduS + dd3 + dd1 + mmrS + dd3 + '\\\\')
+
+keno.write('&\\begin{footnotesize}\\end{footnotesize}&'
+'\\begin{footnotesize}\\end{footnotesize} \\\\')
+
+keni = open(result + keny, 'r')
+for i,line in enumerate(keni):
+    if i>7 and i<10:
+        line = re.sub(r"\t",dd,line)
+        line = re.sub(r"^&&","&",line)
+        line = line.replace('\n','\\\\')
+        keno.write(line+'\n')
+
+
+keno.write(mr+'\n'+mc1+cadd[10]+ccm[10]+mc3+'Each regression includes a cubic '
+'term for age at time of reform, a cuadratic trend for quarter of birth, fixed '
+'effects by quarter of birth and ethnicity, and a dummy for rural or urban '
+'residence.  The nature of the treatment variable is defined in section '
+'\\ref{ssscn:empiricsKenya}.\n'+foot)
+if ftype=='tex':
+    keno.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
+   '\\end{tabular}\\end{center}\\end{table}\\end{subtables}')
+
+keno.close()
+
+
+
+##PLACEBO
+keni = open(result + kenP, 'r')
+keno = open(tables + 'KenyaPlacebo.' + end, 'w')
+
+if ftype=='tex':
+    keno.write('\\begin{table}[htpb!]\\begin{center}'
+    '\\caption{1985 Educational Expansion Placebo: Kenya}\n'
+    '\\label{MMRtab:KenyaPlacebo}'
+    '\\begin{tabular}{p{3cm}cc}\\toprule&(1)&(2)\\\\'
+    'VARIABLES&Years of Education&Maternal Mortality\\\\ \\midrule'
+    '&\\begin{footnotesize}\\end{footnotesize}&'
+    '\\begin{footnotesize}\\end{footnotesize} \\\\')
+
+for i,line in enumerate(keni):
+    if i==3:
+        s = line.split()
+        eduB= s[1]
+        mmrB= s[2]
+    if i==4:
+        s = line.split()
+        eduS= s[0]
+        mmrS= s[1]
+
+
+keno.write('Treatment&'+eduB + '&' + mmrB + '\\\\ \n')
+keno.write(dd1 + eduS + dd3 + dd1 + mmrS + dd3 + '\\\\')
+
+keno.write('&\\begin{footnotesize}\\end{footnotesize}&'
+'\\begin{footnotesize}\\end{footnotesize} \\\\')
+
+keni = open(result + keny, 'r')
+for i,line in enumerate(keni):
+    if i>7 and i<10:
+        line = re.sub(r"\t",dd,line)
+        line = re.sub(r"^&&","&",line)
+        line = line.replace('\n','\\\\')
+        keno.write(line+'\n')
+
+
+keno.write(mr+'\n'+mc1+cadd[10]+ccm[10]+mc3+'For a full description of '
+'outcomes and treatments see Table \\ref{MMRtab:Kenya}. A placebo treatment'
+' here is defined by comparing two groups who had already left primary '
+'school by the time of the reform in 1985.  The placebo `treatment\' was'
+' defined as occurring in 1977, and hence affecting (at least partially)'
+' birth cohorts from 1955 to 1963, rather than the true affected cohorts '
+'of 1964 to 1972.\n'+foot)
+if ftype=='tex':
+    keno.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
+   '\\end{tabular}\\end{center}\\end{table}\\end{subtables}')
+
+keno.close()
