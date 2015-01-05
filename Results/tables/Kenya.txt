@@ -1,0 +1,12 @@
+	(1)	(2)
+VARIABLES	education	mmr
+		
+treat	0.953***	0.00689
+	(0.265)	(0.00553)
+Constant	-4.325*	0.116*
+	(2.340)	(0.0610)
+		
+Observations	13,703	25,602
+R-squared	0.203	0.031
+Robust standard errors in parentheses		
+*** p<0.01, ** p<0.05, * p<0.1		

@@ -1,0 +1,17 @@
+		(1)	(2)	(3)	(4)
+VARIABLES	LABELS	Low	LM	UM	High
+					
+lp	Percent ever enrolled in primary	-9.972*	-5.157**	-3.567	0.0519
+		(4.759)	(2.210)	(2.306)	(0.0779)
+ls	Percent ever enrolled in secondary	-0.877	-5.469**	-2.743	-0.0237
+		(5.349)	(2.350)	(2.330)	(0.104)
+lh	Percent ever enrolled in tertiary	-8.746	-10.18**	-2.362	0.0860
+		(36.03)	(4.340)	(1.978)	(0.147)
+Constant	Constant	1,097***	781.4***	373.3*	12.43
+		(178.4)	(167.3)	(200.3)	(9.365)
+					
+Observations		79	114	122	113
+R-squared		0.769	0.540	0.349	0.124
+Number of BLcode		19	28	31	30
+Robust standard errors in parentheses					
+*** p<0.01, ** p<0.05, * p<0.1					

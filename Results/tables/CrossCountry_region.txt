@@ -1,0 +1,17 @@
+		(1)	(2)	(3)	(4)	(5)	(6)	(7)
+VARIABLES	LABELS	Advanced Economies	East Asia and the Pacific	Europe and Central Asia	Latin America and the Caribbean	Middle East and North Africa	South Asia	Sub-Saharan Africa
+								
+lp	Percent ever enrolled in primary	-1.117*	-8.910**	3.508*	-5.732**	0.0997	-8.119*	-10.43**
+		(0.537)	(2.890)	(1.771)	(2.706)	(0.902)	(3.909)	(4.206)
+ls	Percent ever enrolled in secondary	-1.077*	-7.771**	4.355*	-4.173	-0.487	-12.20	-2.061
+		(0.525)	(2.847)	(2.226)	(2.456)	(1.337)	(7.065)	(5.725)
+lh	Percent ever enrolled in tertiary	-0.704	-2.574	5.997**	-5.795**	-2.735**	14.49	1.311
+		(0.498)	(5.957)	(2.785)	(2.701)	(1.188)	(24.04)	(19.45)
+Constant	Constant	110.9**	901.1***	-364.6*	614.4**	160.1**	945.6***	1,087***
+		(50.11)	(231.4)	(199.5)	(227.1)	(54.94)	(179.4)	(235.2)
+								
+Observations		78	42	67	83	34	23	101
+R-squared		0.554	0.682	0.540	0.503	0.590	0.935	0.607
+Number of BLcode		18	11	16	20	12	6	25
+Robust standard errors in parentheses								
+*** p<0.01, ** p<0.05, * p<0.1								
