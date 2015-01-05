@@ -591,6 +591,8 @@ for i,line in enumerate(zsci):
         line = line.replace(')&'                        ,')'+dd2)
         zsco.write(line+'\n')
 
+zsco.write('Effect Size &'
+' 0.066 s.d. & 0.049 s.d. & 0.065 s.d. & 0.022 s.d. & 0.060 s.d. \\\\')
 zsco.write(
 mr+'\n'+mc1+cadd[6]+ccm[6]+mc3+'Each regression includes fixed effects by '
 'country, and heteroscedasticity robust standard errors.  Each dependent '
