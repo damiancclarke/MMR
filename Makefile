@@ -5,11 +5,10 @@ OBJECTS = setupMMR.do setupExperiments.do \
 $(PAPER).pdf: $(PAPER).tex
 	pdflatex -shell-escape $(PAPER).tex
 	bibtex $(PAPER).aux
-	pdflatex $(PAPER).tex
-	pdflatex $(PAPER).tex
-
+	pdflatex -shell-escape $(PAPER).tex
+	pdflatex -shell-escape $(PAPER).tex
 
 .PHONY : clean
 clean: 
-	rm $(PAPER).aux $(PAPER).out $(PAPER).log $(PAPER).blg \
-		$(PAPER).blg $(PAPER).pdf 
+	rm ./Paper/*.aux ./Paper/*.log ./Paper/*.blg ./Paper/*.bbl
+	rm $(PAPER).pdf 
