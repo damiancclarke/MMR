@@ -410,13 +410,52 @@ if `DHS'==1 {
     drop if yearbin==.
     rename yearbin year
     gen mmratio = MMR/birth * 100000
+    drop if mmratio==.
     rename MMR MMRdhs
     tempfile DHSDAT
-    save `DHSDAT', replace
-    rename _cou country
-    restore
+    replace _cou="Bolivia (Plurinational State of)" if  _cou== "Bolivia"
+    replace _cou="" if _cou == "Burkina-Faso"
+    replace _cou="Central African Republic" if _cou=="Central-African-Republic"
+    replace _cou="Democratic Republic of the Congo" if _cou=="Congo-Democratic-Republic"
+    replace _cou="Cote d'Ivoire" if _cou == "Cote-d-Ivoire"
+    replace _cou="Dominican Republic" if _cou == "Dominican-Republic"
+    replace _cou="Sierra Leone" if _cou == "Sierra-Leone"
+    replace _cou="South Africa" if _cou == "South-Africa"
+    replace _cou="United Republic of Tanzania" if _cou == "Tanzania"
 
+    rename _cou country
     
+    save `DHSDAT', replace
+    restore
+    merge 1:1 country year using `DHSDAT'
+    keep if _merge==3
+    local out "$OUT/tables/DHSsubset.xls"
+
+    drop trend
+    bys country (year): gen trend=_n
+
+    encode country, gen(ccode)
+    local trend /*i.ccode*trend*/
+    local opts  fe vce(cluster ccode)
+
+    xtset ccode year
+    xi: xtreg mmratio `trend' `xv3', `opts'
+    outreg2 `xv3' using `out', excel replace label
+    qui xi: xtreg mmratio `xv3' `cont7', `opts'
+
+    foreach num of numlist 1(1)7 {
+        xi: xtreg mmratio `trend' `xv3' `cont`num'' if e(sample), `opts'
+        outreg2 `xv3' `cont`num'' using `out', excel append label
+    }
+
+    xi: xtreg MMR `trend' `xv3', `opts'
+    outreg2 `xv3' using `out', excel append label
+    qui xi: xtreg MMR `xv3' `cont7', `opts'
+
+    foreach num of numlist 1(1)7 {
+        xi: xtreg MMR `trend' `xv3' `cont`num'' if e(sample), `opts'
+        outreg2 `xv3' `cont`num'' using `out', excel append label
+    }
 }
     
 ********************************************************************************
