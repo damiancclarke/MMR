@@ -31,7 +31,7 @@ global DAT "~/investigacion/Activa/MMR/Data"
 global COD "~/investigacion/Activa/MMR/Do"
 global OUT "~/investigacion/Activa/MMR/Results"
 global LOG "~/investigacion/Activa/MMR/Log"
-
+global DHS "~/investigacion/2013/WorldMMR/Share/MMRTrends"
 
 log using "$LOG/MMR_Analysis.txt", text replace
 cap mkdir "$OUT/tables"
@@ -54,11 +54,12 @@ local xv3 yr_sch yr_sch_sq
 local full   0
 local summ   0
 local MMRall 0
-local MMRreg 1
+local MMRreg 0
 local MMRinc 0
 local Zsc    0
 local cntry  0
 local MMRgen 0
+local DHS    1
 
 foreach a in outreg2 arrowplot unique {
     cap which `a'
@@ -387,11 +388,38 @@ if `MMRgen'==1 {
         }
         local ++iter
     }
+
+    reg yr_sch M_yr_sch
 }
 
-reg yr_sch M_yr_sch
-
 ********************************************************************************
-*** (12) close
+*** (12) Run regressions using DHS MMR data
+********************************************************************************
+if `DHS'==1 {
+    preserve
+    use "$DHS/MMR_Country_Data", clear
+    gen yearbin = .
+    foreach y of numlist 1990(5)2010 {
+        local yup  = `y'+2
+        local ydown= `y'-2
+        dis "`y' is a bin from `ydown' to `yup' (inclusive)"
+        replace yearbin = `y' if year>=`ydown'&year<=`yup'
+    }
+    drop if MMR==.
+    collapse birth MMR, by(_cou yearbin)
+    drop if yearbin==.
+    rename yearbin year
+    gen mmratio = MMR/birth * 100000
+    rename MMR MMRdhs
+    tempfile DHSDAT
+    save `DHSDAT', replace
+    rename _cou country
+    restore
+
+    
+}
+    
+********************************************************************************
+*** (14) close
 ********************************************************************************
 log close
