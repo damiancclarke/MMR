@@ -570,12 +570,12 @@ if ftype=='tex':
     '\\label{MMRtab:MMRcomparsion}\\begin{tabular}{lcccccccc}'
     '\\toprule \n &(1)&(2)&(3)&(4)&(5)&(6)&(7)&(8)\\\\' 
     'VARIABLES&MMR&MMR&MMR&MMR&MMR&MMR&MMR&MMR\\\\'
-    '\\midrule\n \\vspace{4pt}&')
+    '\\midrule\n ')
+    mmro.write('\\multicolumn{9}{l}{\\textsc{Panel A: Quadratic (years)}}\\\\'
+               ' \\textbf{DHS data} &&&&&&&&\\\\ \n')
     mmro.write('\\begin{footnotesize}\\end{footnotesize}&'*7+
     '\\begin{footnotesize}\\end{footnotesize}\\\\')
 
-mmro.write('\\multicolumn{9}{l}{\\textsc{Panel A:} Quadratic (years)}\\\\'
-           'DHS MMR &&&&&&&&\\\\ \n')
 for i,line in enumerate(mmri):
     if i>2 and i<=6:
         line = re.sub(r"\t",dd,line)
@@ -589,7 +589,7 @@ for i,line in enumerate(mmri):
         line = line + '\\\\'
         mmro.write(line+'\n')
 
-mmro.write('WHO MMR&&&&&&&&\\\\ \n')
+mmro.write('\\textbf{WHO data}&&&&&&&&\\\\ \n')
 mmri = open(result + mmrc, 'r')
 for i,line in enumerate(mmri):
     if i>2 and i<=6:
@@ -604,8 +604,9 @@ for i,line in enumerate(mmri):
         line = line + '\\\\'
         mmro.write(line+'\n')
 
-mmro.write('\\multicolumn{9}{l}{\\textsc{Panel B:} Levels (attainment)}\\\\'
-           'DHS MMR &&&&&&&&\\\\ \n')
+mmro.write('\\midrule'
+           '\\multicolumn{9}{l}{\\textsc{Panel B: Levels (attainment)}}\\\\'
+           '\\textbf{DHS data} &&&&&&&&\\\\ \n')
 mmri = open(result + mmrc, 'r')
 for i,line in enumerate(mmri):
     if i>24 and i<=30:
@@ -623,7 +624,7 @@ for i,line in enumerate(mmri):
         line = line + '\\\\'
         mmro.write(line+'\n')
 
-mmro.write('WHO MMR &&&&&&&&\\\\ \n')
+mmro.write('\\textbf{WHO data} &&&&&&&&\\\\ \n')
 mmri = open(result + mmrc, 'r')
 for i,line in enumerate(mmri):
     if i>24 and i<=30:
@@ -642,12 +643,17 @@ for i,line in enumerate(mmri):
         mmro.write(line+'\n')
 
 mmro.write(
+'\\begin{footnotesize}\\end{footnotesize}&'*7+
+'\\begin{footnotesize}\\end{footnotesize}\\\\'
 'Observations&159&115&115&115&115&115&115&115\\\\'
 'Number of Countries&37&31&31&31&31&31&31&31\\\\'
-+mr+'\n'+mc1+cadd[2]+ccm[2]+mc3+'All regressions include fixed-effects by country.  '
++mr+'\n'+mc1+cadd[1]+ccm[1]+mc3+'All regressions include fixed-effects by country.  '
 'Results are for average years of education of females between the ages of 15 and 39'
 ' in each country.  Controls in each column are identical to those in table '
-'\\ref{MMRtab:MMRpercent}.\n'+foot)
+'\\ref{MMRtab:MMRpercent}. Panel A compares estimates of the effect of maternal '
+'mortality on years of education, when maternal mortality data either comes from '
+'DHS (microdata) or WHO.  Panel B presents similar results, however using levels '
+'of education rather than years.\n'+foot)
 if ftype=='tex':
     mmro.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
     '\\end{tabular}\\end{center}\\end{table}\\end{landscape}')
