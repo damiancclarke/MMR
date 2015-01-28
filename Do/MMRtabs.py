@@ -39,6 +39,7 @@ gend = 'CrossCountry_gender.txt'
 mmry = 'CrossCountry_female_yrs.txt'
 mmrs = 'CrossCountry_female_yrssq.txt'
 gens = 'CrossCountry_gender_yrssq.txt'
+mmrc = 'DHSsubset.txt'
 ngra = 'Nigeria.txt'
 ngaP = 'NigeriaPlacebo.txt'
 zimb = 'Zimbabwe.txt'
@@ -558,6 +559,100 @@ if ftype=='tex':
 
 mmro.close()
 
+
+##DHS versus WHO
+mmri = open(result + mmrc, 'r')
+mmro = open(tables + 'DHSversusWHO.' + end, 'w')
+
+if ftype=='tex':
+    mmro.write('\\begin{landscape}\\begin{table}[htpb!]\\begin{center}'
+    '\\caption{Comparison of Results: DHS microdata versus WHO data}'
+    '\\label{MMRtab:MMRcomparsion}\\begin{tabular}{lcccccccc}'
+    '\\toprule \n &(1)&(2)&(3)&(4)&(5)&(6)&(7)&(8)\\\\' 
+    'VARIABLES&MMR&MMR&MMR&MMR&MMR&MMR&MMR&MMR\\\\'
+    '\\midrule\n \\vspace{4pt}&')
+    mmro.write('\\begin{footnotesize}\\end{footnotesize}&'*7+
+    '\\begin{footnotesize}\\end{footnotesize}\\\\')
+
+mmro.write('\\multicolumn{9}{l}{\\textsc{Panel A:} Quadratic (years)}\\\\'
+           'DHS MMR &&&&&&&&\\\\ \n')
+for i,line in enumerate(mmri):
+    if i>2 and i<=6:
+        line = re.sub(r"\t",dd,line)
+        line = re.sub(r"^&&","&",line)
+
+        line = line.replace('yr_sch_sq&'       ,'Years of Education Squared')
+        line = line.replace('yr_sch&(mean) yr_sch'      ,'Years of Education')
+        line = re.split(r"&", line)
+        line = [line[i] for i in [0,1,2,3,4,5,6,7,8]]
+        line = '&'.join(line)
+        line = line + '\\\\'
+        mmro.write(line+'\n')
+
+mmro.write('WHO MMR&&&&&&&&\\\\ \n')
+mmri = open(result + mmrc, 'r')
+for i,line in enumerate(mmri):
+    if i>2 and i<=6:
+        line = re.sub(r"\t",dd,line)
+        line = re.sub(r"^&&","&",line)
+
+        line = line.replace('yr_sch_sq&'       ,'Years of Education Squared')
+        line = line.replace('yr_sch&(mean) yr_sch'      ,'Years of Education')
+        line = re.split(r"&", line)
+        line = [line[i] for i in [0,9,10,11,12,13,14,15,16]]
+        line = '&'.join(line)
+        line = line + '\\\\'
+        mmro.write(line+'\n')
+
+mmro.write('\\multicolumn{9}{l}{\\textsc{Panel B:} Levels (attainment)}\\\\'
+           'DHS MMR &&&&&&&&\\\\ \n')
+mmri = open(result + mmrc, 'r')
+for i,line in enumerate(mmri):
+    if i>24 and i<=30:
+        #line=re.sub(r"&$", ls+ls, line)
+        line = re.sub(r"\t",dd,line)
+        line = re.sub(r"^&&","&",line)
+
+        line = line.replace('Percent ever enrolled in','')
+        line = line.replace('ls& secondary','Secondary Education (\\% Population) ')
+        line = line.replace('lp& primary','Primary Education (\\% Population) ')
+        line = line.replace('lh& tertiary','Tertiary Education (\\% Population) ')
+        line = re.split(r"&", line)
+        line = [line[i] for i in [0,17,18,19,20,21,22,23,24]]
+        line = '&'.join(line)
+        line = line + '\\\\'
+        mmro.write(line+'\n')
+
+mmro.write('WHO MMR &&&&&&&&\\\\ \n')
+mmri = open(result + mmrc, 'r')
+for i,line in enumerate(mmri):
+    if i>24 and i<=30:
+        #line=re.sub(r"&$", ls+ls, line)
+        line = re.sub(r"\t",dd,line)
+        line = re.sub(r"^&&","&",line)
+
+        line = line.replace('Percent ever enrolled in','')
+        line = line.replace('ls& secondary','Secondary Education (\\% Population) ')
+        line = line.replace('lp& primary','Primary Education (\\% Population) ')
+        line = line.replace('lh& tertiary','Tertiary Education (\\% Population) ')
+        line = re.split(r"&", line)
+        line = [line[i] for i in [0,25,26,27,28,29,30,31,32]]
+        line = '&'.join(line)
+        line = line + '\\\\'
+        mmro.write(line+'\n')
+
+mmro.write(
+'Observations&159&115&115&115&115&115&115&115\\\\'
+'Number of Countries&37&31&31&31&31&31&31&31\\\\'
++mr+'\n'+mc1+cadd[2]+ccm[2]+mc3+'All regressions include fixed-effects by country.  '
+'Results are for average years of education of females between the ages of 15 and 39'
+' in each country.  Controls in each column are identical to those in table '
+'\\ref{MMRtab:MMRpercent}.\n'+foot)
+if ftype=='tex':
+    mmro.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
+    '\\end{tabular}\\end{center}\\end{table}\\end{landscape}')
+
+mmro.close()
 
 #-------------------------------------------------------------------------------
 # --- (6) Z-score table
