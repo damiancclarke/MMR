@@ -429,35 +429,36 @@ if `DHS'==1 {
     restore
     merge 1:1 country year using `DHSDAT'
     keep if _merge==3
-    local out "$OUT/tables/DHSsubset.xls"
 
-    drop trend
-    bys country (year): gen trend=_n
-
+    local out $OUT/tables/DHSsubset
+    cap rm "$OUT/tables/DHSsubset.txt"
+    cap rm "$OUT/tables/DHSsubset.xls"
+    
     encode country, gen(ccode)
-    local trend /*i.ccode*trend*/
     local opts  fe vce(cluster ccode)
 
     xtset ccode year
-    xi: xtreg mmratio `trend' `xv3', `opts'
-    outreg2 `xv3' using `out', excel replace label
-    qui xi: xtreg mmratio `xv3' `cont7', `opts'
+    foreach x in xv3 xv1 {
+        xi: xtreg mmratio ``x'', `opts'
+        outreg2 ``x'' using "`out'.xls", excel append label
+        qui xi: xtreg mmratio ``x'' `cont7', `opts'
 
-    foreach num of numlist 1(1)7 {
-        xi: xtreg mmratio `trend' `xv3' `cont`num'' if e(sample), `opts'
-        outreg2 `xv3' `cont`num'' using `out', excel append label
-    }
+        foreach num of numlist 1(1)7 {
+            xi: xtreg mmratio ``x'' `cont`num'' if e(sample), `opts'
+            outreg2 ``x'' `cont`num'' using "`out'.xls", excel append label
+        }
 
-    xi: xtreg MMR `trend' `xv3', `opts'
-    outreg2 `xv3' using `out', excel append label
-    qui xi: xtreg MMR `xv3' `cont7', `opts'
+        xi: xtreg MMR ``x'', `opts'
+        outreg2 ``x'' using "`out'.xls", excel append label
+        qui xi: xtreg MMR ``x'' `cont7', `opts'
 
-    foreach num of numlist 1(1)7 {
-        xi: xtreg MMR `trend' `xv3' `cont`num'' if e(sample), `opts'
-        outreg2 `xv3' `cont`num'' using `out', excel append label
+        foreach num of numlist 1(1)7 {
+            xi: xtreg MMR ``x'' `cont`num'' if e(sample), `opts'
+            outreg2 ``x'' `cont`num'' using "`out'.xls", excel append label
+        }
     }
 }
-    
+
 ********************************************************************************
 *** (14) close
 ********************************************************************************
