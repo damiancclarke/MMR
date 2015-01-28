@@ -81,10 +81,10 @@ if `Nig'==1 {
 
 
     **TREATMENT
-    xi: reg educ `treat1' `Ncont' `Biafra1' `wt' if `sampT', robust `se'
-    outreg2 `treat1' using "$OUT/tables/Nigeria.xls", excel replace
     xi: reg educ `treat2' `Ncont' `Biafra1' `wt' if `sampT', robust `se'
-    outreg2 `treat2' using "$OUT/tables/Nigeria.xls", excel append
+    outreg2 `treat2' using "$OUT/tables/Nigeria.xls", excel replace
+    xi: reg educ `treat1' `Ncont' `Biafra1' `wt' if `sampT', robust `se'
+    outreg2 `treat1' using "$OUT/tables/Nigeria.xls", excel append
     xi: reg educ `treat3' `Ncont' `Biafra2' `wt' if `sampT', robust `se'
     outreg2 `treat3' using "$OUT/tables/Nigeria.xls", excel append
     xi: reg educ `treat4' `Ncont' `Biafra2' `wt' if `sampT', robust `se'
@@ -92,10 +92,10 @@ if `Nig'==1 {
 
     **PLACEBO
     
-    xi: reg educ `placebo1' `Ncont' `Biafra1' `wt' if `sampP', robust `se'
-    outreg2 `placebo1' using "$OUT/tables/NigeriaPlacebo.xls", excel replace
     xi: reg educ `placebo2' `Ncont' `Biafra1' `wt' if `sampP', robust `se'
-    outreg2 `placebo2' using "$OUT/tables/NigeriaPlacebo.xls", excel append
+    outreg2 `placebo2' using "$OUT/tables/NigeriaPlacebo.xls", excel replace
+    xi: reg educ `placebo1' `Ncont' `Biafra1' `wt' if `sampP', robust `se'
+    outreg2 `placebo1' using "$OUT/tables/NigeriaPlacebo.xls", excel append
     xi: reg educ `placebo3' `Ncont' `Biafra2' `wt' if `sampP', robust `se'
     outreg2 `placebo3' using "$OUT/tables/NigeriaPlacebo.xls", excel append
     xi: reg educ `placebo4' `Ncont' `Biafra2' `wt' if `sampP', robust `se'
@@ -109,8 +109,7 @@ if `Nig'==1 {
     xline(1975, lcolor(black) lpattern(dot)) legend(off) ///
     || lfit educ yearbirth if yearbirth<=1965&yearbirth>=1955, `linef' ///
     || lfit educ yearbirth if yearbirth>=1975, `linef' ///
-    || lfit educ yearbirth if yearbirth<=1975&yearbirth>=1965, `linef' ///
-    note("Series is a 3 year moving average of educational attainment")
+    || lfit educ yearbirth if yearbirth<=1975&yearbirth>=1965, `linef'
     graph export "$OUT/graphs/Nigeria_educ.eps", as(eps) replace
 }
 
@@ -127,10 +126,10 @@ if `Nig'==1 {
     foreach m in mmr mmr_25 {
 
         ***TREATMENT
-        xi: reg `m' `treat1' `Ncont' `Biafra1' `wt' if `sampT', `se'
-        outreg2 `treat1' using "$OUT/tables/Nigeria.xls", excel appen
         xi: reg `m' `treat2' `Ncont' `Biafra1' `wt' if `sampT', `se'
-        outreg2 `treat2' using "$OUT/tables/Nigeria.xls", excel append
+        outreg2 `treat2' using "$OUT/tables/Nigeria.xls", excel appen
+        xi: reg `m' `treat1' `Ncont' `Biafra1' `wt' if `sampT', `se'
+        outreg2 `treat1' using "$OUT/tables/Nigeria.xls", excel append
         xi: reg `m' `treat3' `Ncont' `Biafra2' `wt' if `sampT', `se'
         outreg2 `treat3' using "$OUT/tables/Nigeria.xls", excel append
         xi: reg `m' `treat4' `Ncont' `Biafra2' `wt' if `sampT', `se'
@@ -138,10 +137,10 @@ if `Nig'==1 {
 
 
         **PLACEBO
-        xi: reg `m' `placebo1' `Ncont' `Biafra1' `wt' if `sampP', `se'
-        outreg2 `placebo1' using "$OUT/tables/NigeriaPlacebo.xls", excel 
         xi: reg `m' `placebo2' `Ncont' `Biafra1' `wt' if `sampP', `se'
         outreg2 `placebo2' using "$OUT/tables/NigeriaPlacebo.xls", excel 
+        xi: reg `m' `placebo1' `Ncont' `Biafra1' `wt' if `sampP', `se'
+        outreg2 `placebo1' using "$OUT/tables/NigeriaPlacebo.xls", excel 
         xi: reg `m' `placebo3' `Ncont' `Biafra2' `wt' if `sampP', `se'
         outreg2 `placebo3' using "$OUT/tables/NigeriaPlacebo.xls", excel 
         xi: reg `m' `placebo4' `Ncont' `Biafra2' `wt' if `sampP', `se'
@@ -160,8 +159,7 @@ if `Nig'==1 {
     xline(1975, lcolor(black) lpattern(dot))                         ///
     || lfit mmr_ma yearbirth if yearbir<=1965&yearbir>=1955, `linef' ///
     || lfit mmr_ma yearbirth if yearbir>=1975&yearbir<1990,  `linef' ///
-    || lfit mmr_ma yearbirth if yearbir<=1975&yearbir>=1965, `linef' ///
-    note("Series is a 3 year moving average of maternal deaths per woman")
+    || lfit mmr_ma yearbirth if yearbir<=1975&yearbir>=1965, `linef'
     graph export "$OUT/graphs/Nigeria_mmr.eps", as(eps) replace        
 }
 
@@ -192,7 +190,7 @@ if `Zim'==1 {
     }
     
     **TREATMENT
-    foreach y of varlist education highschool {
+    foreach y of varlist education {
         reg `y' `treat' `Zcont' if `tsamp', `se'
         outreg2 `treat' using "$OUT/tables/Zimbabwe.xls", excel
         reg `y' `treat' `Zcont' `tcon2' if `tsamp', `se'
@@ -202,7 +200,7 @@ if `Zim'==1 {
     }
 
     **PLACEBO
-    foreach y of varlist education highschool {
+    foreach y of varlist education /*highschool*/ {
         reg `y' `placebo' `Zcont' if `psamp', `se'
         outreg2 `placebo' using "$OUT/tables/ZimbabwePlacebo.xls", excel
         reg `y' `placebo' `Zcont' `pcon2' if `psamp', `se'
@@ -255,8 +253,7 @@ if `Zim'==1 {
     scheme(s1color) ytitle("Maternal Mortality")                        ///
     xline(1966, lcolor(black) lpattern(dot)) legend(off)                ///
     || lfit mmr_ma yearbirth if yearbirth<=1966&yearbirth>1952, `linef' ///
-    || lfit mmr_ma yearbirth if yearbirth>=1966&yearbirth<1990, `linef' ///
-    note("Series is a 3 year moving average of maternal deaths per woman")
+    || lfit mmr_ma yearbirth if yearbirth>=1966&yearbirth<1990, `linef' 
     graph export "$OUT/graphs/Zimbabwe_mmr.eps", as(eps) replace
 }
 
