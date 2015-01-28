@@ -415,7 +415,7 @@ education outcomes reported by a representative sample of individuals in a
 subsample of countries, and allow us to test the robustness of the results using 
 the Barro-Lee data. The DHS education data can be constructed at the regional 
 (sub-country) level and we take advantage of this for our country-specific 
-estimates, as well as for a robustness check in cross-country results.
+estimates.
 
 The education data are merged by country and year with information on maternal 
 mortality ratios (hereafter MMR) provided by the World Health Organization 
@@ -710,7 +710,7 @@ of 94 maternal deaths per 100,000 births. In the model with all controls (column
 reductions of 175 deaths and 65 deaths respectively when moving from 0 to 1 or 
 from 5 to 6 years of education.
 
-Finally, while we have only a limited number of observations for maternal
+While we have only a limited number of observations for maternal
 mortality and education for each country in our cross-country data, in figure
 \ref{fig:arrows} we examine correlations between maternal mortality and 
 education both across and within countries.  The clear negative relationship
@@ -721,6 +721,23 @@ correlations appear to also be negative in the large majority of cases. Arrows
 overlayed on top of country averages show that, in a given country, increases
 in education are associated with reductions in log MMR in 116 of 146 cases,
 and is unrelated or positively related in only 30 cases.
+
+Finally, when working with the subset of countries for which we are able to
+calculate maternal mortality ratios using DHS microdata, we run identical
+regressions, however replace the dependent variable (MMR measures from cross-%
+country data provided by the WHO) with their DHS counterpart which we 
+calculate from all DHS surveys.  These results are displayed in appendix table 
+\ref{MMRtab:MMRcomparsion}.  In general, results based on maternal mortality
+estimates from microdata agree reasonably well with WHO measures.  However,
+given that microdata results are based on a smaller number of events (maternal
+deaths), DHS results are, unsurprisingly, somewhat less precise.  Despite this, 
+panel A shows that when using either DHS or WHO data, (quadratic) years of 
+education are 
+significantly related to MMR.  In column (8) we see that conditional on full
+controls, DHS and WHO estimates result in similar conclusions, and reasonably
+similar point estimates (tests of equality of the coefficients on the linear
+and quadratic term cannot be rejected).  We return to using DHS microdata
+in the country case studies considered in section \ref{sscn:casestudies}.
 
 \subsubsection{Education, Female Education, or Male Education?}
 \label{ssscn:gender}
@@ -837,6 +854,7 @@ association may not be entirely causal, causal components such as that educated
 people demand public health services merit testing.
 
 \subsection{Country-Specific Results}
+\label{sscn:casestudies}
 We take advantage of the reforms described in sections 
 \ref{ssscn:empiricsNigeria}-\ref{ssscn:empiricsKenya} to estimate the effect that 
 plausibly exogenous within-country variation in education expansion has on 
