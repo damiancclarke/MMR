@@ -64,7 +64,7 @@ save "$DAT/MMReduc_BASE_F", replace
 ********************************************************************************
 *** (4) Merge Barro-Lee with covariates (saved per sheet)
 ********************************************************************************
-foreach var in GDPpc Immunization fertility population TeenBirths_temp IMR {
+foreach var in GDPpc Immunization fertility population TeenBirths_temp IMR GDPgrowth {
     use "$DAT/InputsToCreateBase/control_`var'", clear
     reshape long v, i(countryname countrycode) j(year)
     rename v `var'
