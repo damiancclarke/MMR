@@ -48,6 +48,7 @@ local reg BLcode region_code region_UNESCO income2
 local xv1 lp ls lh
 local xv2 yr_sch
 local xv3 yr_sch yr_sch_sq
+local dxv Dyr_sch Dyr_sch_sq
 
 
 **SWITCHES (set 1 to run, else 0)
@@ -56,10 +57,12 @@ local summ   0
 local MMRall 0
 local MMRreg 0
 local MMRinc 0
+local MMRdel 0
+local comp   1
 local Zsc    0
 local cntry  0
 local MMRgen 0
-local DHS    1
+local DHS    0
 
 foreach a in outreg2 arrowplot unique {
     cap which `a'
@@ -121,7 +124,7 @@ if `full'==1 {
 *** (4) Create macro dataset (NB: age all is)
 ********************************************************************************
 keep if age_fert==1
-collapse `mmr' `cov' `edu' M_*, by(country year `reg')
+collapse `mmr' `cov' GDPgrowth `edu' M_*, by(country year `reg')
 
 lab var yr_sch_pri    "Primary Education (yrs)"
 lab var yr_sch_sec    "Seconday Education (yrs)"	
@@ -134,6 +137,7 @@ lab var TeenBirths    "Teen births"
 lab var lp            "Percent ever enrolled in primary"
 lab var ls            "Percent ever enrolled in secondary"
 lab var lh            "Percent ever enrolled in tertiary"
+lab var GDPgrowth     "Growth Rate in GDP"
 
 gen yr_sch_sq=yr_sch*yr_sch
 gen M_yr_sch_sq=M_yr_sch*M_yr_sch
@@ -144,6 +148,12 @@ gen atleastprimary=lp+ls+lh
 
 xtset BLcode year
 bys year: gen trend=_n
+
+bys BLcode (year): gen DMMR=MMR[_n]-MMR[_n-1]
+bys BLcode (year): gen Dln_MMR=ln_MMR[_n]-ln_MMR[_n-1]
+foreach var of varlist `xv1' `xv3' ln_GDPpc Immuniz percentatt fertil TeenBirths {
+    bys BLcode (year): gen D`var'=`var'[_n]-`var'[_n-1]    
+}
 
 ********************************************************************************
 ***(5) Summary stats
@@ -210,7 +220,8 @@ local n2
 
 local cont1
 local cont2 _year2 _year3 _year4 _year5
-local cont3 `cont2' ln_GDPpc
+*local cont3 `cont2' GDPgrowth
+local cont3 `cont2' GDPpc
 local cont4 `cont3' Immunization
 local cont5 `cont4' percentattend
 local cont6 `cont5' fertility
@@ -316,7 +327,74 @@ if `MMRinc'==1 {
 }
 
 ********************************************************************************
-*** (9) Correlations between health and development outcomes (Zscores)
+*** (9a) DeltaMMR versus Deltaschooling
+********************************************************************************
+if `MMRdel'==1 {
+
+    local dcont1
+    local dcont2 _year2 _year3 _year4
+    local dcont3 `dcont2' Dln_GDPpc
+    local dcont4 `dcont3' DImmunization
+    local dcont5 `dcont4' Dpercentattend
+    local dcont6 `dcont5' Dfertility
+    local dcont7 `dcont6' DTeenBirths
+    local dtrend
+    local dopts   vce(cluster BLcode)
+    
+    local name $OUT/tables/deltaEducation.xls
+  
+    reg DMMR `dxv' `dtrend', `dopts'
+    outreg2 `dxv' using "`name'", excel replace label
+    qui reg DMMR `dxv' `dcont7', `dopts'
+
+    foreach num of numlist 1(1)7 {
+        reg DMMR `dxv' `dtrend' `dcont`num'' if e(sample), `dopts'
+        outreg2 `dxv' `dcont`num'' using "`name'", excel append label
+    }
+}
+
+********************************************************************************
+*** (9b) Full specification comparison
+********************************************************************************
+if `comp'==1 {
+    local ct ln_GDPpc Immuniz fertil percentattend population TeenBirths
+    local Dct Dln_GDPpc DImmuniz Dfertil Dpercentattend Dpopulation DTeenBirths
+
+    
+    xi: xtreg MMR `xv3' `ct', fe vce(cluster BLcode)
+    outreg2 `xv3' ln_GDPpc using "$OUT/tables/comparison2.xls" replace
+    xi: xtreg MMR `trend' `xv3' `ct', fe vce(cluster BLcode)
+    outreg2 `xv3' ln_GDPpc using "$OUT/tables/comparison2.xls" append
+
+    
+    xi: xtreg MMR `xv3' ln_GDPpc  if e(sample), fe vce(cluster BLcode)
+    outreg2 `xv3' ln_GDPpc using "$OUT/tables/comparison1.xls" replace
+    xi: xtreg MMR `trend' `xv3' ln_GDPpc if e(sample), fe vce(cluster BLcode)
+    outreg2 `xv3' ln_GDPpc using "$OUT/tables/comparison1.xls" append
+
+    reg DMMR `dxv' `Dct', vce(cluster BLcode)
+    outreg2 `dxv' Dln_GDPpc using "$OUT/tables/comparison2.xls" append
+    reg DMMR `dxv' `Dct' i.BLcode, vce(cluster BLcode)
+    outreg2 `dxv' Dln_GDPpc using "$OUT/tables/comparison2.xls" append
+
+    reg DMMR `dxv' Dln_GDPpc if e(sample), vce(cluster BLcode)
+    outreg2 `dxv' Dln_GDPpc using "$OUT/tables/comparison1.xls" append
+    reg DMMR `dxv' Dln_GDPpc i.BLcode if e(sample), vce(cluster BLcode)
+    outreg2 `dxv' Dln_GDPpc using "$OUT/tables/comparison1.xls" append
+
+    reg Dln_MMR `dxv' `Dct', vce(cluster BLcode)
+    outreg2 `dxv' Dln_GDPpc using "$OUT/tables/comparison2.xls" append
+    reg Dln_MMR `dxv' `Dct' i.BLcode, vce(cluster BLcode)
+    outreg2 `dxv' Dln_GDPpc using "$OUT/tables/comparison2.xls" append
+
+    reg Dln_MMR `dxv' Dln_GDPpc if e(sample), vce(cluster BLcode)
+    outreg2 `dxv' Dln_GDPpc using "$OUT/tables/comparison1.xls" append
+    reg Dln_MMR `dxv' Dln_GDPpc i.BLcode if e(sample), vce(cluster BLcode)
+    outreg2 `dxv' Dln_GDPpc using "$OUT/tables/comparison1.xls" append
+}    
+
+********************************************************************************
+*** (10) Correlations between health and development outcomes (Zscores)
 ********************************************************************************
 if `Zsc'==1 {
     local name $OUT/tables/Zscores_female.xls
@@ -332,7 +410,7 @@ if `Zsc'==1 {
 }
 
 ********************************************************************************
-*** (10) Country regressions
+*** (11) Country regressions
 ********************************************************************************
 if `cntry'==1 {
 
@@ -352,7 +430,7 @@ if `cntry'==1 {
 }
 
 ********************************************************************************
-*** (11) Female versus Male education
+*** (12) Female versus Male education
 ********************************************************************************
 local xv1G lp ls lh M_lp M_ls M_lh
 local xv2G yr_sch M_yr_sch
@@ -393,7 +471,7 @@ if `MMRgen'==1 {
 }
 
 ********************************************************************************
-*** (12) Run regressions using DHS MMR data
+*** (14) Run regressions using DHS MMR data
 ********************************************************************************
 if `DHS'==1 {
     preserve
@@ -460,6 +538,6 @@ if `DHS'==1 {
 }
 
 ********************************************************************************
-*** (14) close
+*** (X) close
 ********************************************************************************
 log close
