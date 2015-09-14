@@ -40,11 +40,6 @@ cap mkdir "$OUT/tables"
 cap mkdir "$OUT/graphs"
 log using "$LOG/naturalExperiments.txt", text replace
 
-**switches
-local Ken 1
-local Nig 1
-local Zim 1
-
 local opts cells("count mean sd min max")
 local linef lcolor(black) lpattern(dash)
 
@@ -72,96 +67,93 @@ local placebo3 nonwest_main_exposure_fake
 local placebo4 capexp53_main_exposure_fake
 
 
-if `Nig'==1 {
-    use "$DAT/Nigeria/educ", clear
-    replace educ=. if educ>25
-    gen yearstate=yearbirth*100*stcode1967
-    estpost sum educ capexp53 yearbirth if (yr6575==1|yr5661==1)
-    estout using "$OUT/tables/sumStatsCountry.xls", replace `opts'
+use "$DAT/Nigeria/educ", clear
+replace educ=. if educ>25
+gen yearstate=yearbirth*100*stcode1967
+estpost sum educ capexp53 yearbirth if (yr6575==1|yr5661==1)
+estout using "$OUT/tables/sumStatsCountry.xls", replace `opts'
 
 
-    **TREATMENT
-    xi: reg educ `treat2' `Ncont' `Biafra1' `wt' if `sampT', robust `se'
-    outreg2 `treat2' using "$OUT/tables/Nigeria.xls", excel replace
-    xi: reg educ `treat1' `Ncont' `Biafra1' `wt' if `sampT', robust `se'
-    outreg2 `treat1' using "$OUT/tables/Nigeria.xls", excel append
-    xi: reg educ `treat3' `Ncont' `Biafra2' `wt' if `sampT', robust `se'
-    outreg2 `treat3' using "$OUT/tables/Nigeria.xls", excel append
-    xi: reg educ `treat4' `Ncont' `Biafra2' `wt' if `sampT', robust `se'
-    outreg2 `treat4' using "$OUT/tables/Nigeria.xls", excel append
+**TREATMENT
+xi: reg educ `treat2' `Ncont' `Biafra1' `wt' if `sampT', robust `se'
+outreg2 `treat2' using "$OUT/tables/Nigeria.xls", excel replace
+xi: reg educ `treat1' `Ncont' `Biafra1' `wt' if `sampT', robust `se'
+outreg2 `treat1' using "$OUT/tables/Nigeria.xls", excel append
+xi: reg educ `treat3' `Ncont' `Biafra2' `wt' if `sampT', robust `se'
+outreg2 `treat3' using "$OUT/tables/Nigeria.xls", excel append
+xi: reg educ `treat4' `Ncont' `Biafra2' `wt' if `sampT', robust `se'
+outreg2 `treat4' using "$OUT/tables/Nigeria.xls", excel append
 
-    **PLACEBO
-    
-    xi: reg educ `placebo2' `Ncont' `Biafra1' `wt' if `sampP', robust `se'
-    outreg2 `placebo2' using "$OUT/tables/NigeriaPlacebo.xls", excel replace
-    xi: reg educ `placebo1' `Ncont' `Biafra1' `wt' if `sampP', robust `se'
-    outreg2 `placebo1' using "$OUT/tables/NigeriaPlacebo.xls", excel append
-    xi: reg educ `placebo3' `Ncont' `Biafra2' `wt' if `sampP', robust `se'
-    outreg2 `placebo3' using "$OUT/tables/NigeriaPlacebo.xls", excel append
-    xi: reg educ `placebo4' `Ncont' `Biafra2' `wt' if `sampP', robust `se'
-    outreg2 `placebo4' using "$OUT/tables/NigeriaPlacebo.xls", excel append
+**PLACEBO
 
-    **GRAPHICAL
-    collapse educ, by(yearbirth)
-    egen educ=ma(education)
-    graph twoway line educ yearbir if yearbirth>=1955, scheme(s1color) ///
-    ytitle("Years of Education") xline(1965, lcolor(black) lpattern(dot)) ///
-    xline(1975, lcolor(black) lpattern(dot)) legend(off) ///
-    || lfit educ yearbirth if yearbirth<=1965&yearbirth>=1955, `linef' ///
-    || lfit educ yearbirth if yearbirth>=1975, `linef' ///
-    || lfit educ yearbirth if yearbirth<=1975&yearbirth>=1965, `linef'
-    graph export "$OUT/graphs/Nigeria_educ.eps", as(eps) replace
-}
+xi: reg educ `placebo2' `Ncont' `Biafra1' `wt' if `sampP', robust `se'
+outreg2 `placebo2' using "$OUT/tables/NigeriaPlacebo.xls", excel replace
+xi: reg educ `placebo1' `Ncont' `Biafra1' `wt' if `sampP', robust `se'
+outreg2 `placebo1' using "$OUT/tables/NigeriaPlacebo.xls", excel append
+xi: reg educ `placebo3' `Ncont' `Biafra2' `wt' if `sampP', robust `se'
+outreg2 `placebo3' using "$OUT/tables/NigeriaPlacebo.xls", excel append
+xi: reg educ `placebo4' `Ncont' `Biafra2' `wt' if `sampP', robust `se'
+outreg2 `placebo4' using "$OUT/tables/NigeriaPlacebo.xls", excel append
+
+**GRAPHICAL
+collapse educ, by(yearbirth)
+egen educ=ma(education)
+graph twoway line educ yearbir if yearbirth>=1955, scheme(s1color) ///
+ytitle("Years of Education") xline(1965, lcolor(black) lpattern(dot)) ///
+xline(1975, lcolor(black) lpattern(dot)) legend(off) ///
+|| lfit educ yearbirth if yearbirth<=1965&yearbirth>=1955, `linef' ///
+|| lfit educ yearbirth if yearbirth>=1975, `linef' ///
+|| lfit educ yearbirth if yearbirth<=1975&yearbirth>=1965, `linef'
+graph export "$OUT/graphs/Nigeria_educ.eps", as(eps) replace
+
 
 ********************************************************************************
 *** (2b) Nigeria Estimates MMR
 ********************************************************************************
-if `Nig'==1 {
-    use "$DAT/Nigeria/mmr", clear
-    gen yearstate=yearbirth*100*stcode1967
+use "$DAT/Nigeria/mmr", clear
+gen yearstate=yearbirth*100*stcode1967
 
-    estpost sum mmr mmr_25 yearbirth if (yr6575==1|yr5661==1)
-    estout using "$OUT/tables/sumStatsCountry.xls", append `opts'
+estpost sum mmr mmr_25 yearbirth if (yr6575==1|yr5661==1)
+estout using "$OUT/tables/sumStatsCountry.xls", append `opts'
 
-    foreach m in mmr mmr_25 {
+foreach m in mmr mmr_25 {
 
-        ***TREATMENT
-        xi: reg `m' `treat2' `Ncont' `Biafra1' `wt' if `sampT', `se'
-        outreg2 `treat2' using "$OUT/tables/Nigeria.xls", excel appen
-        xi: reg `m' `treat1' `Ncont' `Biafra1' `wt' if `sampT', `se'
-        outreg2 `treat1' using "$OUT/tables/Nigeria.xls", excel append
-        xi: reg `m' `treat3' `Ncont' `Biafra2' `wt' if `sampT', `se'
-        outreg2 `treat3' using "$OUT/tables/Nigeria.xls", excel append
-        xi: reg `m' `treat4' `Ncont' `Biafra2' `wt' if `sampT', `se'
-        outreg2 `treat4' using "$OUT/tables/Nigeria.xls", excel append
+    ***TREATMENT
+    xi: reg `m' `treat2' `Ncont' `Biafra1' `wt' if `sampT', `se'
+    outreg2 `treat2' using "$OUT/tables/Nigeria.xls", excel appen
+    xi: reg `m' `treat1' `Ncont' `Biafra1' `wt' if `sampT', `se'
+    outreg2 `treat1' using "$OUT/tables/Nigeria.xls", excel append
+    xi: reg `m' `treat3' `Ncont' `Biafra2' `wt' if `sampT', `se'
+    outreg2 `treat3' using "$OUT/tables/Nigeria.xls", excel append
+    xi: reg `m' `treat4' `Ncont' `Biafra2' `wt' if `sampT', `se'
+    outreg2 `treat4' using "$OUT/tables/Nigeria.xls", excel append
 
 
-        **PLACEBO
-        xi: reg `m' `placebo2' `Ncont' `Biafra1' `wt' if `sampP', `se'
-        outreg2 `placebo2' using "$OUT/tables/NigeriaPlacebo.xls", excel 
-        xi: reg `m' `placebo1' `Ncont' `Biafra1' `wt' if `sampP', `se'
-        outreg2 `placebo1' using "$OUT/tables/NigeriaPlacebo.xls", excel 
-        xi: reg `m' `placebo3' `Ncont' `Biafra2' `wt' if `sampP', `se'
-        outreg2 `placebo3' using "$OUT/tables/NigeriaPlacebo.xls", excel 
-        xi: reg `m' `placebo4' `Ncont' `Biafra2' `wt' if `sampP', `se'
-        outreg2 `placebo4' using "$OUT/tables/NigeriaPlacebo.xls", excel 
+    **PLACEBO
+    xi: reg `m' `placebo2' `Ncont' `Biafra1' `wt' if `sampP', `se'
+    outreg2 `placebo2' using "$OUT/tables/NigeriaPlacebo.xls", excel 
+    xi: reg `m' `placebo1' `Ncont' `Biafra1' `wt' if `sampP', `se'
+    outreg2 `placebo1' using "$OUT/tables/NigeriaPlacebo.xls", excel 
+    xi: reg `m' `placebo3' `Ncont' `Biafra2' `wt' if `sampP', `se'
+    outreg2 `placebo3' using "$OUT/tables/NigeriaPlacebo.xls", excel 
+    xi: reg `m' `placebo4' `Ncont' `Biafra2' `wt' if `sampP', `se'
+    outreg2 `placebo4' using "$OUT/tables/NigeriaPlacebo.xls", excel 
 
-        **NOTE: ALSO HAVE A ROBUSTNESS CHECK FOR NO LAGOS
-    }
-    **GRAPHICAL
-    collapse mmr [pw=v005], by(yearbirth)
-    keep if year>1931
-    egen mmr_ma=ma(mmr)
-
-    graph twoway line mmr_m yearbirth if yearbir>=1955&yearbir<1990, ///
-    scheme(s1color) ytitle("Maternal Mortality") legend(off)         ///
-    xline(1965, lcolor(black) lpattern(dot))                         ///
-    xline(1975, lcolor(black) lpattern(dot))                         ///
-    || lfit mmr_ma yearbirth if yearbir<=1965&yearbir>=1955, `linef' ///
-    || lfit mmr_ma yearbirth if yearbir>=1975&yearbir<1990,  `linef' ///
-    || lfit mmr_ma yearbirth if yearbir<=1975&yearbir>=1965, `linef'
-    graph export "$OUT/graphs/Nigeria_mmr.eps", as(eps) replace        
+    **NOTE: ALSO HAVE A ROBUSTNESS CHECK FOR NO LAGOS
 }
+**GRAPHICAL
+collapse mmr [pw=v005], by(yearbirth)
+keep if year>1931
+egen mmr_ma=ma(mmr)
+
+graph twoway line mmr_m yearbirth if yearbir>=1955&yearbir<1990, ///
+scheme(s1color) ytitle("Maternal Mortality") legend(off)         ///
+xline(1965, lcolor(black) lpattern(dot))                         ///
+xline(1975, lcolor(black) lpattern(dot))                         ///
+|| lfit mmr_ma yearbirth if yearbir<=1965&yearbir>=1955, `linef' ///
+|| lfit mmr_ma yearbirth if yearbir>=1975&yearbir<1990,  `linef' ///
+|| lfit mmr_ma yearbirth if yearbir<=1975&yearbir>=1965, `linef'
+graph export "$OUT/graphs/Nigeria_mmr.eps", as(eps) replace        
 
 ********************************************************************************
 *** (3a) Zimbabwe Estimates Education
@@ -179,83 +171,81 @@ local pcon2   dumage20sq invdumage20sq
 local pcon3   dumage20sq invdumage20sq dumage20th invdumage20th
 local psamp   age1980>=12&age1980<=28
 
-if `Zim'==1 {
-    use "$DAT/Zimbabwe/educ", clear
-    estpost sum education highschool dumage yearbirth if age1980>=6&age1980<=22
-    estout using "$OUT/tables/sumStatsCountry.xls", append `opts'
 
-    foreach o in Zimbabwe ZimbabwePlacebo {
-        cap rm "$OUT/tables/`o'.xls"
-        cap rm "$OUT/tables/`o'.txt"
-    }
-    
-    **TREATMENT
-    foreach y of varlist education {
-        reg `y' `treat' `Zcont' if `tsamp', `se'
-        outreg2 `treat' using "$OUT/tables/Zimbabwe.xls", excel
-        reg `y' `treat' `Zcont' `tcon2' if `tsamp', `se'
-        outreg2 `treat' using "$OUT/tables/Zimbabwe.xls", excel
-        reg `y' `treat' `Zcont' `tcon3' if `tsamp', `se'
-        outreg2 `treat' using "$OUT/tables/Zimbabwe.xls", excel
-    }
+use "$DAT/Zimbabwe/educ", clear
+estpost sum education highschool dumage yearbirth if age1980>=6&age1980<=22
+estout using "$OUT/tables/sumStatsCountry.xls", append `opts'
 
-    **PLACEBO
-    foreach y of varlist education /*highschool*/ {
-        reg `y' `placebo' `Zcont' if `psamp', `se'
-        outreg2 `placebo' using "$OUT/tables/ZimbabwePlacebo.xls", excel
-        reg `y' `placebo' `Zcont' `pcon2' if `psamp', `se'
-        outreg2 `placebo' using "$OUT/tables/ZimbabwePlacebo.xls", excel
-        reg `y' `placebo' `Zcont' `pcon3' if `psamp', `se'
-        outreg2 `placebo' using "$OUT/tables/ZimbabwePlacebo.xls", excel
-    }
-
-    **GRAPHICAL
-    collapse education, by(yearbirth)
-    graph twoway line education yearbirth, scheme(s1color)            ///
-    ytitle("Years of Education") xtitle("Respondent's Year of Birth") ///
-    xline(1966, lcolor(black) lpattern(dot)) legend(off)              ///
-    || lfit educ yearbirth if yearbirth<=1966, `linef'                ///
-    || lfit educ yearbirth if yearbirth>=1966, `linef'
-    graph export "$OUT/graphs/Zimbabwe_educ.eps", as(eps) replace
+foreach o in Zimbabwe ZimbabwePlacebo {
+    cap rm "$OUT/tables/`o'.xls"
+    cap rm "$OUT/tables/`o'.txt"
 }
+
+**TREATMENT
+foreach y of varlist education {
+    reg `y' `treat' `Zcont' if `tsamp', `se'
+    outreg2 `treat' using "$OUT/tables/Zimbabwe.xls", excel
+    reg `y' `treat' `Zcont' `tcon2' if `tsamp', `se'
+    outreg2 `treat' using "$OUT/tables/Zimbabwe.xls", excel
+    reg `y' `treat' `Zcont' `tcon3' if `tsamp', `se'
+    outreg2 `treat' using "$OUT/tables/Zimbabwe.xls", excel
+}
+
+**PLACEBO
+foreach y of varlist education /*highschool*/ {
+    reg `y' `placebo' `Zcont' if `psamp', `se'
+    outreg2 `placebo' using "$OUT/tables/ZimbabwePlacebo.xls", excel
+    reg `y' `placebo' `Zcont' `pcon2' if `psamp', `se'
+    outreg2 `placebo' using "$OUT/tables/ZimbabwePlacebo.xls", excel
+    reg `y' `placebo' `Zcont' `pcon3' if `psamp', `se'
+    outreg2 `placebo' using "$OUT/tables/ZimbabwePlacebo.xls", excel
+}
+
+**GRAPHICAL
+collapse education, by(yearbirth)
+graph twoway line education yearbirth, scheme(s1color)            ///
+ytitle("Years of Education") xtitle("Respondent's Year of Birth") ///
+xline(1966, lcolor(black) lpattern(dot)) legend(off)              ///
+|| lfit educ yearbirth if yearbirth<=1966, `linef'                ///
+|| lfit educ yearbirth if yearbirth>=1966, `linef'
+graph export "$OUT/graphs/Zimbabwe_educ.eps", as(eps) replace
 
 ********************************************************************************
 *** (3b) Zimbabwe Estimates MMR
 ********************************************************************************
-if `Zim'==1 {
-    use "$DAT/Zimbabwe/mmr", clear
-    replace age=floor(age)
-    
-    estpost sum mmr mmr_25 dumage yearbirth if `tsamp'
-    estout using "$OUT/tables/sumStatsCountry.xls", append `opts'
+use "$DAT/Zimbabwe/mmr", clear
+replace age=floor(age)
 
-    **TREATMENT
-    reg mmr `treat' `Zcont' if `tsamp', `se'
-    outreg2 `treat' using "$OUT/tables/Zimbabwe.xls", excel
-    reg mmr `treat' `Zcont' `tcon2' if `tsamp', `se'
-    outreg2 `treat' using "$OUT/tables/Zimbabwe.xls", excel
-    reg mmr `treat' `Zcont' `tcon3' if `tsamp', `se'
-    outreg2 `treat' using "$OUT/tables/Zimbabwe.xls", excel
+estpost sum mmr mmr_25 dumage yearbirth if `tsamp'
+estout using "$OUT/tables/sumStatsCountry.xls", append `opts'
 
-    **PLACEBO
-    reg mmr `placebo' `Zcont' if `psamp', `se'
-    outreg2 `placebo' using "$OUT/tables/ZimbabwePlacebo.xls", excel
-    reg mmr `placebo' `Zcont' `pcon2' if `psamp', `se'
-    outreg2 `placebo' using "$OUT/tables/ZimbabwePlacebo.xls", excel
-    reg mmr `placebo' `Zcont' `pcon3' if `psamp', `se'
-    outreg2 `placebo' using "$OUT/tables/ZimbabwePlacebo.xls", excel
+**TREATMENT
+reg mmr `treat' `Zcont' if `tsamp', `se'
+outreg2 `treat' using "$OUT/tables/Zimbabwe.xls", excel
+reg mmr `treat' `Zcont' `tcon2' if `tsamp', `se'
+outreg2 `treat' using "$OUT/tables/Zimbabwe.xls", excel
+reg mmr `treat' `Zcont' `tcon3' if `tsamp', `se'
+outreg2 `treat' using "$OUT/tables/Zimbabwe.xls", excel
 
-    **GRAPHS
-    collapse mmr [pw=v005], by(yearbirth)
-    keep if year>1930
-    egen mmr_ma=ma(mmr)
-    graph twoway line mmr_ma yearbir if yearbirth>1952&yearbirth<1990,  ///
-    scheme(s1color) ytitle("Maternal Mortality")                        ///
-    xline(1966, lcolor(black) lpattern(dot)) legend(off)                ///
-    || lfit mmr_ma yearbirth if yearbirth<=1966&yearbirth>1952, `linef' ///
-    || lfit mmr_ma yearbirth if yearbirth>=1966&yearbirth<1990, `linef' 
-    graph export "$OUT/graphs/Zimbabwe_mmr.eps", as(eps) replace
-}
+**PLACEBO
+reg mmr `placebo' `Zcont' if `psamp', `se'
+outreg2 `placebo' using "$OUT/tables/ZimbabwePlacebo.xls", excel
+reg mmr `placebo' `Zcont' `pcon2' if `psamp', `se'
+outreg2 `placebo' using "$OUT/tables/ZimbabwePlacebo.xls", excel
+reg mmr `placebo' `Zcont' `pcon3' if `psamp', `se'
+outreg2 `placebo' using "$OUT/tables/ZimbabwePlacebo.xls", excel
+
+**GRAPHS
+collapse mmr [pw=v005], by(yearbirth)
+keep if year>1930
+egen mmr_ma=ma(mmr)
+graph twoway line mmr_ma yearbir if yearbirth>1952&yearbirth<1990,  ///
+scheme(s1color) ytitle("Maternal Mortality")                        ///
+xline(1966, lcolor(black) lpattern(dot)) legend(off)                ///
+|| lfit mmr_ma yearbirth if yearbirth<=1966&yearbirth>1952, `linef' ///
+|| lfit mmr_ma yearbirth if yearbirth>=1966&yearbirth<1990, `linef' 
+graph export "$OUT/graphs/Zimbabwe_mmr.eps", as(eps) replace
+
 
 ********************************************************************************
 *** (4a) Kenya Estimates Education
@@ -264,57 +254,54 @@ local Kcont age age2 age3 trend trend2 rural i.ethnicity i.birthquarter
 local wt    [pw=v005]
 local se    cluster(quarter)
 
-if `Ken'==1 {
-    use "$DAT/Kenya/educ", clear
-    replace education = . if education > 25
 
-    estpost sum educ treat yearbirth
-    estout using "$OUT/tables/sumStatsCountry.xls", append `opts'
+use "$DAT/Kenya/educ", clear
+replace education = . if education > 25
 
-    reg educ treat `Kcont' `wt', `se'
-    outreg2 treat using "$OUT/tables/Kenya.xls", excel replace
-    reg educ treat_false `Kcont' `wt', `se'
-    outreg2 treat_false using "$OUT/tables/KenyaPlacebo.xls", excel replace
+estpost sum educ treat yearbirth
+estout using "$OUT/tables/sumStatsCountry.xls", append `opts'
 
-    collapse educ, by(yearbirth)
-    graph twoway line educ yearbir, scheme(s1color) legend(off)       ///
-    ytitle("Years of Education") xtitle("Respondent's Year of Birth") ///
-    xline(1963, lcolor(black) lpattern(dot))                          ///
-    xline(1972, lcolor(black) lpattern(dot))                          ///
-    || lfit educ yearbirth if yearbirth<=1963, `linef'                ///
-    || lfit educ yearbirth if yearbirth>=1972, `linef'                ///
-    || lfit educ yearbirth if yearbirth<=1972&yearbirth>=1963, `linef'
-    graph export "$OUT/graphs/Kenya_educ.eps", as(eps) replace
-    
-}
+reg educ treat `Kcont' `wt', `se'
+outreg2 treat using "$OUT/tables/Kenya.xls", excel replace
+reg educ treat_false `Kcont' `wt', `se'
+outreg2 treat_false using "$OUT/tables/KenyaPlacebo.xls", excel replace
+
+collapse educ, by(yearbirth)
+graph twoway line educ yearbir, scheme(s1color) legend(off)       ///
+ytitle("Years of Education") xtitle("Respondent's Year of Birth") ///
+xline(1963, lcolor(black) lpattern(dot))                          ///
+xline(1972, lcolor(black) lpattern(dot))                          ///
+|| lfit educ yearbirth if yearbirth<=1963, `linef'                ///
+|| lfit educ yearbirth if yearbirth>=1972, `linef'                ///
+|| lfit educ yearbirth if yearbirth<=1972&yearbirth>=1963, `linef'
+graph export "$OUT/graphs/Kenya_educ.eps", as(eps) replace  
+
 
 ********************************************************************************
 *** (4b) Kenya Estimates MMR
 ********************************************************************************
-if `Ken'==1 {
-    use "$DAT/Kenya/mmr", clear
+use "$DAT/Kenya/mmr", clear
 
-    estpost sum mmr mmr_25 treat yearbirth
-    estout using "$OUT/tables/sumStatsCountry.xls", append `opts'
+estpost sum mmr mmr_25 treat yearbirth
+estout using "$OUT/tables/sumStatsCountry.xls", append `opts'
 
-    reg mmr treat `Kcont' `wt', `se'
-    outreg2 treat using "$OUT/tables/Kenya.xls", excel append
-    reg mmr treat_false `Kcont' `wt', `se'
-    outreg2 treat_false using "$OUT/tables/KenyaPlacebo.xls", excel append
+reg mmr treat `Kcont' `wt', `se'
+outreg2 treat using "$OUT/tables/Kenya.xls", excel append
+reg mmr treat_false `Kcont' `wt', `se'
+outreg2 treat_false using "$OUT/tables/KenyaPlacebo.xls", excel append
 
-    **GRAPHS
-    collapse mmr [pw=v005], by(yearbirth)
-    egen mmr_ma=ma(mmr)
-    graph twoway line mmr yearbirth, scheme(s1color) legend(off)      ///
-    ytitle("Maternal Mortality")                                      ///
-    xline(1963, lcolor(black) lpattern(dot))                          ///
-    xline(1972, lcolor(black) lpattern(dot))                          ///
-    || lfit mmr yearbirth if yearbirth<=1963, `linef'                 ///
-    || lfit mmr yearbirth if yearbirth>=1972, `linef'                 ///
-    || lfit mmr yearbirth if yearbirth<=1972&yearbirth>=1963, `linef'
-    graph export "$OUT/graphs/Kenya_mmr.eps", as(eps) replace
-    
-}
+**GRAPHS
+collapse mmr [pw=v005], by(yearbirth)
+egen mmr_ma=ma(mmr)
+graph twoway line mmr yearbirth, scheme(s1color) legend(off)      ///
+ytitle("Maternal Mortality")                                      ///
+xline(1963, lcolor(black) lpattern(dot))                          ///
+xline(1972, lcolor(black) lpattern(dot))                          ///
+|| lfit mmr yearbirth if yearbirth<=1963, `linef'                 ///
+|| lfit mmr yearbirth if yearbirth>=1972, `linef'                 ///
+|| lfit mmr yearbirth if yearbirth<=1972&yearbirth>=1963, `linef'
+graph export "$OUT/graphs/Kenya_mmr.eps", as(eps) replace
+
 
 ********************************************************************************
 *** (5) Clean up

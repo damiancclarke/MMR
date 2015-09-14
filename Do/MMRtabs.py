@@ -1108,3 +1108,25 @@ if ftype=='tex':
    '\\end{tabular}\\end{center}\\end{table}\\end{subtables}')
 
 keno.close()
+
+
+#-------------------------------------------------------------------------------
+# --- (10) Write tables
+#-------------------------------------------------------------------------------
+tabo = open(tables + 'Tables.tex', 'w')
+
+tabo.write('\\input{\\MMRfolder/Paper/tables/educChanges.tex}\n')
+tabo.write('\\begin{subtables}\n')
+tabo.write('\\input{\\MMRfolder/Paper/tables/sumStats.tex}\n')
+tabo.write('\\input{\\MMRfolder/Paper/tables/sumExperiments.tex}\n')
+tabo.write('\\end{subtables}\n')
+tabo.write('\\input{\\MMRfolder/Paper/tables/MMRpercent.tex}\n')
+tabo.write('\\input{\\MMRfolder/Paper/tables/MMRregion.tex}\n')
+tabo.write('\\input{\\MMRfolder/Paper/tables/MMRincome.tex}\n')
+tabo.write('\\input{\\MMRfolder/Paper/tables/MMRpercentGender.tex}\n')
+tabo.write('\\input{\\MMRfolder/Paper/tables/correlatedEffects.tex}\n')
+tabo.write('\\input{\\MMRfolder/Paper/tables/Nigeria.tex}\n')
+tabo.write('\\input{\\MMRfolder/Paper/tables/Zimbabwe.tex}\n')
+tabo.write('\\input{\\MMRfolder/Paper/tables/Kenya.tex}\n')
+
+tabo.close()
