@@ -22,11 +22,14 @@ set maxvar 20000
 *********************************************************************************
 *** (1) Globals, locals, tempfiles
 *********************************************************************************
-global DAT "~/database/DHS/DHS_Data"
-global OUT "~/investigacion/Activa/MMR/Data"
+global DAT "~/investigacion/Activa/MMR/Data"
 global LOG "~/investigacion/Activa/MMR/Log"
 
 log using "$LOG/setupExperiments.txt", text replace
+
+unzipfile "$DAT/Kenya.zip"   , replace
+unzipfile "$DAT/Nigeria.zip" , replace
+unzipfile "$DAT/Zimbabwe.zip", replace
 
 *********************************************************************************
 *** (2a) Nigeria Generate
@@ -433,7 +436,7 @@ foreach file in mmr educ {
     gen trend=yearbirth-(r(min)-1)
 
     lab dat "`file' data for Nigeria from DHS IR (Bhalotra and Clarke, 2015)"
-    save "$OUT/Nigeria/`file'", replace
+    save "$DAT/Nigeria/`file'", replace
 }
 
 
@@ -558,12 +561,12 @@ foreach y of numlist 1994 1999 2005 2010 {
 clear
 append using `educ1994' `educ1999' `educ2005' `educ2010'
 lab dat "Education data for Zimbabwe from DHS IR (Bhalotra and Clarke, 2015)"
-save "$OUT/Zimbabwe/educ", replace
+save "$DAT/Zimbabwe/educ", replace
 
 clear
 append using `mmr1994' `mmr1999' `mmr2005' `mmr2010'
 lab dat "MMR data for Zimbabwe from DHS IR (Bhalotra and Clarke, 2015)"
-save "$OUT/Zimbabwe/mmr", replace
+save "$DAT/Zimbabwe/mmr", replace
 
 
 *********************************************************************************
@@ -672,12 +675,12 @@ foreach y of numlist 1998 2003 2008 {
 clear
 append using `educ1998' `educ2003' `educ2008'
 lab dat "Education data for Kenya from DHS IR (Bhalotra and Clarke, 2015)"
-save "$OUT/Kenya/educ", replace
+save "$DAT/Kenya/educ", replace
 
 clear
 append using `mmr1998' `mmr2003' `mmr2008'
 lab dat "MMR data for Kenya from DHS IR (Bhalotra and Clarke, 2015)"
-save "$OUT/Kenya/mmr", replace	
+save "$DAT/Kenya/mmr", replace	
 
 
 ********************************************************************************
