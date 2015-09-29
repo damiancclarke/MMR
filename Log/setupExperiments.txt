@@ -1,0 +1,1967 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /home/damiancclarke/investigacion/Activa/MMR/Log/setupExperiments.
+> txt
+  log type:  text
+ opened on:  14 Sep 2015, 15:46:28
+
+. 
+. *****************************************************************************
+> ****
+. *** (2a) Nigeria Generate
+. *****************************************************************************
+> ****
+. local sy 41 52
+
+. tokenize `sy'
+
+. 
+. **EDUC
+. foreach year of numlist 1999 2008 {
+  2.     use "$DAT/Nigeria/`year'/NGIR`1'DT", clear
+  3. 
+.     rename v133 education
+  4.     rename v010 yearbirth
+  5.     replace yearbirth=yearbirth+1900 if yearbirth<100
+  6.     gen DHSyear=`year'
+  7.     cap rename sstate sstate1
+  8.     keep education yearbirth DHSyear v009 v005 sstate s119 v130
+  9. 
+.     tempfile e`year'
+ 10.     save `e`year''
+ 11.     macro shift
+ 12. }
+yearbirth was byte now int
+(9810 real changes made)
+file /tmp/St22330.000002 saved
+(0 real changes made)
+file /tmp/St22330.000003 saved
+
+. clear
+
+. append using `e1999' `e2008'
+sstate1 was byte now int
+(label s119 already defined)
+(label sstate already defined)
+(label v133 already defined)
+(label v130 already defined)
+
+. tempfile educ
+
+. save `educ'
+file /tmp/St22330.000004 saved
+
+. 
+. **MMR
+. tokenize `sy'
+
+. foreach year of numlist 1999 2008 {
+  2.     use "$DAT/Nigeria/`year'/NGIR`1'DT"
+  3.     keep caseid v005 mm* sstate s119 v130 v007
+  4. 
+.     local Mvars1 mmidx_ mm1_ mm2_ mm3_ mm4_ mm5_ mm6_ mm7_ mm8_ mm9_ 
+  5.     local Mvars2 mm10_ mm11_ mm12_ mm13_ mm14_ mm15_
+  6.     local MMRvars `Mvars1' `Mvars2'
+  7. 
+.     foreach var of local MMRvars  { 
+  8.         foreach num of numlist 1(1)9 { 
+  9.             rename `var'0`num' `var'`num'
+ 10.         }
+ 11.     }
+ 12.     cap drop  mmc1- mmc5
+ 13. 
+.     reshape long `MMRvars', i(caseid) j(sister)
+ 14.     drop if mmidx==.
+ 15. 
+.     gen mmr=1 if (mm9_>1 & mm9_<7) & mm1_==2
+ 16.     gen mmr_alt=1 if mm9_==2|mm9_==3
+ 17.     replace mmr=0 if mmr!=1 & mm1_==2 & mm9_!=99
+ 18.     replace mmr_alt=0 if mmr_alt!=1&mm9==.&mm1_==2&mm2_==1
+ 19.     gen numkids=mm14_
+ 20.     keep if mm1_==2
+ 21. 
+.     gen yearbirth=int((mm4_-1)/12)
+ 22.     gen v009=mm4_-(yearbirth*12)
+ 23.     replace yearbirth=yearbirth+1900 if yearbirth<200
+ 24.     sum yearbirth
+ 25. 
+.     gen yearinterview=v007
+ 26.     replace yearinterview=1900+yearinterview if yearinterview<120
+ 27.     gen age=yearinterview-yearbirth
+ 28.     gen mmr_25=1 if (mm9_>1 & mm9_<7)&mm1_==2&mm7_<=25
+ 29.     replace mmr_25=0 if mmr_25!=1&mm1_==2&mm9_!=99
+ 30. 
+.     label var mmr "Sibling death related to child birth"
+ 31.     label var yearbirth "year of birth of sibling"
+ 32. 
+.     replace v007=v007+1900 if v007<100&v007>1
+ 33.     replace v007=v007+2000 if v007<2
+ 34.     gen age_sib_atinterview=v007-yearbirth
+ 35. 
+.     gen DHSyear=`year'
+ 36.     cap rename sstate sstate1
+ 37. 
+.     keep mmr* v005 sstate* yearbirth DHSyear s119 v009 v130 numkids /*
+>     */ mmr_alt yearinterview age
+ 38. 
+.     tempfile mmr`year'
+ 39.     save `mmr`year''
+ 40.     macro shift
+ 41. }
+(note: j = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                     9810   ->  147150
+Number of variables                 246   ->      23
+j variable (15 values)                    ->   sister
+xij variables:
+           mmidx_1 mmidx_2 ... mmidx_15   ->   mmidx_
+                 mm1_1 mm1_2 ... mm1_15   ->   mm1_
+                 mm2_1 mm2_2 ... mm2_15   ->   mm2_
+                 mm3_1 mm3_2 ... mm3_15   ->   mm3_
+                 mm4_1 mm4_2 ... mm4_15   ->   mm4_
+                 mm5_1 mm5_2 ... mm5_15   ->   mm5_
+                 mm6_1 mm6_2 ... mm6_15   ->   mm6_
+                 mm7_1 mm7_2 ... mm7_15   ->   mm7_
+                 mm8_1 mm8_2 ... mm8_15   ->   mm8_
+                 mm9_1 mm9_2 ... mm9_15   ->   mm9_
+              mm10_1 mm10_2 ... mm10_15   ->   mm10_
+              mm11_1 mm11_2 ... mm11_15   ->   mm11_
+              mm12_1 mm12_2 ... mm12_15   ->   mm12_
+              mm13_1 mm13_2 ... mm13_15   ->   mm13_
+              mm14_1 mm14_2 ... mm14_15   ->   mm14_
+              mm15_1 mm15_2 ... mm15_15   ->   mm15_
+-----------------------------------------------------------------------------
+(103873 observations deleted)
+(43192 missing values generated)
+(43210 missing values generated)
+(20372 real changes made)
+(18184 real changes made)
+(42978 missing values generated)
+(22820 observations deleted)
+(20457 real changes made)
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+   yearbirth |     20457    1974.428    12.39548       1903       1999
+(20457 real changes made)
+(20412 missing values generated)
+(20412 real changes made)
+v007 was byte now int
+(20457 real changes made)
+(0 real changes made)
+file /tmp/St22330.000005 saved
+(note: j = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                    33385   ->  667700
+Number of variables                 326   ->      23
+j variable (20 values)                    ->   sister
+xij variables:
+           mmidx_1 mmidx_2 ... mmidx_20   ->   mmidx_
+                 mm1_1 mm1_2 ... mm1_20   ->   mm1_
+                 mm2_1 mm2_2 ... mm2_20   ->   mm2_
+                 mm3_1 mm3_2 ... mm3_20   ->   mm3_
+                 mm4_1 mm4_2 ... mm4_20   ->   mm4_
+                 mm5_1 mm5_2 ... mm5_20   ->   mm5_
+                 mm6_1 mm6_2 ... mm6_20   ->   mm6_
+                 mm7_1 mm7_2 ... mm7_20   ->   mm7_
+                 mm8_1 mm8_2 ... mm8_20   ->   mm8_
+                 mm9_1 mm9_2 ... mm9_20   ->   mm9_
+              mm10_1 mm10_2 ... mm10_20   ->   mm10_
+              mm11_1 mm11_2 ... mm11_20   ->   mm11_
+              mm12_1 mm12_2 ... mm12_20   ->   mm12_
+              mm13_1 mm13_2 ... mm13_20   ->   mm13_
+              mm14_1 mm14_2 ... mm14_20   ->   mm14_
+              mm15_1 mm15_2 ... mm15_20   ->   mm15_
+-----------------------------------------------------------------------------
+(487333 observations deleted)
+(179449 missing values generated)
+(179616 missing values generated)
+(84665 real changes made)
+(72113 real changes made)
+(176442 missing values generated)
+(94065 observations deleted)
+(86302 real changes made)
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+   yearbirth |     86302     1980.95    12.30011       1919       2008
+(0 real changes made)
+(85820 missing values generated)
+(85101 real changes made)
+(0 real changes made)
+(0 real changes made)
+file /tmp/St22330.000006 saved
+
+. clear
+
+. append using `mmr1999' `mmr2008'
+sstate1 was byte now int
+(label v130 already defined)
+(label sstate already defined)
+(label s119 already defined)
+
+. tempfile mmr
+
+. save `mmr'
+file /tmp/St22330.000007 saved
+
+. 
+. 
+. 
+. *****************************************************************************
+> ****
+. *** (2b) Nigeria Controls (from Akresh et al 2012)
+. *****************************************************************************
+> ****
+. foreach file in mmr educ {
+  2.     use ``file''
+  3.     gen states1976=""
+  4.     replace states1976="Cross-River" if sstate==1
+  5.     replace states1976="Cross-River" if sstate==7
+  6.     replace states1976="Imo"         if sstate==9
+  7.     replace states1976="Imo"         if sstate==22
+  8.     replace states1976="Anambra"     if sstate==2
+  9.     replace states1976="Anambra"     if sstate==24
+ 10.     replace states1976="Anambra"     if sstate==32
+ 11.     replace states1976="Rivers"      if sstate==31
+ 12.     replace states1976="Rivers"      if sstate==20
+ 13.     replace states1976="Bendel"      if sstate==23
+ 14.     replace states1976="Bendel"      if sstate==4
+ 15.     replace states1976="Lagos"       if sstate==1
+ 16.     replace states1976="Ogun"        if sstate==16
+ 17.     replace states1976="Ondo"        if sstate==33
+ 18.     replace states1976="Ondo"        if sstate==17
+ 19.     replace states1976="Oyo"         if sstate==28
+ 20.     replace states1976="Oyo"         if sstate==18
+ 21.     replace states1976="Benue"       if sstate==5
+ 22.     replace states1976="Plateau"     if sstate==35
+ 23.     replace states1976="Plateau"     if sstate==19
+ 24.     replace states1976="Kano"        if sstate==25
+ 25.     replace states1976="Kano"        if sstate==11
+ 26.     replace states1976="Kwara"       if sstate==27
+ 27.     replace states1976="Kwara"       if sstate==13
+ 28.     replace states1976="Kaduna"      if sstate==12
+ 29.     replace states1976="Kaduna"      if sstate==10
+ 30.     replace states1976="Niger"       if sstate==15
+ 31.     replace states1976="Sokoto"      if sstate==36
+ 32.     replace states1976="Sokoto"      if sstate==26
+ 33.     replace states1976="Sokoto"      if sstate==21
+ 34.     replace states1976="Bauchi"      if sstate==34
+ 35.     replace states1976="Bauchi"      if sstate==3
+ 36.     replace states1976="Borno"       if sstate==6
+ 37.     replace states1976="Borno"       if sstate==30
+ 38.     replace states1976="Gongola"     if sstate==8
+ 39.     replace states1976="Gongola"     if sstate==29
+ 40. 
+.     replace states1976="Cross-River" if sstate1==300
+ 41.     replace states1976="Cross-River" if sstate1==290
+ 42.     replace states1976="Imo"         if sstate1==320
+ 43.     replace states1976="Imo"         if sstate1==310
+ 44.     replace states1976="Anambra"     if sstate1==280
+ 45.     replace states1976="Anambra"     if sstate1==270
+ 46.     replace states1976="Anambra"     if sstate1==260
+ 47.     replace states1976="Rivers"      if sstate1==340
+ 48.     replace states1976="Rivers"      if sstate1==330
+ 49.     replace states1976="Bendel"      if sstate1==350
+ 50.     replace states1976="Bendel"      if sstate1==250
+ 51.     replace states1976="Lagos"       if sstate1==360
+ 52.     replace states1976="Ogun"        if sstate1==370
+ 53.     replace states1976="Ondo"        if sstate1==240
+ 54.     replace states1976="Ondo"        if sstate1==230
+ 55.     replace states1976="Oyo"         if sstate1==220
+ 56.     replace states1976="Oyo"         if sstate1==210
+ 57.     replace states1976="Benue"       if sstate1==180
+ 58.     replace states1976="Plateau"     if sstate1==160
+ 59.     replace states1976="Plateau"     if sstate1==150
+ 60.     replace states1976="Kano"        if sstate1==100
+ 61.     replace states1976="Kano"        if sstate1==40
+ 62.     replace states1976="Kwara"       if sstate1==200
+ 63.     replace states1976="Kwara"       if sstate1==190
+ 64.     replace states1976="Kaduna"      if sstate1==110
+ 65.     replace states1976="Kaduna"      if sstate1==30
+ 66.     replace states1976="Niger"       if sstate1==130
+ 67.     replace states1976="Sokoto"      if sstate1==120
+ 68.     replace states1976="Sokoto"      if sstate1==20
+ 69.     replace states1976="Sokoto"      if sstate1==10
+ 70.     replace states1976="Bauchi"      if sstate1==90
+ 71.     replace states1976="Bauchi"      if sstate1==80
+ 72.     replace states1976="Borno"       if sstate1==60
+ 73.     replace states1976="Borno"       if sstate1==50
+ 74.     replace states1976="Gongola"     if sstate1==170
+ 75.     replace states1976="Gongola"     if sstate1==70
+ 76. 
+.     gen states1967=""
+ 77.     replace states1967="South-Eastern"  if states1976=="Cross-River"
+ 78.     replace states1967="East Central"   if states1976=="Anambra"
+ 79.     replace states1967="East Central"   if states1976=="Imo"
+ 80.     replace states1967="Rivers"         if states1976=="Rivers"
+ 81.     replace states1967="Mid Western"    if states1976=="Bendel"
+ 82.     replace states1967="Lagos"          if states1976=="Lagos"
+ 83.     replace states1967="Western"        if states1976=="Oyo"
+ 84.     replace states1967="Western"        if states1976=="Ondo"
+ 85.     replace states1967="Western"        if states1976=="Ogun"
+ 86.     replace states1967="Benue-Plateau"  if states1976=="Plateau"
+ 87.     replace states1967="Benue-Plateau"  if states1976=="Benue"
+ 88.     replace states1967="Kano"           if states1976=="Kano"
+ 89.     replace states1967="Kwaro"          if states1976=="Kwara"
+ 90.     replace states1967="North Central"  if states1976=="Kaduna"
+ 91.     replace states1967="North Western"  if states1976=="Sokoto"
+ 92.     replace states1967="North Western"  if states1976=="Niger"
+ 93.     replace states1967="North Eastern"  if states1976=="Gongola"
+ 94.     replace states1967="North Eastern"  if states1976=="Borno"
+ 95.     replace states1967="North Eastern"  if states1976=="Bauchi"
+ 96. 
+.     encode states1976, gen(stcode1976)
+ 97.     encode states1967, gen(stcode1967)
+ 98. 
+.     gen capexp53=.
+ 99.     replace capexp53=0.014032  if states1976=="Oyo"
+100.     replace capexp53=0.019337  if states1976=="Ogun"
+101.     replace capexp53=0.0326675 if states1976=="Ondo"
+102.     replace capexp53=0.3346587 if states1976=="Borno"
+103.     replace capexp53=0.3906393 if states1976=="Anambra"
+104.     replace capexp53=0.5194563 if states1976=="Lagos"
+105.     replace capexp53=0.7643318 if states1976=="Kaduna"
+106.     replace capexp53=0.8127252 if states1976=="Rivers"
+107.     replace capexp53=0.8833631 if states1976=="Imo"
+108.     replace capexp53=0.9319166 if states1976=="Kano"
+109.     replace capexp53=0.9527855 if states1976=="Sokoto"
+110.     replace capexp53=1.011883  if states1976=="Kwara"
+111.     replace capexp53=1.022602  if states1976=="Bauchi"
+112.     replace capexp53=1.050629  if states1976=="Gongola"
+113.     replace capexp53=1.322434  if states1976=="Bendel"
+114.     replace capexp53=1.580796  if states1976=="Niger"
+115.     replace capexp53=1.631959  if states1976=="Plateau"
+116.     replace capexp53=1.9002    if states1976=="Benue"
+117.     replace capexp53=2.195955  if states1976=="Cross-River"
+118. 
+.     gen capexp63=.
+119.     replace capexp63=0.24 if states1976=="Oyo"
+120.     replace capexp63=0.15 if states1976=="Ogun"
+121.     replace capexp63=0.19 if states1976=="Ondo"
+122.     replace capexp63=6.19 if states1976=="Borno"
+123.     replace capexp63=1.64 if states1976=="Anambra"
+124.     replace capexp63=0.76 if states1976=="Lagos"
+125.     replace capexp63=2.15 if states1976=="Kaduna"
+126.     replace capexp63=2.41 if states1976=="Rivers"
+127.     replace capexp63=2.26 if states1976=="Imo"
+128.     replace capexp63=1.49 if states1976=="Kano"
+129.     replace capexp63=1.31 if states1976=="Sokoto"
+130.     replace capexp63=3.95 if states1976=="Kwara"
+131.     replace capexp63=0.87 if states1976=="Bauchi"
+132.     replace capexp63=1.02 if states1976=="Gongola"
+133.     replace capexp63=2.91 if states1976=="Bendel"
+134.     replace capexp63=1.20 if states1976=="Niger"
+135.     replace capexp63=2.20 if states1976=="Plateau"
+136.     replace capexp63=0.92 if states1976=="Benue"
+137.     replace capexp63=2.43 if states1976=="Cross-River"
+138. 
+.     gen ethnicity=1 if (s119==94&DHSyear==1999)|(s119==138&DHSyear==2008)
+139.     replace ethnicity=2 if DHSyear==2008&(s119==21|s119==85|s119==91|/*
+>     */s119==133|s119==140|s119==153|s119==154|s119==241|s119==283)
+140.     replace ethnicity=2 if DHSyear==1999&(s119==1|s119==8|s119==55|s119==5
+> 8/*
+>     */|s119==90|s119==95|s119==96|s119==97|s119==175|s119==203)
+141.     replace ethnicity=3 if (s119==86&DHSyear==1999)|(s119==130&DHSyear==20
+> 08)
+142.     replace ethnicity=4 if (s119==218&DHSyear==1999)|(s119==298&DHSyear==2
+> 008)
+143.     replace ethnicity=5 if ethnicity==.
+144. 
+.     gen religion=1 if (v130==4&DHSyear==1999)|(v130==3&DHSyear==2008)
+145.     replace religion=2 if (v130==1&DHSyear==1999)|(v130==1&DHSyear==2008)
+146.     replace religion=3 if (v130==3&DHSyear==1999)|(v130==2&DHSyear==2008)
+147.     replace religion=4 if (v130==5&DHSyear==1999)|(v130==4&DHSyear==2008)
+148.     replace religion=5 if religion==.
+149. 
+.     gen west=states1976=="Lagos"|states1976=="Ogun"|states1976=="Ondo"|/*
+>     */states1976=="Oyo"
+150.     gen nonwest=west==0
+151.     gen SE=states1976=="Cross-River"|states1976=="Anambra"|states1976=="Im
+> o"/*
+>     */|states1976=="Rivers"
+152.     gen SW=states1976=="Lagos"|states1976=="Ogun"|states1976=="Oyo"|/*
+>     */states1976=="Ondo"|states1976=="Bendel"
+153.     gen nonwest_noSE=(nonwest==1&SE==0)
+154.     gen war_region=states1976=="Cross-River"|states1976=="Anambra"|/*
+>     */states1976=="Imo"|states1976=="Rivers"
+155. 
+.     gen yr5055=yearbirth>=1950&yearbirth<=1955
+156.     gen yr5664=yearbirth>=1956&yearbirth<=1964
+157.     gen yr5660=yearbirth>=1956&yearbirth<=1960
+158.     gen yr5661=yearbirth>=1956&yearbirth<=1961
+159.     gen yr6064=yearbirth>=1960&yearbirth<=1964
+160.     gen yr7075=yearbirth>=1970&yearbirth<=1975
+161.     gen yr7175=yearbirth>=1971&yearbirth<=1975
+162.     gen yr6575=yearbirth>=1965&yearbirth<=1975
+163.     gen yr6265=yearbirth>=1962&yearbirth<=1965
+164.     gen yr7072=yearbirth>=1970&yearbirth<=1972
+165.     gen yr7073=yearbirth>=1970&yearbirth<=1973
+166.     gen yr6569=yearbirth>=1965&yearbirth<=1969
+167.     gen yr6769=yearbirth>=1967&yearbirth<=1969
+168. 
+.     gen main_exposure=1 if yearbirth==1975
+169.     replace main_exposure=2 if yearbirth==1974
+170.     replace main_exposure=3 if yearbirth==1973
+171.     replace main_exposure=4 if yearbirth==1972
+172.     replace main_exposure=5 if yearbirth==1971
+173.     replace main_exposure=5 if yearbirth==1970
+174.     replace main_exposure=0 if main_exposure==.
+175. 
+.     gen main_exposure_fake=1 if yearbirth==1956
+176.     replace main_exposure_fake=2 if yearbirth==1957
+177.     replace main_exposure_fake=3 if yearbirth==1958
+178.     replace main_exposure_fake=4 if yearbirth==1959
+179.     replace main_exposure_fake=5 if yearbirth==1960
+180.     replace main_exposure_fake=0 if main_exposure_fake==.
+181. 
+.     gen pre_exposure=1 if yearbirth==1966
+182.     replace pre_exposure=2 if yearbirth==1967
+183.     replace pre_exposure=3 if yearbirth==1968
+184.     replace pre_exposure=4 if yearbirth==1969
+185.     replace pre_exposure=0 if pre_exposure==.
+186. 
+.     dis "mexp0"
+187.     gen mexp0=1 if v009==8&yearbirth==1967
+188.     replace mexp0=2 if v009==9&yearbirth==1967
+189.     replace mexp0=3 if v009==10&yearbirth==1967
+190.     replace mexp0=4 if v009==11&yearbirth==1967
+191.     replace mexp0=5 if v009==12&yearbirth==1967
+192.     replace mexp0=6 if v009==1&yearbirth==1968
+193.     replace mexp0=7 if v009==2&yearbirth==1968
+194.     replace mexp0=8 if v009==3&yearbirth==1968
+195.     replace mexp0=9 if v009==4&yearbirth==1968
+196.     replace mexp0=9 if yearbirth==1968&mexp0==.
+197.     replace mexp0=9 if yearbirth==1969&v009<3
+198.     replace mexp0=8 if v009==3&yearbirth==1969
+199.     replace mexp0=7 if v009==4&yearbirth==1969
+200.     replace mexp0=6 if v009==5&yearbirth==1969
+201.     replace mexp0=5 if v009==6&yearbirth==1969
+202.     replace mexp0=4 if v009==7&yearbirth==1969
+203.     replace mexp0=3 if v009==8&yearbirth==1969
+204.     replace mexp0=2 if v009==9&yearbirth==1969
+205.     replace mexp0=1 if v009==10&yearbirth==1969
+206.     replace mexp0=0 if mexp0==.
+207. 
+.     dis "mexp1"
+208.     gen mexp1=v009-7 if yearbirth==1964&v009>7
+209.     replace mexp1=v009+5 if yearbirth==1965
+210.     replace mexp1=v009+17 if yearbirth==1966
+211.     replace mexp1=30 if yearbirth==1967&(v009==1|v009==8)
+212.     replace mexp1=31 if yearbirth==1967&v009>1&v009<8
+213.     replace mexp1=38-v009 if yearbirth==1967&v009>9
+214.     replace mexp1=26-v009 if yearbirth==1968
+215.     replace mexp1=14-v009 if yearbirth==1969
+216.     replace mexp1=1 if yearbirth==1970&v009==1
+217.     replace mexp1=0 if mexp1==.
+218. 
+.     dis "mexp2"
+219.     gen mexp2=v009-7 if yearbirth==1961&v009>7
+220.     replace mexp2=v009+5 if yearbirth==1962
+221.     replace mexp2=v009+17 if yearbirth==1963
+222.     replace mexp2=30 if yearbirth==1964&(v009==1|v009==8)
+223.     replace mexp2=31 if yearbirth==1964&v009>1&v009<8
+224.     replace mexp2=38-v009 if yearbirth==1964&v009>9
+225.     replace mexp2=26-v009 if yearbirth==1965
+226.     replace mexp2=14-v009 if yearbirth==1966
+227.     replace mexp2=1 if yearbirth==1967&v009==1
+228.     replace mexp2=0 if mexp2==.
+229. 
+.     dis "mexp3"
+230.     gen mexp3=v009-7 if yearbirth==1955&v009>7
+231.     replace mexp3=v009+5 if yearbirth==1956
+232.     replace mexp3=v009+17 if yearbirth==1957
+233.     replace mexp3=30 if yearbirth==1958&v009==1
+234.     replace mexp3=31 if yearbirth==1958&v009>1
+235.     replace mexp3=31 if yearbirth==1959
+236.     replace mexp3=31 if yearbirth==1960
+237.     replace mexp3=31 if yearbirth==1961&v009<8
+238.     replace mexp3=38-v009 if yearbirth==1961&v009>7
+239.     replace mexp3=26-v009 if yearbirth==1962
+240.     replace mexp3=14-v009 if yearbirth==1963
+241.     replace mexp3=1 if yearbirth==1964&v009==1
+242.     replace mexp3=0 if mexp3==.
+243. 
+.     dis "mexp4"
+244.     gen mexp4=v009-7 if yearbirth==1951&v009>7
+245.     replace mexp4=v009+5 if yearbirth==1952
+246.     replace mexp4=v009+17 if yearbirth==1953
+247.     replace mexp4=30 if yearbirth==1954&v009==1
+248.     replace mexp4=31 if yearbirth==1954&v009!=1
+249.     replace mexp4=31 if yearbirth==1955&v009<8
+250.     replace mexp4=38-v009 if yearbirth==1955&v009>7
+251.     replace mexp4=26-v009 if yearbirth==1956
+252.     replace mexp4=14-v009 if yearbirth==1957
+253.     replace mexp4=1 if yearbirth==1958&v009==1
+254.     replace mexp4=0 if mexp4==.
+255. 
+. 
+.     gen yr5660nonwest=yr5660*nonwest
+256.     gen yr5661nonwest=yr5661*nonwest
+257.     gen yr6265nonwest=yr6265*nonwest
+258.     gen yr7075nonwest=yr7075*nonwest
+259.     gen yr6569nonwest=yr6569*nonwest
+260.     gen yr5660capexp53=yr5660*capexp53
+261.     gen yr5661capexp53=yr5661*capexp53
+262.     gen yr6265capexp53=yr6265*capexp53
+263.     gen yr7075capexp53=yr7075*capexp53
+264.     gen yr6569capexp53=yr6569*capexp53
+265.     gen yr5661capexp63=yr5661*capexp63
+266.     gen yr6265capexp63=yr6265*capexp63
+267.     gen yr7075capexp63=yr7075*capexp63
+268.     gen yr6569capexp63=yr6569*capexp63
+269.     gen nonwest_main_exposure=nonwest*main_exposure
+270.     gen nonwest_pre_exposure=nonwest*pre_exposure
+271.     gen nonwest_main_exposure_fake=nonwest*main_exposure_fake
+272.     gen capexp53_main_exposure=capexp53*main_exposure
+273.     gen capexp53_pre_exposure=capexp53*pre_exposure
+274.     gen capexp63_main_exposure=capexp63*main_exposure
+275.     gen capexp63_pre_exposure=capexp63*pre_exposure
+276.     gen capexp53_main_exposure_fake=capexp53*main_exposure_fake
+277. 
+.     gen yr6769southeast=yr6769*SE
+278.     gen yr6769nonwest_noSE=yr6769*nonwest_noSE
+279.     gen reg_mexp0=war_region*mexp0
+280.     gen reg_mexp1=war_region*mexp1
+281.     gen reg_mexp2=war_region*mexp2
+282.     gen reg_mexp3=war_region*mexp3
+283.     gen reg_mexp4=war_region*mexp4
+284. 
+.     qui sum yearbirth
+285.     gen trend=yearbirth-(r(min)-1)
+286. 
+.     lab dat "`file' data for Nigeria from DHS IR (Bhalotra and Clarke, 2015)"
+287.     save "$OUT/Nigeria/`file'", replace
+288. }
+(106759 missing values generated)
+states1976 was str1 now str11
+(1980 real changes made)
+(159 real changes made)
+(637 real changes made)
+(569 real changes made)
+(835 real changes made)
+(453 real changes made)
+(194 real changes made)
+(153 real changes made)
+(2764 real changes made)
+(310 real changes made)
+(809 real changes made)
+(1980 real changes made)
+(616 real changes made)
+(166 real changes made)
+(391 real changes made)
+(397 real changes made)
+(945 real changes made)
+(795 real changes made)
+(220 real changes made)
+(465 real changes made)
+(224 real changes made)
+(1367 real changes made)
+(1112 real changes made)
+(493 real changes made)
+(957 real changes made)
+(3309 real changes made)
+(180 real changes made)
+(359 real changes made)
+(128 real changes made)
+(354 real changes made)
+(297 real changes made)
+(724 real changes made)
+(354 real changes made)
+(2845 real changes made)
+(475 real changes made)
+(489 real changes made)
+(2094 real changes made)
+(1992 real changes made)
+(1724 real changes made)
+(2080 real changes made)
+(2540 real changes made)
+(1711 real changes made)
+(1855 real changes made)
+(2043 real changes made)
+(2167 real changes made)
+(2086 real changes made)
+(2254 real changes made)
+(3017 real changes made)
+(1528 real changes made)
+(1875 real changes made)
+(1732 real changes made)
+(1937 real changes made)
+(1440 real changes made)
+(2962 real changes made)
+(2660 real changes made)
+(2403 real changes made)
+(3545 real changes made)
+(2483 real changes made)
+(1410 real changes made)
+(1968 real changes made)
+(3093 real changes made)
+(2845 real changes made)
+(2386 real changes made)
+(1868 real changes made)
+(2764 real changes made)
+(3309 real changes made)
+(3142 real changes made)
+(2691 real changes made)
+(2768 real changes made)
+(2584 real changes made)
+(3870 real changes made)
+(3157 real changes made)
+(106759 missing values generated)
+states1967 was str1 now str13
+(4245 real changes made)
+(7588 real changes made)
+(5010 real changes made)
+(4363 real changes made)
+(5459 real changes made)
+(4997 real changes made)
+(4719 real changes made)
+(4164 real changes made)
+(2144 real changes made)
+(5748 real changes made)
+(3757 real changes made)
+(7619 real changes made)
+(4983 real changes made)
+(6895 real changes made)
+(8782 real changes made)
+(2566 real changes made)
+(7991 real changes made)
+(5706 real changes made)
+(6854 real changes made)
+(106759 missing values generated)
+(4719 real changes made)
+(2144 real changes made)
+(4164 real changes made)
+(5706 real changes made)
+(7588 real changes made)
+(4997 real changes made)
+(6895 real changes made)
+(4363 real changes made)
+(5010 real changes made)
+(7619 real changes made)
+(8782 real changes made)
+(4983 real changes made)
+(6854 real changes made)
+(7991 real changes made)
+(5459 real changes made)
+(2566 real changes made)
+(5748 real changes made)
+(3757 real changes made)
+(4245 real changes made)
+(106759 missing values generated)
+(4719 real changes made)
+(2144 real changes made)
+(4164 real changes made)
+(5706 real changes made)
+(7588 real changes made)
+(4997 real changes made)
+(6895 real changes made)
+(4363 real changes made)
+(5010 real changes made)
+(7619 real changes made)
+(8782 real changes made)
+(4983 real changes made)
+(6854 real changes made)
+(7991 real changes made)
+(5459 real changes made)
+(2566 real changes made)
+(5748 real changes made)
+(3757 real changes made)
+(4245 real changes made)
+(91002 missing values generated)
+(8741 real changes made)
+(2398 real changes made)
+(22231 real changes made)
+(14416 real changes made)
+(43216 real changes made)
+(58824 missing values generated)
+(12722 real changes made)
+(39529 real changes made)
+(1404 real changes made)
+(5169 real changes made)
+(104021 missing values generated)
+(2623 real changes made)
+(2999 real changes made)
+(2546 real changes made)
+(2147 real changes made)
+(2577 real changes made)
+(91129 real changes made)
+(106090 missing values generated)
+(662 real changes made)
+(1215 real changes made)
+(747 real changes made)
+(1091 real changes made)
+(102375 real changes made)
+(105028 missing values generated)
+(1494 real changes made)
+(2604 real changes made)
+(1675 real changes made)
+(99255 real changes made)
+mexp0
+(106691 missing values generated)
+(99 real changes made)
+(225 real changes made)
+(199 real changes made)
+(201 real changes made)
+(511 real changes made)
+(487 real changes made)
+(377 real changes made)
+(238 real changes made)
+(991 real changes made)
+(501 real changes made)
+(177 real changes made)
+(120 real changes made)
+(15 real changes made)
+(12 real changes made)
+(34 real changes made)
+(78 real changes made)
+(106 real changes made)
+(283 real changes made)
+(102037 real changes made)
+mexp1
+(106236 missing values generated)
+(1452 real changes made)
+(1731 real changes made)
+(258 real changes made)
+(512 real changes made)
+(625 real changes made)
+(2604 real changes made)
+(1675 real changes made)
+(443 real changes made)
+(96936 real changes made)
+mexp2
+(106310 missing values generated)
+(1130 real changes made)
+(1584 real changes made)
+(211 real changes made)
+(494 real changes made)
+(425 real changes made)
+(1452 real changes made)
+(1731 real changes made)
+(190 real changes made)
+(99093 real changes made)
+mexp3
+(106438 missing values generated)
+(669 real changes made)
+(662 real changes made)
+(227 real changes made)
+(988 real changes made)
+(747 real changes made)
+(1091 real changes made)
+(548 real changes made)
+(449 real changes made)
+(1130 real changes made)
+(1584 real changes made)
+(167 real changes made)
+(98176 real changes made)
+mexp4
+(106618 missing values generated)
+(344 real changes made)
+(546 real changes made)
+(66 real changes made)
+(372 real changes made)
+(268 real changes made)
+(321 real changes made)
+(669 real changes made)
+(662 real changes made)
+(227 real changes made)
+(103143 real changes made)
+(3169 missing values generated)
+(3169 missing values generated)
+(3169 missing values generated)
+(3169 missing values generated)
+(3169 missing values generated)
+(3169 missing values generated)
+(3169 missing values generated)
+(3169 missing values generated)
+(3169 missing values generated)
+(3169 missing values generated)
+(3169 missing values generated)
+(3169 missing values generated)
+(3169 missing values generated)
+(3169 missing values generated)
+file ~/investigacion/Activa/MMR/Data/Nigeria/mmr.dta saved
+(43195 missing values generated)
+states1976 was str1 now str11
+(735 real changes made)
+(191 real changes made)
+(224 real changes made)
+(240 real changes made)
+(315 real changes made)
+(167 real changes made)
+(166 real changes made)
+(71 real changes made)
+(1079 real changes made)
+(299 real changes made)
+(303 real changes made)
+(735 real changes made)
+(314 real changes made)
+(104 real changes made)
+(172 real changes made)
+(257 real changes made)
+(427 real changes made)
+(368 real changes made)
+(101 real changes made)
+(226 real changes made)
+(202 real changes made)
+(569 real changes made)
+(459 real changes made)
+(226 real changes made)
+(384 real changes made)
+(1257 real changes made)
+(277 real changes made)
+(261 real changes made)
+(214 real changes made)
+(193 real changes made)
+(123 real changes made)
+(278 real changes made)
+(190 real changes made)
+(1409 real changes made)
+(206 real changes made)
+(226 real changes made)
+(819 real changes made)
+(773 real changes made)
+(611 real changes made)
+(736 real changes made)
+(964 real changes made)
+(708 real changes made)
+(648 real changes made)
+(845 real changes made)
+(767 real changes made)
+(763 real changes made)
+(846 real changes made)
+(1252 real changes made)
+(642 real changes made)
+(782 real changes made)
+(743 real changes made)
+(926 real changes made)
+(680 real changes made)
+(985 real changes made)
+(1016 real changes made)
+(953 real changes made)
+(1237 real changes made)
+(1019 real changes made)
+(737 real changes made)
+(878 real changes made)
+(1081 real changes made)
+(1409 real changes made)
+(945 real changes made)
+(966 real changes made)
+(1079 real changes made)
+(1257 real changes made)
+(1008 real changes made)
+(1005 real changes made)
+(990 real changes made)
+(979 real changes made)
+(1217 real changes made)
+(1018 real changes made)
+(43195 missing values generated)
+states1967 was str1 now str13
+(1783 real changes made)
+(2968 real changes made)
+(1811 real changes made)
+(1683 real changes made)
+(2211 real changes made)
+(1987 real changes made)
+(2290 real changes made)
+(1801 real changes made)
+(956 real changes made)
+(2296 real changes made)
+(1353 real changes made)
+(3027 real changes made)
+(2300 real changes made)
+(2874 real changes made)
+(3970 real changes made)
+(1222 real changes made)
+(2667 real changes made)
+(2159 real changes made)
+(2414 real changes made)
+(43195 missing values generated)
+(2290 real changes made)
+(956 real changes made)
+(1801 real changes made)
+(2159 real changes made)
+(2968 real changes made)
+(1987 real changes made)
+(2874 real changes made)
+(1683 real changes made)
+(1811 real changes made)
+(3027 real changes made)
+(3970 real changes made)
+(2300 real changes made)
+(2414 real changes made)
+(2667 real changes made)
+(2211 real changes made)
+(1222 real changes made)
+(2296 real changes made)
+(1353 real changes made)
+(1783 real changes made)
+(43195 missing values generated)
+(2290 real changes made)
+(956 real changes made)
+(1801 real changes made)
+(2159 real changes made)
+(2968 real changes made)
+(1987 real changes made)
+(2874 real changes made)
+(1683 real changes made)
+(1811 real changes made)
+(3027 real changes made)
+(3970 real changes made)
+(2300 real changes made)
+(2414 real changes made)
+(2667 real changes made)
+(2211 real changes made)
+(1222 real changes made)
+(2296 real changes made)
+(1353 real changes made)
+(1783 real changes made)
+(37056 missing values generated)
+(3381 real changes made)
+(1070 real changes made)
+(8974 real changes made)
+(6733 real changes made)
+(16898 real changes made)
+(23453 missing values generated)
+(5039 real changes made)
+(15544 real changes made)
+(665 real changes made)
+(2205 real changes made)
+(42350 missing values generated)
+(889 real changes made)
+(1943 real changes made)
+(907 real changes made)
+(753 real changes made)
+(1031 real changes made)
+(36827 real changes made)
+(43099 missing values generated)
+(83 real changes made)
+(298 real changes made)
+(780 real changes made)
+(819 real changes made)
+(41119 real changes made)
+(42582 missing values generated)
+(672 real changes made)
+(1743 real changes made)
+(781 real changes made)
+(39386 real changes made)
+mexp0
+(43127 missing values generated)
+(67 real changes made)
+(63 real changes made)
+(59 real changes made)
+(66 real changes made)
+(199 real changes made)
+(192 real changes made)
+(198 real changes made)
+(190 real changes made)
+(964 real changes made)
+(200 real changes made)
+(103 real changes made)
+(90 real changes made)
+(61 real changes made)
+(45 real changes made)
+(51 real changes made)
+(49 real changes made)
+(46 real changes made)
+(52 real changes made)
+(40432 real changes made)
+mexp1
+(43047 missing values generated)
+(512 real changes made)
+(613 real changes made)
+(120 real changes made)
+(297 real changes made)
+(188 real changes made)
+(1743 real changes made)
+(781 real changes made)
+(125 real changes made)
+(38668 real changes made)
+mexp2
+(43074 missing values generated)
+(590 real changes made)
+(1214 real changes made)
+(101 real changes made)
+(380 real changes made)
+(89 real changes made)
+(512 real changes made)
+(613 real changes made)
+(52 real changes made)
+(39523 real changes made)
+mexp3
+(43175 missing values generated)
+(96 real changes made)
+(83 real changes made)
+(5 real changes made)
+(293 real changes made)
+(780 real changes made)
+(819 real changes made)
+(349 real changes made)
+(121 real changes made)
+(590 real changes made)
+(1214 real changes made)
+(66 real changes made)
+(38759 real changes made)
+mexp4
+(43171 missing values generated)
+(85 real changes made)
+(161 real changes made)
+(14 real changes made)
+(136 real changes made)
+(48 real changes made)
+(20 real changes made)
+(96 real changes made)
+(83 real changes made)
+(5 real changes made)
+(42523 real changes made)
+(1423 missing values generated)
+(1423 missing values generated)
+(1423 missing values generated)
+(1423 missing values generated)
+(1423 missing values generated)
+(1423 missing values generated)
+(1423 missing values generated)
+(1423 missing values generated)
+(1423 missing values generated)
+(1423 missing values generated)
+(1423 missing values generated)
+(1423 missing values generated)
+(1423 missing values generated)
+(1423 missing values generated)
+file ~/investigacion/Activa/MMR/Data/Nigeria/educ.dta saved
+
+. 
+. 
+. *****************************************************************************
+> ****
+. *** (3) Zimbabwe
+. *****************************************************************************
+> ****
+. tempfile educ1994 educ1999 educ2005 educ2010
+
+. tempfile mmr1994 mmr1999 mmr2005 mmr2010
+
+. 
+. local syears 31 42 51 62
+
+. tokenize `syears'
+
+. 
+. foreach y of numlist 1994 1999 2005 2010 {              
+  2.     dis "survey `y', code `1'"
+  3.     use "$DAT/Zimbabwe/`y'/ZWIR`1'DT"
+  4. 
+.     if `y'==1994 {
+  5.         replace v007=v007+1900
+  6.         replace v010=v010+1900  
+  7.     }
+  8.     rename v133 education
+  9.     rename v010 yearbirth
+ 10.     rename v009 monthbirth
+ 11.     rename v012 age
+ 12.     rename v007 yearinterview
+ 13.     rename v006 monthinterview 
+ 14.     gen highschool=v106==2|v106==3
+ 15.     gen rural=v025==2
+ 16. 
+.     keep education yearbirth monthbirth age yearinterview /*
+>     */ monthinterview highschool rural v024 v005 mm* caseid
+ 17.     gen age1980=age-((yearinterview-1980)+((monthinterview-1)/12))
+ 18.     replace age1980=floor(age1980)
+ 19. 
+.     gen dumage=age1980<=14
+ 20.     gen age1980less14=age1980-14
+ 21. 
+.     gen dumageXage1980less14=dumage*age1980less14
+ 22.     gen invdumageXage1980less14=(1-dumage)*age1980less14
+ 23.     gen dumage14sq=dumageXage1980less14^2
+ 24.     gen invdumage14sq=invdumageXage1980less14^2
+ 25.     gen dumage14th=dumageXage1980less14^3
+ 26.     gen invdumage14th=invdumageXage1980less14^3
+ 27. 
+.     gen dumage_alt=age1980<=20
+ 28.     gen age1980less20=age1980-20
+ 29. 
+.     gen dumageXage1980less20_alt=dumage_alt*age1980less20
+ 30.     gen invdumageXage1980less20_alt=(1-dumage_alt)*age1980less20
+ 31.     gen dumage20sq=dumageXage1980less20^2
+ 32.     gen invdumage20sq=invdumageXage1980less20^2
+ 33.     gen dumage20th=dumageXage1980less20^3
+ 34.     gen invdumage20th=invdumageXage1980less20^3
+ 35.         
+.     gen DHSyear=`y'
+ 36.     preserve
+ 37.     drop mm*
+ 38.     save `educ`y''
+ 39.     restore
+ 40.     
+.     keep caseid v005 mm* yearinterview monthinterview v024 rural
+ 41. 
+.     local Mvars1 mmidx_ mm1_ mm2_ mm3_ mm4_ mm5_ mm6_ mm7_ mm8_ mm9_
+ 42.     local Mvars2 mm10_  mm11_ mm12_ mm13_ mm14_ mm15_
+ 43.     local MMRvars `Mvars1' `Mvars2'
+ 44.     foreach var of local MMRvars  { 
+ 45.         foreach num of numlist 1(1)9 { 
+ 46.             rename `var'0`num' `var'`num'
+ 47.         }
+ 48.     }
+ 49.     cap drop  mmc1- mmc5
+ 50. 
+.     reshape long `MMRvars', i(caseid) j(sister)
+ 51.     drop if mmidx==.
+ 52. 
+.     gen mmr=1 if (mm9_>1 & mm9_<7) & mm1_==2
+ 53.     replace mmr=0 if mmr!=1 & mm1_==2 & mm9_!=99
+ 54.     gen numkids=mm14_
+ 55.     keep if mm1_==2
+ 56. 
+.     gen yearbirth=int((mm4_-1)/12)
+ 57.     gen monthbirth=mm4_-(yearbirth*12)
+ 58.     replace yearbirth=yearbirth+1900 if yearbirth<200
+ 59. 
+.     label var mmr "Sibling death related to child birth"
+ 60.     label var yearbirth "year of birth of sibling"
+ 61. 
+.     replace yearinterview=1900+yearinterview if yearinterview<120
+ 62.     gen age=(yearinterview-yearbirth)+((monthinterview-monthbirth)/12)
+ 63.     gen mmr_25=1 if (mm9_>1 & mm9_<7)&mm1_==2&mm7_<=25
+ 64.     replace mmr_25=0 if mmr_25!=1&mm1_==2&mm9_!=99
+ 65. 
+.     gen age1980=age-((yearinterview-1980)+((monthinterview-1)/12))
+ 66.     replace age1980=floor(age1980)
+ 67. 
+.     gen dumage=age1980<=14
+ 68.     gen age1980less14=age1980-14
+ 69. 
+.     gen dumageXage1980less14=dumage*age1980less14
+ 70.     gen invdumageXage1980less14=(1-dumage)*age1980less14
+ 71.     gen dumage14sq=dumageXage1980less14^2
+ 72.     gen invdumage14sq=invdumageXage1980less14^2
+ 73.     gen dumage14th=dumageXage1980less14^3
+ 74.     gen invdumage14th=invdumageXage1980less14^3
+ 75.                         
+.     gen dumage_alt=age1980<=20
+ 76.     gen age1980less20=age1980-20
+ 77. 
+.     gen dumageXage1980less20_alt=dumage_alt*age1980less20
+ 78.     gen invdumageXage1980less20_alt=(1-dumage_alt)*age1980less20
+ 79.     gen dumage20sq=dumageXage1980less20^2
+ 80.     gen invdumage20sq=invdumageXage1980less20^2
+ 81.     gen dumage20th=dumageXage1980less20^3
+ 82.     gen invdumage20th=invdumageXage1980less20^3
+ 83.         
+.     gen DHSyear=`y'
+ 84.     
+.     save `mmr`y''
+ 85.     macro shift
+ 86. }
+survey 1994, code 31
+v007 was byte now int
+(6128 real changes made)
+v010 was byte now int
+(6128 real changes made)
+(6128 real changes made)
+file /tmp/St22330.000008 saved
+(note: j = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                     6128   ->  122560
+Number of variables                 326   ->      23
+j variable (20 values)                    ->   sister
+xij variables:
+           mmidx_1 mmidx_2 ... mmidx_20   ->   mmidx_
+                 mm1_1 mm1_2 ... mm1_20   ->   mm1_
+                 mm2_1 mm2_2 ... mm2_20   ->   mm2_
+                 mm3_1 mm3_2 ... mm3_20   ->   mm3_
+                 mm4_1 mm4_2 ... mm4_20   ->   mm4_
+                 mm5_1 mm5_2 ... mm5_20   ->   mm5_
+                 mm6_1 mm6_2 ... mm6_20   ->   mm6_
+                 mm7_1 mm7_2 ... mm7_20   ->   mm7_
+                 mm8_1 mm8_2 ... mm8_20   ->   mm8_
+                 mm9_1 mm9_2 ... mm9_20   ->   mm9_
+              mm10_1 mm10_2 ... mm10_20   ->   mm10_
+              mm11_1 mm11_2 ... mm11_20   ->   mm11_
+              mm12_1 mm12_2 ... mm12_20   ->   mm12_
+              mm13_1 mm13_2 ... mm13_20   ->   mm13_
+              mm14_1 mm14_2 ... mm14_20   ->   mm14_
+              mm15_1 mm15_2 ... mm15_20   ->   mm15_
+-----------------------------------------------------------------------------
+(84330 observations deleted)
+(38118 missing values generated)
+(18943 real changes made)
+(38141 missing values generated)
+(19175 observations deleted)
+(19055 real changes made)
+(0 real changes made)
+(18990 missing values generated)
+(18990 real changes made)
+(17657 real changes made)
+file /tmp/St22330.00000c saved
+survey 1999, code 42
+(5907 real changes made)
+file /tmp/St22330.000009 saved
+(note: j = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                     5907   ->  118140
+Number of variables                 326   ->      23
+j variable (20 values)                    ->   sister
+xij variables:
+           mmidx_1 mmidx_2 ... mmidx_20   ->   mmidx_
+                 mm1_1 mm1_2 ... mm1_20   ->   mm1_
+                 mm2_1 mm2_2 ... mm2_20   ->   mm2_
+                 mm3_1 mm3_2 ... mm3_20   ->   mm3_
+                 mm4_1 mm4_2 ... mm4_20   ->   mm4_
+                 mm5_1 mm5_2 ... mm5_20   ->   mm5_
+                 mm6_1 mm6_2 ... mm6_20   ->   mm6_
+                 mm7_1 mm7_2 ... mm7_20   ->   mm7_
+                 mm8_1 mm8_2 ... mm8_20   ->   mm8_
+                 mm9_1 mm9_2 ... mm9_20   ->   mm9_
+              mm10_1 mm10_2 ... mm10_20   ->   mm10_
+              mm11_1 mm11_2 ... mm11_20   ->   mm11_
+              mm12_1 mm12_2 ... mm12_20   ->   mm12_
+              mm13_1 mm13_2 ... mm13_20   ->   mm13_
+              mm14_1 mm14_2 ... mm14_20   ->   mm14_
+              mm15_1 mm15_2 ... mm15_20   ->   mm15_
+-----------------------------------------------------------------------------
+(83606 observations deleted)
+(34417 missing values generated)
+(17174 real changes made)
+(33553 missing values generated)
+(17148 observations deleted)
+(17386 real changes made)
+(0 real changes made)
+(17332 missing values generated)
+(17237 real changes made)
+(16893 real changes made)
+file /tmp/St22330.00000d saved
+survey 2005, code 51
+(7379 real changes made)
+file /tmp/St22330.00000a saved
+(note: j = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                     8907   ->  178140
+Number of variables                 326   ->      23
+j variable (20 values)                    ->   sister
+xij variables:
+           mmidx_1 mmidx_2 ... mmidx_20   ->   mmidx_
+                 mm1_1 mm1_2 ... mm1_20   ->   mm1_
+                 mm2_1 mm2_2 ... mm2_20   ->   mm2_
+                 mm3_1 mm3_2 ... mm3_20   ->   mm3_
+                 mm4_1 mm4_2 ... mm4_20   ->   mm4_
+                 mm5_1 mm5_2 ... mm5_20   ->   mm5_
+                 mm6_1 mm6_2 ... mm6_20   ->   mm6_
+                 mm7_1 mm7_2 ... mm7_20   ->   mm7_
+                 mm8_1 mm8_2 ... mm8_20   ->   mm8_
+                 mm9_1 mm9_2 ... mm9_20   ->   mm9_
+              mm10_1 mm10_2 ... mm10_20   ->   mm10_
+              mm11_1 mm11_2 ... mm11_20   ->   mm11_
+              mm12_1 mm12_2 ... mm12_20   ->   mm12_
+              mm13_1 mm13_2 ... mm13_20   ->   mm13_
+              mm14_1 mm14_2 ... mm14_20   ->   mm14_
+              mm15_1 mm15_2 ... mm15_20   ->   mm15_
+-----------------------------------------------------------------------------
+(131077 observations deleted)
+(46893 missing values generated)
+(23134 real changes made)
+(47063 missing values generated)
+(23499 observations deleted)
+(23564 real changes made)
+(0 real changes made)
+(23505 missing values generated)
+(23245 real changes made)
+(23510 real changes made)
+file /tmp/St22330.00000e saved
+survey 2010, code 62
+(7419 real changes made)
+file /tmp/St22330.00000b saved
+(note: j = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                     9171   ->  183420
+Number of variables                 326   ->      23
+j variable (20 values)                    ->   sister
+xij variables:
+           mmidx_1 mmidx_2 ... mmidx_20   ->   mmidx_
+                 mm1_1 mm1_2 ... mm1_20   ->   mm1_
+                 mm2_1 mm2_2 ... mm2_20   ->   mm2_
+                 mm3_1 mm3_2 ... mm3_20   ->   mm3_
+                 mm4_1 mm4_2 ... mm4_20   ->   mm4_
+                 mm5_1 mm5_2 ... mm5_20   ->   mm5_
+                 mm6_1 mm6_2 ... mm6_20   ->   mm6_
+                 mm7_1 mm7_2 ... mm7_20   ->   mm7_
+                 mm8_1 mm8_2 ... mm8_20   ->   mm8_
+                 mm9_1 mm9_2 ... mm9_20   ->   mm9_
+              mm10_1 mm10_2 ... mm10_20   ->   mm10_
+              mm11_1 mm11_2 ... mm11_20   ->   mm11_
+              mm12_1 mm12_2 ... mm12_20   ->   mm12_
+              mm13_1 mm13_2 ... mm13_20   ->   mm13_
+              mm14_1 mm14_2 ... mm14_20   ->   mm14_
+              mm15_1 mm15_2 ... mm15_20   ->   mm15_
+-----------------------------------------------------------------------------
+(140496 observations deleted)
+(42713 missing values generated)
+(21223 real changes made)
+(40874 missing values generated)
+(21490 observations deleted)
+(21434 real changes made)
+(0 real changes made)
+(21361 missing values generated)
+(21361 real changes made)
+(21313 real changes made)
+file /tmp/St22330.00000f saved
+
+. 
+. clear
+
+. append using `educ1994' `educ1999' `educ2005' `educ2010'
+(label v133 already defined)
+(label v133 already defined)
+(label LABD already defined)
+(label v133 already defined)
+(label v024 already defined)
+
+. lab dat "Education data for Zimbabwe from DHS IR (Bhalotra and Clarke, 2015)"
+
+. save "$OUT/Zimbabwe/educ", replace
+file ~/investigacion/Activa/MMR/Data/Zimbabwe/educ.dta saved
+
+. 
+. clear
+
+. append using `mmr1994' `mmr1999' `mmr2005' `mmr2010'
+mm15_ was byte now int
+(label LABD already defined)
+(label mm10_20 already defined)
+(label mm9_20 already defined)
+(label mm7_20 already defined)
+(label mm6_20 already defined)
+(label mm3_20 already defined)
+(label mm2_20 already defined)
+(label mm1_20 already defined)
+(label v024 already defined)
+
+. lab dat "MMR data for Zimbabwe from DHS IR (Bhalotra and Clarke, 2015)"
+
+. save "$OUT/Zimbabwe/mmr", replace
+file ~/investigacion/Activa/MMR/Data/Zimbabwe/mmr.dta saved
+
+. 
+. 
+. *****************************************************************************
+> ****
+. *** (4) Kenya
+. *****************************************************************************
+> ****
+. tempfile educ1993 educ1998 educ2003 educ2008
+
+. tempfile mmr1993 mmr1998 mmr2003 mmr2008
+
+. 
+. local syears 3A 42 52
+
+. tokenize `syears'
+
+. foreach y of numlist 1998 2003 2008 {
+  2.     dis "survey year `y', code `1'"
+  3.     use $DAT/Kenya/`y'/KEIR`1'DT
+  4. 
+.     rename v133 education
+  5.     rename v010 yearbirth
+  6.     rename v009 monthbirth
+  7.     rename v012 age
+  8.     rename v007 yearinterview
+  9.     rename v006 monthinterview
+ 10.     gen highschool=(v106==2|v106==3)
+ 11.     gen rural=v025==2
+ 12.     rename v131 ethnicity
+ 13.     replace ethnicity=. if ethnicity==99
+ 14. 
+.     keep caseid education yearbirth monthbirth age yearinterview monthintervi
+> ew /*
+>     */ highschool rural ethnicity v005 v024 mm*
+ 15.     gen birthquarter=1 if monthbirth<4
+ 16.     replace birthquarter=2 if monthbirth>=4&monthbirth<7
+ 17.     replace birthquarter=3 if monthbirth>=7&monthbirth<10
+ 18.     replace birthquarter=4 if monthbirth>=10&monthbirth<13
+ 19. 
+.     replace yearbirth=yearbirth+1900 if yearbirth<200
+ 20.     keep if yearbirth>1949&yearbirth<1981
+ 21.     gen quarter=(yearbirth-1950)*4+birthquarter
+ 22.     gen treat=0 if yearbirth<=1963
+ 23.     replace treat=(quarter-56)*(1/32) if yearbirth>1963&yearbirth<1972
+ 24.     replace treat=1 if yearbirth>=1972
+ 25.     gen treat_false=0 if yearbirth<=1955
+ 26.     replace treat_false=(quarter-24)*(1/32) if yearbirth>1955&yearbirth<19
+> 64
+ 27.     replace treat_false=1 if yearbirth>=1964
+ 28.         
+.     gen DHSyear=`y'
+ 29.     gen age2=age^2
+ 30.     gen age3=age^3
+ 31.     gen trend=quarter
+ 32.     gen trend2=trend^2
+ 33.     save `educ`y''
+ 34. 
+.     keep caseid v005 mm* yearinterview monthinterview v024 rural ethnicity
+ 35.     local Mvars1 mmidx_ mm1_ mm2_ mm3_ mm4_ mm5_ mm6_ mm7_ mm8_ mm9_
+ 36.     local Mvars2 mm10_ mm11_ mm12_ mm13_ mm14_ mm15_
+ 37.     local MMRvars `Mvars1' `Mvars2'
+ 38.     foreach var of local MMRvars  { 
+ 39.         foreach num of numlist 1(1)9 { 
+ 40.             rename `var'0`num' `var'`num'
+ 41.         }
+ 42.     }
+ 43.     cap drop  mmc1- mmc5
+ 44. 
+.     *NB: mm8 is age at death
+.     reshape long `MMRvars', i(caseid) j(sister)
+ 45.     drop if mmidx==.
+ 46. 
+.     gen mmr=1 if (mm9_>1 & mm9_<7) & mm1_==2
+ 47.     replace mmr=0 if mmr!=1 & mm1_==2 & mm9_!=99
+ 48.     gen numkids=mm14_
+ 49.     keep if mm1_==2
+ 50.         
+.     gen yearbirth=int((mm4_-1)/12)
+ 51.     gen monthbirth=mm4_-(yearbirth*12)
+ 52.     replace yearbirth=yearbirth+1900 if yearbirth<200
+ 53. 
+.     replace yearinterview=1900+yearinterview if yearinterview<120
+ 54.     gen age=yearinterview-yearbirth
+ 55.     gen mmr_25=1 if (mm9_>1 & mm9_<7)&mm1_==2&mm7_<=25
+ 56.     replace mmr_25=0 if mmr_25!=1&mm1_==2&mm9_!=99
+ 57. 
+.     label var mmr "Sibling death related to child birth"
+ 58.     label var yearbirth "year of birth of sibling"
+ 59. 
+.     gen birthquarter=1 if monthbirth<4
+ 60.     replace birthquarter=2 if monthbirth>=4&monthbirth<7
+ 61.     replace birthquarter=3 if monthbirth>=7&monthbirth<10
+ 62.     replace birthquarter=4 if monthbirth>=10&monthbirth<13
+ 63. 
+.     replace yearbirth=yearbirth+1900 if yearbirth<200
+ 64.     keep if yearbirth>1949&yearbirth<1981
+ 65.     gen quarter=(yearbirth-1950)*4+birthquarter
+ 66.     gen treat=0 if yearbirth<=1963
+ 67.     replace treat=(quarter-56)*(1/32) if yearbirth>1963&yearbirth<1972
+ 68.     replace treat=1 if yearbirth>=1972
+ 69.     gen treat_false=0 if yearbirth<=1955
+ 70.     replace treat_false=(quarter-24)*(1/32) if yearbirth>1955&yearbirth<19
+> 64
+ 71.     replace treat_false=1 if yearbirth>=1964
+ 72.         
+.     gen age2=age^2
+ 73.     gen age3=age^3
+ 74.     gen trend=quarter
+ 75.     gen trend2=trend^2
+ 76. 
+.     save `mmr`y''
+ 77.     macro shift
+ 78. }
+survey year 1998, code 3A
+(0 real changes made)
+(6113 missing values generated)
+(1915 real changes made)
+(2050 real changes made)
+(2148 real changes made)
+yearbirth was byte now int
+(7881 real changes made)
+(1030 observations deleted)
+(4717 missing values generated)
+(1781 real changes made)
+(2936 real changes made)
+(6205 missing values generated)
+(1488 real changes made)
+(4717 real changes made)
+file /tmp/St22330.00000l saved
+(note: j = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                     6851   ->  116467
+Number of variables                 279   ->      24
+j variable (17 values)                    ->   sister
+xij variables:
+           mmidx_1 mmidx_2 ... mmidx_17   ->   mmidx_
+                 mm1_1 mm1_2 ... mm1_17   ->   mm1_
+                 mm2_1 mm2_2 ... mm2_17   ->   mm2_
+                 mm3_1 mm3_2 ... mm3_17   ->   mm3_
+                 mm4_1 mm4_2 ... mm4_17   ->   mm4_
+                 mm5_1 mm5_2 ... mm5_17   ->   mm5_
+                 mm6_1 mm6_2 ... mm6_17   ->   mm6_
+                 mm7_1 mm7_2 ... mm7_17   ->   mm7_
+                 mm8_1 mm8_2 ... mm8_17   ->   mm8_
+                 mm9_1 mm9_2 ... mm9_17   ->   mm9_
+              mm10_1 mm10_2 ... mm10_17   ->   mm10_
+              mm11_1 mm11_2 ... mm11_17   ->   mm11_
+              mm12_1 mm12_2 ... mm12_17   ->   mm12_
+              mm13_1 mm13_2 ... mm13_17   ->   mm13_
+              mm14_1 mm14_2 ... mm14_17   ->   mm14_
+              mm15_1 mm15_2 ... mm15_17   ->   mm15_
+-----------------------------------------------------------------------------
+(72746 observations deleted)
+(43499 missing values generated)
+(21358 real changes made)
+(42960 missing values generated)
+(22141 observations deleted)
+(21580 real changes made)
+yearinterview was byte now int
+(21580 real changes made)
+(21470 missing values generated)
+(21470 real changes made)
+(20592 missing values generated)
+(1474 real changes made)
+(7625 real changes made)
+(11493 real changes made)
+(0 real changes made)
+(4921 observations deleted)
+(11094 missing values generated)
+(5422 real changes made)
+(5672 real changes made)
+(15095 missing values generated)
+(4001 real changes made)
+(11094 real changes made)
+file /tmp/St22330.00000p saved
+survey year 2003, code 42
+(0 real changes made)
+(2176 missing values generated)
+(894 real changes made)
+(653 real changes made)
+(629 real changes made)
+yearbirth was byte now int
+(2884 real changes made)
+(74 observations deleted)
+(1543 missing values generated)
+(852 real changes made)
+(691 real changes made)
+(2313 missing values generated)
+(770 real changes made)
+(1543 real changes made)
+file /tmp/St22330.00000m saved
+(note: j = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                     2810   ->   56200
+Number of variables                 327   ->      24
+j variable (20 values)                    ->   sister
+xij variables:
+           mmidx_1 mmidx_2 ... mmidx_20   ->   mmidx_
+                 mm1_1 mm1_2 ... mm1_20   ->   mm1_
+                 mm2_1 mm2_2 ... mm2_20   ->   mm2_
+                 mm3_1 mm3_2 ... mm3_20   ->   mm3_
+                 mm4_1 mm4_2 ... mm4_20   ->   mm4_
+                 mm5_1 mm5_2 ... mm5_20   ->   mm5_
+                 mm6_1 mm6_2 ... mm6_20   ->   mm6_
+                 mm7_1 mm7_2 ... mm7_20   ->   mm7_
+                 mm8_1 mm8_2 ... mm8_20   ->   mm8_
+                 mm9_1 mm9_2 ... mm9_20   ->   mm9_
+              mm10_1 mm10_2 ... mm10_20   ->   mm10_
+              mm11_1 mm11_2 ... mm11_20   ->   mm11_
+              mm12_1 mm12_2 ... mm12_20   ->   mm12_
+              mm13_1 mm13_2 ... mm13_20   ->   mm13_
+              mm14_1 mm14_2 ... mm14_20   ->   mm14_
+              mm15_1 mm15_2 ... mm15_20   ->   mm15_
+-----------------------------------------------------------------------------
+(56200 observations deleted)
+(0 real changes made)
+(0 observations deleted)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 observations deleted)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(note: dataset contains 0 observations)
+file /tmp/St22330.00000q saved
+survey year 2008, code 52
+(2 real changes made, 2 to missing)
+(6373 missing values generated)
+(2069 real changes made)
+(2179 real changes made)
+(2125 real changes made)
+(0 real changes made)
+(4393 observations deleted)
+(3401 missing values generated)
+(1215 real changes made)
+(2186 real changes made)
+(4051 missing values generated)
+(650 real changes made)
+(3401 real changes made)
+file /tmp/St22330.00000n saved
+(note: j = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                     4051   ->   81020
+Number of variables                 327   ->      24
+j variable (20 values)                    ->   sister
+xij variables:
+           mmidx_1 mmidx_2 ... mmidx_20   ->   mmidx_
+                 mm1_1 mm1_2 ... mm1_20   ->   mm1_
+                 mm2_1 mm2_2 ... mm2_20   ->   mm2_
+                 mm3_1 mm3_2 ... mm3_20   ->   mm3_
+                 mm4_1 mm4_2 ... mm4_20   ->   mm4_
+                 mm5_1 mm5_2 ... mm5_20   ->   mm5_
+                 mm6_1 mm6_2 ... mm6_20   ->   mm6_
+                 mm7_1 mm7_2 ... mm7_20   ->   mm7_
+                 mm8_1 mm8_2 ... mm8_20   ->   mm8_
+                 mm9_1 mm9_2 ... mm9_20   ->   mm9_
+              mm10_1 mm10_2 ... mm10_20   ->   mm10_
+              mm11_1 mm11_2 ... mm11_20   ->   mm11_
+              mm12_1 mm12_2 ... mm12_20   ->   mm12_
+              mm13_1 mm13_2 ... mm13_20   ->   mm13_
+              mm14_1 mm14_2 ... mm14_20   ->   mm14_
+              mm15_1 mm15_2 ... mm15_20   ->   mm15_
+-----------------------------------------------------------------------------
+(56215 observations deleted)
+(24672 missing values generated)
+(12082 real changes made)
+(23865 missing values generated)
+(12508 observations deleted)
+(12297 real changes made)
+(0 real changes made)
+(12236 missing values generated)
+(12154 real changes made)
+(11223 missing values generated)
+(5017 real changes made)
+(5796 real changes made)
+(410 real changes made)
+(0 real changes made)
+(3270 observations deleted)
+(6713 missing values generated)
+(3036 real changes made)
+(3677 real changes made)
+(8508 missing values generated)
+(1795 real changes made)
+(6713 real changes made)
+file /tmp/St22330.00000r saved
+
+. 
+. clear
+
+. append using `educ1998' `educ2003' `educ2008'
+(label mm7_17 already defined)
+(label mm6_17 already defined)
+(label mm2_17 already defined)
+(label mm1_17 already defined)
+(label mm7_16 already defined)
+(label mm6_16 already defined)
+(label mm2_16 already defined)
+(label mm1_16 already defined)
+(label mm7_15 already defined)
+(label mm6_15 already defined)
+(label mm2_15 already defined)
+(label mm1_15 already defined)
+(label mm7_14 already defined)
+(label mm6_14 already defined)
+(label mm2_14 already defined)
+(label mm1_14 already defined)
+(label mm7_13 already defined)
+(label mm6_13 already defined)
+(label mm2_13 already defined)
+(label mm1_13 already defined)
+(label mm7_12 already defined)
+(label mm6_12 already defined)
+(label mm2_12 already defined)
+(label mm1_12 already defined)
+(label mm7_11 already defined)
+(label mm6_11 already defined)
+(label mm2_11 already defined)
+(label mm1_11 already defined)
+(label mm7_10 already defined)
+(label mm6_10 already defined)
+(label mm2_10 already defined)
+(label mm1_10 already defined)
+(label mm7_09 already defined)
+(label mm6_09 already defined)
+(label mm2_09 already defined)
+(label mm1_09 already defined)
+(label mm7_08 already defined)
+(label mm6_08 already defined)
+(label mm2_08 already defined)
+(label mm1_08 already defined)
+(label mm7_07 already defined)
+(label mm6_07 already defined)
+(label mm2_07 already defined)
+(label mm1_07 already defined)
+(label mm7_06 already defined)
+(label mm6_06 already defined)
+(label mm2_06 already defined)
+(label mm1_06 already defined)
+(label mm7_05 already defined)
+(label mm6_05 already defined)
+(label mm2_05 already defined)
+(label mm1_05 already defined)
+(label mm7_04 already defined)
+(label mm6_04 already defined)
+(label mm2_04 already defined)
+(label mm1_04 already defined)
+(label mm7_03 already defined)
+(label mm6_03 already defined)
+(label mm2_03 already defined)
+(label mm1_03 already defined)
+(label mm7_02 already defined)
+(label mm6_02 already defined)
+(label mm2_02 already defined)
+(label mm1_02 already defined)
+(label mm7_01 already defined)
+(label mm6_01 already defined)
+(label mm2_01 already defined)
+(label mm1_01 already defined)
+(label v133 already defined)
+(label v131 already defined)
+yearinterview was byte now int
+mm4_18 was byte now int
+mm8_18 was byte now int
+(label mmc5 already defined)
+(label mm15_20 already defined)
+(label mm15_19 already defined)
+(label mm15_18 already defined)
+(label mm15_17 already defined)
+(label mm15_16 already defined)
+(label mm15_15 already defined)
+(label mm15_14 already defined)
+(label mm15_13 already defined)
+(label mm15_12 already defined)
+(label mm15_11 already defined)
+(label mm15_10 already defined)
+(label mm15_09 already defined)
+(label mm15_08 already defined)
+(label mm15_07 already defined)
+(label mm15_06 already defined)
+(label mm15_05 already defined)
+(label mm15_04 already defined)
+(label mm15_03 already defined)
+(label mm15_02 already defined)
+(label mm15_01 already defined)
+(label mm13_17 already defined)
+(label mm13_16 already defined)
+(label mm13_15 already defined)
+(label mm13_14 already defined)
+(label mm13_13 already defined)
+(label mm13_12 already defined)
+(label mm13_11 already defined)
+(label mm13_10 already defined)
+(label mm13_09 already defined)
+(label mm13_08 already defined)
+(label mm13_07 already defined)
+(label mm13_06 already defined)
+(label mm13_05 already defined)
+(label mm13_04 already defined)
+(label mm13_03 already defined)
+(label mm13_02 already defined)
+(label mm13_01 already defined)
+(label mm11_20 already defined)
+(label mm11_19 already defined)
+(label mm11_18 already defined)
+(label mm11_17 already defined)
+(label mm11_16 already defined)
+(label mm11_15 already defined)
+(label mm11_14 already defined)
+(label mm11_13 already defined)
+(label mm11_12 already defined)
+(label mm11_11 already defined)
+(label mm11_10 already defined)
+(label mm11_09 already defined)
+(label mm11_08 already defined)
+(label mm11_07 already defined)
+(label mm11_06 already defined)
+(label mm11_05 already defined)
+(label mm11_04 already defined)
+(label mm11_03 already defined)
+(label mm11_02 already defined)
+(label mm11_01 already defined)
+(label mm10_20 already defined)
+(label mm10_19 already defined)
+(label mm10_18 already defined)
+(label mm10_17 already defined)
+(label mm10_16 already defined)
+(label mm10_15 already defined)
+(label mm10_14 already defined)
+(label mm10_13 already defined)
+(label mm10_12 already defined)
+(label mm10_11 already defined)
+(label mm10_10 already defined)
+(label mm10_09 already defined)
+(label mm10_08 already defined)
+(label mm10_07 already defined)
+(label mm10_06 already defined)
+(label mm10_05 already defined)
+(label mm10_04 already defined)
+(label mm10_03 already defined)
+(label mm10_02 already defined)
+(label mm10_01 already defined)
+(label mm9_17 already defined)
+(label mm9_16 already defined)
+(label mm9_15 already defined)
+(label mm9_14 already defined)
+(label mm9_13 already defined)
+(label mm9_12 already defined)
+(label mm9_11 already defined)
+(label mm9_10 already defined)
+(label mm9_09 already defined)
+(label mm9_08 already defined)
+(label mm9_07 already defined)
+(label mm9_06 already defined)
+(label mm9_05 already defined)
+(label mm9_04 already defined)
+(label mm9_03 already defined)
+(label mm9_02 already defined)
+(label mm9_01 already defined)
+(label mm7_20 already defined)
+(label mm7_19 already defined)
+(label mm7_18 already defined)
+(label mm7_17 already defined)
+(label mm7_16 already defined)
+(label mm7_15 already defined)
+(label mm7_14 already defined)
+(label mm7_13 already defined)
+(label mm7_12 already defined)
+(label mm7_11 already defined)
+(label mm7_10 already defined)
+(label mm7_09 already defined)
+(label mm7_08 already defined)
+(label mm7_07 already defined)
+(label mm7_06 already defined)
+(label mm7_05 already defined)
+(label mm7_04 already defined)
+(label mm7_03 already defined)
+(label mm7_02 already defined)
+(label mm7_01 already defined)
+(label mm6_20 already defined)
+(label mm6_19 already defined)
+(label mm6_18 already defined)
+(label mm6_17 already defined)
+(label mm6_16 already defined)
+(label mm6_15 already defined)
+(label mm6_14 already defined)
+(label mm6_13 already defined)
+(label mm6_12 already defined)
+(label mm6_11 already defined)
+(label mm6_10 already defined)
+(label mm6_09 already defined)
+(label mm6_08 already defined)
+(label mm6_07 already defined)
+(label mm6_06 already defined)
+(label mm6_05 already defined)
+(label mm6_04 already defined)
+(label mm6_03 already defined)
+(label mm6_02 already defined)
+(label mm6_01 already defined)
+(label mm3_17 already defined)
+(label mm3_16 already defined)
+(label mm3_15 already defined)
+(label mm3_14 already defined)
+(label mm3_13 already defined)
+(label mm3_12 already defined)
+(label mm3_11 already defined)
+(label mm3_10 already defined)
+(label mm3_09 already defined)
+(label mm3_08 already defined)
+(label mm3_07 already defined)
+(label mm3_06 already defined)
+(label mm3_05 already defined)
+(label mm3_04 already defined)
+(label mm3_03 already defined)
+(label mm3_02 already defined)
+(label mm3_01 already defined)
+(label mm2_20 already defined)
+(label mm2_19 already defined)
+(label mm2_18 already defined)
+(label mm2_17 already defined)
+(label mm2_16 already defined)
+(label mm2_15 already defined)
+(label mm2_14 already defined)
+(label mm2_13 already defined)
+(label mm2_12 already defined)
+(label mm2_11 already defined)
+(label mm2_10 already defined)
+(label mm2_09 already defined)
+(label mm2_08 already defined)
+(label mm2_07 already defined)
+(label mm2_06 already defined)
+(label mm2_05 already defined)
+(label mm2_04 already defined)
+(label mm2_03 already defined)
+(label mm2_02 already defined)
+(label mm2_01 already defined)
+(label mm1_20 already defined)
+(label mm1_19 already defined)
+(label mm1_18 already defined)
+(label mm1_17 already defined)
+(label mm1_16 already defined)
+(label mm1_15 already defined)
+(label mm1_14 already defined)
+(label mm1_13 already defined)
+(label mm1_12 already defined)
+(label mm1_11 already defined)
+(label mm1_10 already defined)
+(label mm1_09 already defined)
+(label mm1_08 already defined)
+(label mm1_07 already defined)
+(label mm1_06 already defined)
+(label mm1_05 already defined)
+(label mm1_04 already defined)
+(label mm1_03 already defined)
+(label mm1_02 already defined)
+(label mm1_01 already defined)
+(label v133 already defined)
+(label v131 already defined)
+(label v024 already defined)
+
+. lab dat "Education data for Kenya from DHS IR (Bhalotra and Clarke, 2015)"
+
+. save "$OUT/Kenya/educ", replace
+file ~/investigacion/Activa/MMR/Data/Kenya/educ.dta saved
+
+. 
+. clear
+
+. append using `mmr1998' `mmr2003' `mmr2008'
+(label v131 already defined)
+(label v024 already defined)
+(label v131 already defined)
+(label mm1_20 already defined)
+(label mm2_20 already defined)
+(label mm6_20 already defined)
+(label mm7_20 already defined)
+(label mm10_20 already defined)
+(label mm11_20 already defined)
+(label mm15_20 already defined)
+
+. lab dat "MMR data for Kenya from DHS IR (Bhalotra and Clarke, 2015)"
+
+. save "$OUT/Kenya/mmr", replace  
+file ~/investigacion/Activa/MMR/Data/Kenya/mmr.dta saved
+
+. 
+. 
+. *****************************************************************************
+> ***
+. *** (5) Clean up
+. *****************************************************************************
+> ***
+. log close
+      name:  <unnamed>
+       log:  /home/damiancclarke/investigacion/Activa/MMR/Log/setupExperiments.
+> txt
+  log type:  text
+ closed on:  14 Sep 2015, 15:47:07
+-------------------------------------------------------------------------------

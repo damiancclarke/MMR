@@ -1,0 +1,1138 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /home/damiancclarke/investigacion/Activa/MMR/Log/setupMMR.txt
+  log type:  text
+ opened on:  14 Sep 2015, 16:25:05
+
+. 
+. 
+. *****************************************************************************
+> ***
+. *** (2) Create Barro-Lee data set with male and female results
+. *****************************************************************************
+> ***
+. use "$DAT/BL2013_M_v2.0.dta"
+
+. foreach var of varlist lu lp lpc ls lsc lh lhc yr_sch yr_sch_* {
+  2.     rename `var' M_`var'
+  3. }
+
+. keep M_*  country year agefrom ageto 
+
+. merge 1:1 country year agefrom ageto using "$DAT/BL2013_F_v2.0.dta", gen(_mMF
+> )
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                            28,470  (_mMF==3)
+    -----------------------------------------
+
+. drop _mMF
+
+. 
+. 
+. *****************************************************************************
+> ***
+. *** (3) Merge Barro-Lee with MMR
+. *****************************************************************************
+> ***
+. replace country="Libya"                     if country=="Libyan Arab Jamahiri
+> ya"
+(195 real changes made)
+
+. replace country="Cote d'Ivoire"             if country=="Cote dIvoire"
+(195 real changes made)
+
+. replace country="Dominican Republic"        if country=="Dominican Rep."
+(195 real changes made)
+
+. replace country="United States of America"  if country=="USA"
+(195 real changes made)
+
+. 
+. replace country="Bolivia (Plurinational State of)"   if country=="Bolivia"
+(195 real changes made)
+
+. replace country="Venezuela (Bolivarian Republic of)" if country=="Venezuela"
+(195 real changes made)
+
+. replace country="Lao People's Democratic Repblic"    if country==/*
+> */              "Lao People's Democratic Republic"
+(195 real changes made)
+
+. 
+. keep if year > 1985
+(17520 observations deleted)
+
+. merge m:1 country year using "$DAT/MM_base", gen(_mergeBLMMR)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                           495
+        from master                       300  (_mergeBLMMR==1)
+        from using                        195  (_mergeBLMMR==2)
+
+    matched                            10,650  (_mergeBLMMR==3)
+    -----------------------------------------
+
+. 
+. save "$DAT/MMReduc_BASE_F", replace
+file ~/investigacion/Activa/MMR/Data/MMReduc_BASE_F.dta saved
+
+. 
+. *****************************************************************************
+> ***
+. *** (4) Merge Barro-Lee with covariates (saved per sheet)
+. *****************************************************************************
+> ***
+. foreach var in GDPpc Immunization fertility population TeenBirths_temp IMR GD
+> Pgrowth {
+  2.     use "$DAT/InputsToCreateBase/control_`var'", clear
+  3.     reshape long v, i(countryname countrycode) j(year)
+  4.     rename v `var'
+  5.     replace year=year+1957
+  6. 
+.     do "$COD/WHO_Countrynaming.do"
+  7.                 keep if year==1990|year==1995|year==2000|year==2005|year==
+> 2010
+  8. 
+.     rename countryname country
+  9.     merge m:m country year using "$DAT/MMReduc_BASE_F", gen(_merge`var')
+ 10.     save "$DAT/MMReduc_BASE_F", replace
+ 11. }
+(note: j = 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 
+> 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53
+>  54)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                      214   ->   11128
+Number of variables                  54   ->       4
+j variable (52 values)                    ->   year
+xij variables:
+                          v3 v4 ... v54   ->   v
+-----------------------------------------------------------------------------
+year was byte now int
+(11128 real changes made)
+
+. replace countryname="Bahamas" if countryname=="Bahamas. The"
+(52 real changes made)
+
+. replace countryname="Bolivia (Plurinational State of)" if countryname=="Boliv
+> ia"
+countryname was str30 now str32
+(52 real changes made)
+
+. replace countryname="Democratic Republic of the Congo" if countryname=="Congo
+> . Dem. Rep."
+(52 real changes made)
+
+. replace countryname="Congo" if countryname=="Congo. Rep."
+(52 real changes made)
+
+. replace countryname="Democratic People's Republic of Korea" if countryname=="
+> Korea. Dem. Rep."
+countryname was str32 now str37
+(52 real changes made)
+
+. replace countryname="Egypt" if countryname=="Egypt. Arab Rep."
+(52 real changes made)
+
+. replace countryname="Gambia" if countryname=="Gambia. The"
+(52 real changes made)
+
+. replace countryname="China, Hong Kong Special Administrative Region" if count
+> ryname=="Hong Kong SAR. China"
+countryname was str37 now str46
+(52 real changes made)
+
+. replace countryname="Iran (Islamic Republic of)" if countryname=="Iran. Islam
+> ic Rep."
+(52 real changes made)
+
+. replace countryname="Kyrgyzstan" if countryname=="Kyrgyz Republic"
+(52 real changes made)
+
+. replace countryname="Lao People's Democratic Repblic" if countryname=="Lao PD
+> R"
+(52 real changes made)
+
+. replace countryname="China, Macao Special Administrative Region" if countryna
+> me=="Macao SAR. China"
+(52 real changes made)
+
+. replace countryname="Micronesia (Federated States of)" if countryname=="Micro
+> nesia. Fed. Sts."
+(52 real changes made)
+
+. replace countryname="Republic of Korea" if countryname=="Korea. Rep."
+(52 real changes made)
+
+. replace countryname="Republic of Moldova" if countryname=="Moldova"
+(52 real changes made)
+
+. replace countryname="Slovakia" if countryname=="Slovak Republic"
+(52 real changes made)
+
+. replace countryname="Saint Lucia" if countryname=="St. Lucia"
+(52 real changes made)
+
+. replace countryname="Saint Vincent and the Grenadines" if countryname=="St. V
+> incent and the Grenadines"
+(52 real changes made)
+
+. replace countryname="Taiwan" if countryname==""
+(0 real changes made)
+
+. replace countryname="United Republic of Tanzania" if countryname=="Tanzania"
+(52 real changes made)
+
+. replace countryname="United States of America" if countryname=="United States
+> "
+(52 real changes made)
+
+. replace countryname="Venezuela (Bolivarian Republic of)" if countryname=="Ven
+> ezuela. RB"
+(52 real changes made)
+
+. replace countryname="Viet Nam" if countryname=="Vietnam"
+(52 real changes made)
+
+. replace countryname="West Ban and Gaza Strip" if countryname=="West Bank and 
+> Gaza"
+(52 real changes made)
+
+. replace countryname="Yemen" if countryname=="Yemen. Rep."
+(52 real changes made)
+
+. 
+. 
+end of do-file
+(10058 observations deleted)
+country was str46 now str66
+year was int now double
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                           315
+        from master                       160  (_mergeGDPpc==1)
+        from using                        155  (_mergeGDPpc==2)
+
+    matched                            10,990  (_mergeGDPpc==3)
+    -----------------------------------------
+file ~/investigacion/Activa/MMR/Data/MMReduc_BASE_F.dta saved
+(note: j = 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 
+> 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53
+>  54)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                      214   ->   11128
+Number of variables                  54   ->       4
+j variable (52 values)                    ->   year
+xij variables:
+                          v3 v4 ... v54   ->   v
+-----------------------------------------------------------------------------
+year was byte now int
+(11128 real changes made)
+
+. replace countryname="Bahamas" if countryname=="Bahamas. The"
+(52 real changes made)
+
+. replace countryname="Bolivia (Plurinational State of)" if countryname=="Boliv
+> ia"
+countryname was str30 now str32
+(52 real changes made)
+
+. replace countryname="Democratic Republic of the Congo" if countryname=="Congo
+> . Dem. Rep."
+(52 real changes made)
+
+. replace countryname="Congo" if countryname=="Congo. Rep."
+(52 real changes made)
+
+. replace countryname="Democratic People's Republic of Korea" if countryname=="
+> Korea. Dem. Rep."
+countryname was str32 now str37
+(52 real changes made)
+
+. replace countryname="Egypt" if countryname=="Egypt. Arab Rep."
+(52 real changes made)
+
+. replace countryname="Gambia" if countryname=="Gambia. The"
+(52 real changes made)
+
+. replace countryname="China, Hong Kong Special Administrative Region" if count
+> ryname=="Hong Kong SAR. China"
+countryname was str37 now str46
+(52 real changes made)
+
+. replace countryname="Iran (Islamic Republic of)" if countryname=="Iran. Islam
+> ic Rep."
+(52 real changes made)
+
+. replace countryname="Kyrgyzstan" if countryname=="Kyrgyz Republic"
+(52 real changes made)
+
+. replace countryname="Lao People's Democratic Repblic" if countryname=="Lao PD
+> R"
+(52 real changes made)
+
+. replace countryname="China, Macao Special Administrative Region" if countryna
+> me=="Macao SAR. China"
+(52 real changes made)
+
+. replace countryname="Micronesia (Federated States of)" if countryname=="Micro
+> nesia. Fed. Sts."
+(52 real changes made)
+
+. replace countryname="Republic of Korea" if countryname=="Korea. Rep."
+(52 real changes made)
+
+. replace countryname="Republic of Moldova" if countryname=="Moldova"
+(52 real changes made)
+
+. replace countryname="Slovakia" if countryname=="Slovak Republic"
+(52 real changes made)
+
+. replace countryname="Saint Lucia" if countryname=="St. Lucia"
+(52 real changes made)
+
+. replace countryname="Saint Vincent and the Grenadines" if countryname=="St. V
+> incent and the Grenadines"
+(52 real changes made)
+
+. replace countryname="Taiwan" if countryname==""
+(0 real changes made)
+
+. replace countryname="United Republic of Tanzania" if countryname=="Tanzania"
+(52 real changes made)
+
+. replace countryname="United States of America" if countryname=="United States
+> "
+(52 real changes made)
+
+. replace countryname="Venezuela (Bolivarian Republic of)" if countryname=="Ven
+> ezuela. RB"
+(52 real changes made)
+
+. replace countryname="Viet Nam" if countryname=="Vietnam"
+(52 real changes made)
+
+. replace countryname="West Ban and Gaza Strip" if countryname=="West Bank and 
+> Gaza"
+(52 real changes made)
+
+. replace countryname="Yemen" if countryname=="Yemen. Rep."
+(52 real changes made)
+
+. 
+. 
+end of do-file
+(10058 observations deleted)
+country was str46 now str66
+year was int now double
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                           155
+        from master                         0  (_mergeImmunization==1)
+        from using                        155  (_mergeImmunization==2)
+
+    matched                            11,150  (_mergeImmunization==3)
+    -----------------------------------------
+file ~/investigacion/Activa/MMR/Data/MMReduc_BASE_F.dta saved
+(note: j = 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 
+> 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53
+>  54)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                      214   ->   11128
+Number of variables                  54   ->       4
+j variable (52 values)                    ->   year
+xij variables:
+                          v3 v4 ... v54   ->   v
+-----------------------------------------------------------------------------
+year was byte now int
+(11128 real changes made)
+
+. replace countryname="Bahamas" if countryname=="Bahamas. The"
+(52 real changes made)
+
+. replace countryname="Bolivia (Plurinational State of)" if countryname=="Boliv
+> ia"
+countryname was str30 now str32
+(52 real changes made)
+
+. replace countryname="Democratic Republic of the Congo" if countryname=="Congo
+> . Dem. Rep."
+(52 real changes made)
+
+. replace countryname="Congo" if countryname=="Congo. Rep."
+(52 real changes made)
+
+. replace countryname="Democratic People's Republic of Korea" if countryname=="
+> Korea. Dem. Rep."
+countryname was str32 now str37
+(52 real changes made)
+
+. replace countryname="Egypt" if countryname=="Egypt. Arab Rep."
+(52 real changes made)
+
+. replace countryname="Gambia" if countryname=="Gambia. The"
+(52 real changes made)
+
+. replace countryname="China, Hong Kong Special Administrative Region" if count
+> ryname=="Hong Kong SAR. China"
+countryname was str37 now str46
+(52 real changes made)
+
+. replace countryname="Iran (Islamic Republic of)" if countryname=="Iran. Islam
+> ic Rep."
+(52 real changes made)
+
+. replace countryname="Kyrgyzstan" if countryname=="Kyrgyz Republic"
+(52 real changes made)
+
+. replace countryname="Lao People's Democratic Repblic" if countryname=="Lao PD
+> R"
+(52 real changes made)
+
+. replace countryname="China, Macao Special Administrative Region" if countryna
+> me=="Macao SAR. China"
+(52 real changes made)
+
+. replace countryname="Micronesia (Federated States of)" if countryname=="Micro
+> nesia. Fed. Sts."
+(52 real changes made)
+
+. replace countryname="Republic of Korea" if countryname=="Korea. Rep."
+(52 real changes made)
+
+. replace countryname="Republic of Moldova" if countryname=="Moldova"
+(52 real changes made)
+
+. replace countryname="Slovakia" if countryname=="Slovak Republic"
+(52 real changes made)
+
+. replace countryname="Saint Lucia" if countryname=="St. Lucia"
+(52 real changes made)
+
+. replace countryname="Saint Vincent and the Grenadines" if countryname=="St. V
+> incent and the Grenadines"
+(52 real changes made)
+
+. replace countryname="Taiwan" if countryname==""
+(0 real changes made)
+
+. replace countryname="United Republic of Tanzania" if countryname=="Tanzania"
+(52 real changes made)
+
+. replace countryname="United States of America" if countryname=="United States
+> "
+(52 real changes made)
+
+. replace countryname="Venezuela (Bolivarian Republic of)" if countryname=="Ven
+> ezuela. RB"
+(52 real changes made)
+
+. replace countryname="Viet Nam" if countryname=="Vietnam"
+(52 real changes made)
+
+. replace countryname="West Ban and Gaza Strip" if countryname=="West Bank and 
+> Gaza"
+(52 real changes made)
+
+. replace countryname="Yemen" if countryname=="Yemen. Rep."
+(52 real changes made)
+
+. 
+. 
+end of do-file
+(10058 observations deleted)
+country was str46 now str66
+year was int now double
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                           155
+        from master                         0  (_mergefertility==1)
+        from using                        155  (_mergefertility==2)
+
+    matched                            11,150  (_mergefertility==3)
+    -----------------------------------------
+file ~/investigacion/Activa/MMR/Data/MMReduc_BASE_F.dta saved
+(note: j = 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 
+> 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53
+>  54)
+v3:  21 values would be changed; not changed
+v8:  18 values would be changed; not changed
+v13:  18 values would be changed; not changed
+v14:  33 values would be changed; not changed
+v15:  28 values would be changed; not changed
+v16:  32 values would be changed; not changed
+v17:  31 values would be changed; not changed
+v18:  21 values would be changed; not changed
+v19:  29 values would be changed; not changed
+v20:  38 values would be changed; not changed
+v21:  30 values would be changed; not changed
+v22:  32 values would be changed; not changed
+v24:  34 values would be changed; not changed
+v25:  34 values would be changed; not changed
+v26:  29 values would be changed; not changed
+v27:  35 values would be changed; not changed
+v29:  33 values would be changed; not changed
+v30:  31 values would be changed; not changed
+v31:  34 values would be changed; not changed
+v32:  38 values would be changed; not changed
+v33:  28 values would be changed; not changed
+v40:  36 values would be changed; not changed
+v48:  41 values would be changed; not changed
+v49:  36 values would be changed; not changed
+v50:  40 values would be changed; not changed
+v51:  34 values would be changed; not changed
+v52:  38 values would be changed; not changed
+v53:  38 values would be changed; not changed
+v54:  35 values would be changed; not changed
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                      214   ->   11128
+Number of variables                  54   ->       4
+j variable (52 values)                    ->   year
+xij variables:
+                          v3 v4 ... v54   ->   v
+-----------------------------------------------------------------------------
+year was byte now int
+(11128 real changes made)
+
+. replace countryname="Bahamas" if countryname=="Bahamas. The"
+(0 real changes made)
+
+. replace countryname="Bolivia (Plurinational State of)" if countryname=="Boliv
+> ia"
+countryname was str30 now str32
+(52 real changes made)
+
+. replace countryname="Democratic Republic of the Congo" if countryname=="Congo
+> . Dem. Rep."
+(0 real changes made)
+
+. replace countryname="Congo" if countryname=="Congo. Rep."
+(0 real changes made)
+
+. replace countryname="Democratic People's Republic of Korea" if countryname=="
+> Korea. Dem. Rep."
+(0 real changes made)
+
+. replace countryname="Egypt" if countryname=="Egypt. Arab Rep."
+(0 real changes made)
+
+. replace countryname="Gambia" if countryname=="Gambia. The"
+(0 real changes made)
+
+. replace countryname="China, Hong Kong Special Administrative Region" if count
+> ryname=="Hong Kong SAR. China"
+(0 real changes made)
+
+. replace countryname="Iran (Islamic Republic of)" if countryname=="Iran. Islam
+> ic Rep."
+(0 real changes made)
+
+. replace countryname="Kyrgyzstan" if countryname=="Kyrgyz Republic"
+(52 real changes made)
+
+. replace countryname="Lao People's Democratic Repblic" if countryname=="Lao PD
+> R"
+(52 real changes made)
+
+. replace countryname="China, Macao Special Administrative Region" if countryna
+> me=="Macao SAR. China"
+(0 real changes made)
+
+. replace countryname="Micronesia (Federated States of)" if countryname=="Micro
+> nesia. Fed. Sts."
+(0 real changes made)
+
+. replace countryname="Republic of Korea" if countryname=="Korea. Rep."
+(0 real changes made)
+
+. replace countryname="Republic of Moldova" if countryname=="Moldova"
+(52 real changes made)
+
+. replace countryname="Slovakia" if countryname=="Slovak Republic"
+(52 real changes made)
+
+. replace countryname="Saint Lucia" if countryname=="St. Lucia"
+(52 real changes made)
+
+. replace countryname="Saint Vincent and the Grenadines" if countryname=="St. V
+> incent and the Grenadines"
+(52 real changes made)
+
+. replace countryname="Taiwan" if countryname==""
+(0 real changes made)
+
+. replace countryname="United Republic of Tanzania" if countryname=="Tanzania"
+(52 real changes made)
+
+. replace countryname="United States of America" if countryname=="United States
+> "
+(52 real changes made)
+
+. replace countryname="Venezuela (Bolivarian Republic of)" if countryname=="Ven
+> ezuela. RB"
+(0 real changes made)
+
+. replace countryname="Viet Nam" if countryname=="Vietnam"
+(52 real changes made)
+
+. replace countryname="West Ban and Gaza Strip" if countryname=="West Bank and 
+> Gaza"
+(52 real changes made)
+
+. replace countryname="Yemen" if countryname=="Yemen. Rep."
+(0 real changes made)
+
+. 
+. 
+end of do-file
+(10058 observations deleted)
+country was str32 now str66
+year was int now double
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                           995
+        from master                        70  (_mergepopulation==1)
+        from using                        925  (_mergepopulation==2)
+
+    matched                            10,380  (_mergepopulation==3)
+    -----------------------------------------
+file ~/investigacion/Activa/MMR/Data/MMReduc_BASE_F.dta saved
+(note: j = 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 
+> 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53
+>  54)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                      214   ->   11128
+Number of variables                  54   ->       4
+j variable (52 values)                    ->   year
+xij variables:
+                          v3 v4 ... v54   ->   v
+-----------------------------------------------------------------------------
+year was byte now int
+(11128 real changes made)
+
+. replace countryname="Bahamas" if countryname=="Bahamas. The"
+(0 real changes made)
+
+. replace countryname="Bolivia (Plurinational State of)" if countryname=="Boliv
+> ia"
+countryname was str30 now str32
+(52 real changes made)
+
+. replace countryname="Democratic Republic of the Congo" if countryname=="Congo
+> . Dem. Rep."
+(0 real changes made)
+
+. replace countryname="Congo" if countryname=="Congo. Rep."
+(0 real changes made)
+
+. replace countryname="Democratic People's Republic of Korea" if countryname=="
+> Korea. Dem. Rep."
+(0 real changes made)
+
+. replace countryname="Egypt" if countryname=="Egypt. Arab Rep."
+(0 real changes made)
+
+. replace countryname="Gambia" if countryname=="Gambia. The"
+(0 real changes made)
+
+. replace countryname="China, Hong Kong Special Administrative Region" if count
+> ryname=="Hong Kong SAR. China"
+(0 real changes made)
+
+. replace countryname="Iran (Islamic Republic of)" if countryname=="Iran. Islam
+> ic Rep."
+(0 real changes made)
+
+. replace countryname="Kyrgyzstan" if countryname=="Kyrgyz Republic"
+(52 real changes made)
+
+. replace countryname="Lao People's Democratic Repblic" if countryname=="Lao PD
+> R"
+(52 real changes made)
+
+. replace countryname="China, Macao Special Administrative Region" if countryna
+> me=="Macao SAR. China"
+(0 real changes made)
+
+. replace countryname="Micronesia (Federated States of)" if countryname=="Micro
+> nesia. Fed. Sts."
+(0 real changes made)
+
+. replace countryname="Republic of Korea" if countryname=="Korea. Rep."
+(0 real changes made)
+
+. replace countryname="Republic of Moldova" if countryname=="Moldova"
+(52 real changes made)
+
+. replace countryname="Slovakia" if countryname=="Slovak Republic"
+(52 real changes made)
+
+. replace countryname="Saint Lucia" if countryname=="St. Lucia"
+(52 real changes made)
+
+. replace countryname="Saint Vincent and the Grenadines" if countryname=="St. V
+> incent and the Grenadines"
+(52 real changes made)
+
+. replace countryname="Taiwan" if countryname==""
+(0 real changes made)
+
+. replace countryname="United Republic of Tanzania" if countryname=="Tanzania"
+(52 real changes made)
+
+. replace countryname="United States of America" if countryname=="United States
+> "
+(52 real changes made)
+
+. replace countryname="Venezuela (Bolivarian Republic of)" if countryname=="Ven
+> ezuela. RB"
+(0 real changes made)
+
+. replace countryname="Viet Nam" if countryname=="Vietnam"
+(52 real changes made)
+
+. replace countryname="West Ban and Gaza Strip" if countryname=="West Bank and 
+> Gaza"
+(52 real changes made)
+
+. replace countryname="Yemen" if countryname=="Yemen. Rep."
+(0 real changes made)
+
+. 
+. 
+end of do-file
+(10058 observations deleted)
+country was str32 now str66
+year was int now double
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                           925
+        from master                         0  (_mergeTeenBirths_temp==1)
+        from using                        925  (_mergeTeenBirths_temp==2)
+
+    matched                            10,450  (_mergeTeenBirths_temp==3)
+    -----------------------------------------
+file ~/investigacion/Activa/MMR/Data/MMReduc_BASE_F.dta saved
+(note: j = 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 2
+> 9 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 
+> 55 56)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                      252   ->   13104
+Number of variables                  56   ->       6
+j variable (52 values)                    ->   year
+xij variables:
+                          v5 v6 ... v56   ->   v
+-----------------------------------------------------------------------------
+year was byte now int
+(13104 real changes made)
+
+. replace countryname="Bahamas" if countryname=="Bahamas. The"
+(0 real changes made)
+
+. replace countryname="Bolivia (Plurinational State of)" if countryname=="Boliv
+> ia"
+(52 real changes made)
+
+. replace countryname="Democratic Republic of the Congo" if countryname=="Congo
+> . Dem. Rep."
+(0 real changes made)
+
+. replace countryname="Congo" if countryname=="Congo. Rep."
+(0 real changes made)
+
+. replace countryname="Democratic People's Republic of Korea" if countryname=="
+> Korea. Dem. Rep."
+(0 real changes made)
+
+. replace countryname="Egypt" if countryname=="Egypt. Arab Rep."
+(0 real changes made)
+
+. replace countryname="Gambia" if countryname=="Gambia. The"
+(0 real changes made)
+
+. replace countryname="China, Hong Kong Special Administrative Region" if count
+> ryname=="Hong Kong SAR. China"
+(0 real changes made)
+
+. replace countryname="Iran (Islamic Republic of)" if countryname=="Iran. Islam
+> ic Rep."
+(0 real changes made)
+
+. replace countryname="Kyrgyzstan" if countryname=="Kyrgyz Republic"
+(52 real changes made)
+
+. replace countryname="Lao People's Democratic Repblic" if countryname=="Lao PD
+> R"
+(52 real changes made)
+
+. replace countryname="China, Macao Special Administrative Region" if countryna
+> me=="Macao SAR. China"
+(0 real changes made)
+
+. replace countryname="Micronesia (Federated States of)" if countryname=="Micro
+> nesia. Fed. Sts."
+(0 real changes made)
+
+. replace countryname="Republic of Korea" if countryname=="Korea. Rep."
+(0 real changes made)
+
+. replace countryname="Republic of Moldova" if countryname=="Moldova"
+(52 real changes made)
+
+. replace countryname="Slovakia" if countryname=="Slovak Republic"
+(52 real changes made)
+
+. replace countryname="Saint Lucia" if countryname=="St. Lucia"
+(52 real changes made)
+
+. replace countryname="Saint Vincent and the Grenadines" if countryname=="St. V
+> incent and the Grenadines"
+(52 real changes made)
+
+. replace countryname="Taiwan" if countryname==""
+(0 real changes made)
+
+. replace countryname="United Republic of Tanzania" if countryname=="Tanzania"
+(52 real changes made)
+
+. replace countryname="United States of America" if countryname=="United States
+> "
+(52 real changes made)
+
+. replace countryname="Venezuela (Bolivarian Republic of)" if countryname=="Ven
+> ezuela. RB"
+(0 real changes made)
+
+. replace countryname="Viet Nam" if countryname=="Vietnam"
+(52 real changes made)
+
+. replace countryname="West Ban and Gaza Strip" if countryname=="West Bank and 
+> Gaza"
+(52 real changes made)
+
+. replace countryname="Yemen" if countryname=="Yemen. Rep."
+(0 real changes made)
+
+. 
+. 
+end of do-file
+(11844 observations deleted)
+country was str52 now str66
+year was int now double
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         1,115
+        from master                       190  (_mergeIMR==1)
+        from using                        925  (_mergeIMR==2)
+
+    matched                            10,450  (_mergeIMR==3)
+    -----------------------------------------
+file ~/investigacion/Activa/MMR/Data/MMReduc_BASE_F.dta saved
+(note: j = 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 2
+> 9 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 
+> 55 56 57 58 59)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                      248   ->   13640
+Number of variables                  59   ->       6
+j variable (55 values)                    ->   year
+xij variables:
+                          v5 v6 ... v59   ->   v
+-----------------------------------------------------------------------------
+year was byte now int
+(13640 real changes made)
+
+. replace countryname="Bahamas" if countryname=="Bahamas. The"
+(0 real changes made)
+
+. replace countryname="Bolivia (Plurinational State of)" if countryname=="Boliv
+> ia"
+(55 real changes made)
+
+. replace countryname="Democratic Republic of the Congo" if countryname=="Congo
+> . Dem. Rep."
+(0 real changes made)
+
+. replace countryname="Congo" if countryname=="Congo. Rep."
+(0 real changes made)
+
+. replace countryname="Democratic People's Republic of Korea" if countryname=="
+> Korea. Dem. Rep."
+(0 real changes made)
+
+. replace countryname="Egypt" if countryname=="Egypt. Arab Rep."
+(0 real changes made)
+
+. replace countryname="Gambia" if countryname=="Gambia. The"
+(0 real changes made)
+
+. replace countryname="China, Hong Kong Special Administrative Region" if count
+> ryname=="Hong Kong SAR. China"
+(0 real changes made)
+
+. replace countryname="Iran (Islamic Republic of)" if countryname=="Iran. Islam
+> ic Rep."
+(0 real changes made)
+
+. replace countryname="Kyrgyzstan" if countryname=="Kyrgyz Republic"
+(55 real changes made)
+
+. replace countryname="Lao People's Democratic Repblic" if countryname=="Lao PD
+> R"
+(55 real changes made)
+
+. replace countryname="China, Macao Special Administrative Region" if countryna
+> me=="Macao SAR. China"
+(0 real changes made)
+
+. replace countryname="Micronesia (Federated States of)" if countryname=="Micro
+> nesia. Fed. Sts."
+(0 real changes made)
+
+. replace countryname="Republic of Korea" if countryname=="Korea. Rep."
+(0 real changes made)
+
+. replace countryname="Republic of Moldova" if countryname=="Moldova"
+(55 real changes made)
+
+. replace countryname="Slovakia" if countryname=="Slovak Republic"
+(55 real changes made)
+
+. replace countryname="Saint Lucia" if countryname=="St. Lucia"
+(55 real changes made)
+
+. replace countryname="Saint Vincent and the Grenadines" if countryname=="St. V
+> incent and the Grenadines"
+(55 real changes made)
+
+. replace countryname="Taiwan" if countryname==""
+(0 real changes made)
+
+. replace countryname="United Republic of Tanzania" if countryname=="Tanzania"
+(55 real changes made)
+
+. replace countryname="United States of America" if countryname=="United States
+> "
+(55 real changes made)
+
+. replace countryname="Venezuela (Bolivarian Republic of)" if countryname=="Ven
+> ezuela. RB"
+(0 real changes made)
+
+. replace countryname="Viet Nam" if countryname=="Vietnam"
+(55 real changes made)
+
+. replace countryname="West Ban and Gaza Strip" if countryname=="West Bank and 
+> Gaza"
+(55 real changes made)
+
+. replace countryname="Yemen" if countryname=="Yemen. Rep."
+(0 real changes made)
+
+. 
+. 
+end of do-file
+(12400 observations deleted)
+country was str46 now str66
+year was int now double
+indicatorname was str21 now str46
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                           975
+        from master                        15  (_mergeGDPgrowth==1)
+        from using                        960  (_mergeGDPgrowth==2)
+
+    matched                            10,605  (_mergeGDPgrowth==3)
+    -----------------------------------------
+file ~/investigacion/Activa/MMR/Data/MMReduc_BASE_F.dta saved
+
+. 
+. use "$DAT/InputsToCreateBase/control_birthphysician", clear
+
+. do  "$COD/WHO_Countrynaming.do"
+
+. replace countryname="Bahamas" if countryname=="Bahamas. The"
+(0 real changes made)
+
+. replace countryname="Bolivia (Plurinational State of)" if countryname=="Boliv
+> ia"
+countryname was str30 now str32
+(5 real changes made)
+
+. replace countryname="Democratic Republic of the Congo" if countryname=="Congo
+> . Dem. Rep."
+(0 real changes made)
+
+. replace countryname="Congo" if countryname=="Congo. Rep."
+(0 real changes made)
+
+. replace countryname="Democratic People's Republic of Korea" if countryname=="
+> Korea. Dem. Rep."
+(0 real changes made)
+
+. replace countryname="Egypt" if countryname=="Egypt. Arab Rep."
+(0 real changes made)
+
+. replace countryname="Gambia" if countryname=="Gambia. The"
+(0 real changes made)
+
+. replace countryname="China, Hong Kong Special Administrative Region" if count
+> ryname=="Hong Kong SAR. China"
+(0 real changes made)
+
+. replace countryname="Iran (Islamic Republic of)" if countryname=="Iran. Islam
+> ic Rep."
+(0 real changes made)
+
+. replace countryname="Kyrgyzstan" if countryname=="Kyrgyz Republic"
+(0 real changes made)
+
+. replace countryname="Lao People's Democratic Repblic" if countryname=="Lao PD
+> R"
+(0 real changes made)
+
+. replace countryname="China, Macao Special Administrative Region" if countryna
+> me=="Macao SAR. China"
+(0 real changes made)
+
+. replace countryname="Micronesia (Federated States of)" if countryname=="Micro
+> nesia. Fed. Sts."
+(0 real changes made)
+
+. replace countryname="Republic of Korea" if countryname=="Korea. Rep."
+(0 real changes made)
+
+. replace countryname="Republic of Moldova" if countryname=="Moldova"
+(5 real changes made)
+
+. replace countryname="Slovakia" if countryname=="Slovak Republic"
+(0 real changes made)
+
+. replace countryname="Saint Lucia" if countryname=="St. Lucia"
+(0 real changes made)
+
+. replace countryname="Saint Vincent and the Grenadines" if countryname=="St. V
+> incent and the Grenadines"
+(0 real changes made)
+
+. replace countryname="Taiwan" if countryname==""
+(0 real changes made)
+
+. replace countryname="United Republic of Tanzania" if countryname=="Tanzania"
+(5 real changes made)
+
+. replace countryname="United States of America" if countryname=="United States
+> "
+(0 real changes made)
+
+. replace countryname="Venezuela (Bolivarian Republic of)" if countryname=="Ven
+> ezuela. RB"
+(0 real changes made)
+
+. replace countryname="Viet Nam" if countryname=="Vietnam"
+(5 real changes made)
+
+. replace countryname="West Ban and Gaza Strip" if countryname=="West Bank and 
+> Gaza"
+(0 real changes made)
+
+. replace countryname="Yemen" if countryname=="Yemen. Rep."
+(0 real changes made)
+
+. 
+. 
+end of do-file
+
+. rename countryname country
+
+. 
+. merge m:m country year using "$DAT/MMReduc_BASE_F", gen(_merge`var')
+country was str32 now str66
+year was int now double
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         3,320
+        from master                       325  (_merge==1)
+        from using                      2,995  (_merge==2)
+
+    matched                             8,585  (_merge==3)
+    -----------------------------------------
+
+. save "$DAT/MMReduc_BASE_F", replace
+file ~/investigacion/Activa/MMR/Data/MMReduc_BASE_F.dta saved
+
+. 
+. *****************************************************************************
+> ***
+. *** (5) Variable creation
+. *****************************************************************************
+> ***
+. gen age_all   = agefrom==15&ageto==999
+
+. gen age_25plus= agefrom==25&ageto==999
+
+. gen age_fert  = agefrom==15&ageto==19|agefrom==20&ageto==24|/*
+> */              agefrom==25&ageto==29|agefrom==30&ageto==34|agefrom==35&ageto
+> ==39
+
+. 
+. label var age_all    "Average educational attainment of all age groups"
+
+. label var age_25plus "Average educational attainment, all individuals over 25
+> "
+
+. label var age_fert   "Dummmy indicating fertile age (15-39)"
+
+. 
+. gen ln_yrsch  = log(yr_sch)
+(955 missing values generated)
+
+. gen ln_MMR    = log(MMR)
+(1060 missing values generated)
+
+. gen ln_GDPpc  = log(GDPpc)
+(1119 missing values generated)
+
+. 
+. *****************************************************************************
+> ***
+. *** (6) Save, clean
+. *****************************************************************************
+> ***
+. lab dat "Education and Maternal Mortality by country 1990-2010 (Bhalotra Clar
+> ke)"
+
+. save "$DAT/MMReduc_BASE_F", replace
+file ~/investigacion/Activa/MMR/Data/MMReduc_BASE_F.dta saved
+
+. 
+. log close
+      name:  <unnamed>
+       log:  /home/damiancclarke/investigacion/Activa/MMR/Log/setupMMR.txt
+  log type:  text
+ closed on:  14 Sep 2015, 16:25:06
+-------------------------------------------------------------------------------
