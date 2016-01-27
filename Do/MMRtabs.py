@@ -27,8 +27,8 @@ print '\n The script %s is making %s files \n' %(script, ftype)
 #-------------------------------------------------------------------------------
 # --- (1) File names
 #-------------------------------------------------------------------------------
-result = '/home/damiancclarke/investigacion/Activa/MMR/Results/tables/'
-tables = '/home/damiancclarke/investigacion/Activa/MMR/Paper/tables/'
+result = '/home/damian/investigacion/Activa/MMR/Results/tables/'
+tables = '/home/damian/investigacion/Activa/MMR/Paper/tables/'
 
 sums = 'SumStats.xls'
 mmra = 'CrossCountry_female.txt'
@@ -38,6 +38,7 @@ corr = 'Zscores_female.txt'
 gend = 'CrossCountry_gender.txt'
 mmry = 'CrossCountry_female_yrs.txt'
 mmrs = 'CrossCountry_female_yrssq.txt'
+mmrd = 'deltaEducation.txt'
 gens = 'CrossCountry_gender_yrssq.txt'
 mmrc = 'DHSsubset.txt'
 ngra = 'Nigeria.txt'
@@ -188,10 +189,10 @@ for i,line in enumerate(mmri):
         line = line.replace('ls& secondary','Secondary Education (\\% Population) ')
         line = line.replace('lp& primary','Primary Education (\\% Population) ')
         line = line.replace('lh& tertiary','Tertiary Education (\\% Population) ')
-        line = line.replace('_year2&year==  1995.0000'  ,'year==1995')
-        line = line.replace('_year3&year==  2000.0000'  ,'year==2000')
-        line = line.replace('_year4&year==  2005.0000'  ,'year==2005')
-        line = line.replace('_year5&year==  2010.0000'  ,'year==2010')
+        line = line.replace('_year2&year==  1995.0000'  ,'year 1995')
+        line = line.replace('_year3&year==  2000.0000'  ,'year 2000')
+        line = line.replace('_year4&year==  2005.0000'  ,'year 2005')
+        line = line.replace('_year5&year==  2010.0000'  ,'year 2010')
         line = line.replace('ln_GDPpc&'                 ,'')
         line = line.replace('Immunization&'             ,'')
         line = line.replace('(DPT)'                     ,'(DPT) ')
@@ -248,10 +249,10 @@ for i,line in enumerate(mmri):
         line = line.replace('M_lp&(mean) M_lp','Primary Education (\\% Males) ')
         line = line.replace('M_ls&(mean) M_ls','Secondary Education (\\% Males) ')
         line = line.replace('M_lh&(mean) M_lh','Tertiary Education (\\% Males) ')
-        line = line.replace('_year2&year==  1995.0000'  ,'year==1995')
-        line = line.replace('_year3&year==  2000.0000'  ,'year==2000')
-        line = line.replace('_year4&year==  2005.0000'  ,'year==2005')
-        line = line.replace('_year5&year==  2010.0000'  ,'year==2010')
+        line = line.replace('_year2&year==  1995.0000'  ,'year 1995')
+        line = line.replace('_year3&year==  2000.0000'  ,'year 2000')
+        line = line.replace('_year4&year==  2005.0000'  ,'year 2005')
+        line = line.replace('_year5&year==  2010.0000'  ,'year 2010')
         line = line.replace('ln_GDPpc&'                 ,'')
         line = line.replace('Immunization&'             ,'')
         line = line.replace('(DPT)'                     ,'(DPT) ')
@@ -305,10 +306,10 @@ for i,line in enumerate(mmri):
         #line=re.sub(r"&$", ls+ls, line)
         line = line.replace('&LABELS','')
         line = line.replace('yr_sch&(mean) yr_sch'      ,'Years of Education')
-        line = line.replace('_year2&year==  1995.0000'  ,'year==1995')
-        line = line.replace('_year3&year==  2000.0000'  ,'year==2000')
-        line = line.replace('_year4&year==  2005.0000'  ,'year==2005')
-        line = line.replace('_year5&year==  2010.0000'  ,'year==2010')
+        line = line.replace('_year2&year==  1995.0000'  ,'year 1995')
+        line = line.replace('_year3&year==  2000.0000'  ,'year 2000')
+        line = line.replace('_year4&year==  2005.0000'  ,'year 2005')
+        line = line.replace('_year5&year==  2010.0000'  ,'year 2010')
         line = line.replace('ln_GDPpc&'                 ,'')
         line = line.replace('Immunization&'             ,'')
         line = line.replace('(DPT)'                     ,'(DPT) ')
@@ -358,10 +359,10 @@ for i,line in enumerate(mmri):
         line = line.replace('&LABELS'                   ,'')
         line = line.replace('yr_sch_sq&'       ,'Years of Education Squared')
         line = line.replace('yr_sch&(mean) yr_sch'      ,'Years of Education')
-        line = line.replace('_year2&year==  1995.0000'  ,'year==1995')
-        line = line.replace('_year3&year==  2000.0000'  ,'year==2000')
-        line = line.replace('_year4&year==  2005.0000'  ,'year==2005')
-        line = line.replace('_year5&year==  2010.0000'  ,'year==2010')
+        line = line.replace('_year2&year==  1995.0000'  ,'year 1995')
+        line = line.replace('_year3&year==  2000.0000'  ,'year 2000')
+        line = line.replace('_year4&year==  2005.0000'  ,'year 2005')
+        line = line.replace('_year5&year==  2010.0000'  ,'year 2010')
         line = line.replace('ln_GDPpc&'                 ,'')
         line = line.replace('Immunization&'             ,'')
         line = line.replace('(DPT)'                     ,'(DPT) ')
@@ -413,10 +414,10 @@ for i,line in enumerate(mmri):
         line = line.replace('M_yr_sch&(mean) M_yr_sch'  ,'Years of Education (Male) ')
         line = line.replace('yr_sch_sq&'       ,'Years of Education Squared (Female) ')
         line = line.replace('yr_sch&(mean) yr_sch'      ,'Years of Education (Female) ')
-        line = line.replace('_year2&year==  1995.0000'  ,'year==1995')
-        line = line.replace('_year3&year==  2000.0000'  ,'year==2000')
-        line = line.replace('_year4&year==  2005.0000'  ,'year==2005')
-        line = line.replace('_year5&year==  2010.0000'  ,'year==2010')
+        line = line.replace('_year2&year==  1995.0000'  ,'year 1995')
+        line = line.replace('_year3&year==  2000.0000'  ,'year 2000')
+        line = line.replace('_year4&year==  2005.0000'  ,'year 2005')
+        line = line.replace('_year5&year==  2010.0000'  ,'year 2010')
         line = line.replace('ln_GDPpc&'                 ,'')
         line = line.replace('Immunization&'             ,'')
         line = line.replace('(DPT)'                     ,'(DPT) ')
@@ -442,6 +443,62 @@ mr+'\n'+mc1+cadd[1]+ccm[1]+mc3+'All regressions include fixed-effects by '
 ' Educational variables are the same as those in table \\ref{MMRtab:MMRpercent}'
 ' however include both female and male figures for each variable (ages 15-39).'
 ' A full description'
+' of control variables is available in section \\ref{scn:data}, and as the note'  
+' to table \\ref{MMRtab:sumstats}.  Standard errors clustered at the level of'
+' the country are diplayed.\n'+foot)
+if ftype=='tex':
+    mmro.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
+    '\\end{tabular}\\end{center}\\end{table}\\end{landscape}')
+
+mmro.close()
+
+# Delta on Delta
+mmri = open(result + mmrd, 'r')
+mmro = open(tables + 'MMRDelta.' + end, 'w')
+
+if ftype=='tex':
+    mmro.write('\\begin{landscape}\\begin{table}[htpb!]\\begin{center}'
+    '\\caption{Cross-Country Results of $\Delta$ MMR and $\Delta$ Female Educational Attainment}'
+    '\\label{MMRtab:MMRDelta}\\begin{tabular}{lcccccccc}\\toprule')
+for i,line in enumerate(mmri):
+    if i<=32:
+        line = re.sub(r"\t",dd,line)
+        line = re.sub(r"^&&","&",line)
+
+        #line=re.sub(r"&$", ls+ls, line)
+
+        line = line.replace('&LABELS','')
+        line = line.replace('Percent ever enrolled in','')
+        line = line.replace('ls& secondary','Secondary Education (\\% Population) ')
+        line = line.replace('lp& primary','Primary Education (\\% Population) ')
+        line = line.replace('lh& tertiary','Tertiary Education (\\% Population) ')
+        line = line.replace('_year2&year==  1995.0000'  ,'year 1995')
+        line = line.replace('_year3&year==  2000.0000'  ,'year 2000')
+        line = line.replace('_year4&year==  2005.0000'  ,'year 2005')
+        line = line.replace('_year5&year==  2010.0000'  ,'year 2010')
+        line = line.replace('ln_GDPpc&'                 ,'')
+        line = line.replace('Immunization&'             ,'')
+        line = line.replace('(DPT)'                     ,'(DPT) ')
+        line = line.replace('percentattend&'            ,'')
+        line = line.replace('fertility&(mean) fertility','Fertility')
+        line = line.replace('TeenBirths&'               ,'')
+        line = line.replace('Constant&Constant'         ,'Constant')
+        line = line.replace('BLcode&'                   ,'countries')
+        line = line.replace('\n'                        ,'\\\\')
+        line = line.replace(')\\\\'                     ,')'+dd3+'\\\\')
+        line = line.replace('(8)'                       ,'(8) ')
+        line = line.replace('&('                        ,dd1+'(')
+        line = line.replace(')&'                        ,')'+dd2)
+        line = line.replace('MMR\\\\'                   ,'MMR\\\\ \\midrule')
+        line = line.replace('Observations&'             ,'Observations')
+        line = line.replace('R-squared&'                ,'R-squared')
+        mmro.write(line+'\n')
+
+mmro.write(
+mr+'\n'+mc1+cadd[1]+ccm[1]+mc3+'$Delta$ refers to the first difference for each'
+'variable within a given country over time. For the full list of countries by year see table \\ref{MMRtab:survey}.' 
+'  Results are for the percent of the female population between the ages of '
+' 15 and 39 with each level of education in each country.  A full description'
 ' of control variables is available in section \\ref{scn:data}, and as the note'  
 ' to table \\ref{MMRtab:sumstats}.  Standard errors clustered at the level of'
 ' the country are diplayed.\n'+foot)
