@@ -35,7 +35,7 @@ global COD "~/investigacion/Activa/MMR/Do"
 global OUT "~/investigacion/Activa/MMR/Results"
 global LOG "~/investigacion/Activa/MMR/Log"
 
-log using "$LOG/MMR_Analysis.txt", text replace
+log using "$LOG/analysisMMR.txt", text replace
 cap mkdir "$OUT/tables"
 cap mkdir "$OUT/graphs"
 
@@ -106,6 +106,89 @@ foreach MMR of varlist ln_MMR MMR {
     lab(3 "Fitted Values (quadratic)")) scheme(s1color)
     graph export "$OUT/graphs/trends/Schooling_`MMR'_F.eps", replace as(eps)
 }
+
+preserve
+replace lu=-lu
+keep if age_fert==1
+gsort country -year
+
+reg MMR GDPpc
+predict MMRresid, resid
+reg lu GDPpc
+predict luresid, resid
+reg lp GDPpc
+predict lpresid, resid
+
+
+by country: gen FDMMR   = MMR[_n-1]- MMR[_n]
+by country: gen FDeducN = lu[_n-1] - lu[_n]
+by country: gen FDeducP = lp[_n-1] - lp[_n]
+
+by country: gen FDMMRr   = MMRresid[_n-1]- MMRresid[_n]
+by country: gen FDeducNr = luresid[_n-1] - luresid[_n]
+by country: gen FDeducPr = lpresid[_n-1] - lpresid[_n]
+
+
+collapse FDMMR FDeducN FDeducP FDMMRr FDeducNr FDeducPr, by(country)
+
+lab var FDMMR   "Change in Maternal Mortality Ratio"
+lab var FDeducN "Change in Proportion out of School"
+lab var FDeducP "Change in Proportion in Primary School"
+
+lab var FDMMRr   "Change in Maternal Mortality Ratio"
+lab var FDeducNr "Change in Proportion out of School"
+lab var FDeducPr "Change in Proportion in Primary School"
+
+foreach g in N P {
+    local gname "reduction in the proportion of women with no"
+    if `"`g'"'=="N" local gname "increase in the proportion of women with primary"
+    reg FDMMR FDeduc`g'
+
+    local Pcoef = _b[FDeduc`g']
+    local Ptsta = _b[FDeduc`g']/_se[FDeduc`g']
+    local Ppval = 1-ttail(e(N),`Ptsta')
+    local Ppval = round(`Ppval'*1000)/1000
+    local Pcval = round((`Pcoef')*1000)/1000
+    if `Ppval'< 0.001 local Ppval "0.000"
+    
+    local n1 "A 1 unit `gname' education is associated with a"
+    local n2 " change in MMR (p-value = "
+    dis `Ppval'
+    
+    #delimit ;
+    scatter FDMMR FDeduc`g', mlabel(country) mlabsize(vsmall) mlabpos(9) m(i)||
+        lfit FDMMR FDeduc`g', lcolor(red) lwidth(thick) lpattern(---) scheme(s1mono)
+    xline(0, lwidth(thin)) yline(0, lwidth(thin))
+    note("Slope =  `Pcval' (p-value = `Ppval' )");
+    *note("`n1' `Pcval' `n2' `Ppval' )");
+    graph export "$OUT/graphs/MMReduc`g'Deltas.eps", as(eps) replace;
+    #delimit cr
+
+    reg FDMMRr FDeduc`g'r
+
+    local Pcoef = _b[FDeduc`g'r]
+    local Ptsta = _b[FDeduc`g'r]/_se[FDeduc`g'r]
+    local Ppval = 1-ttail(e(N),`Ptsta')
+    local Ppval = round(`Ppval'*1000)/1000
+    local Pcval = round((`Pcoef')*1000)/1000
+    if `Ppval'< 0.001 local Ppval "0.000"
+    
+    local n1 "A 1 unit `gname' education is associated with a"
+    local n2 " change in MMR (p-value = "
+    dis `Ppval'
+    
+    #delimit ;
+    scatter FDMMR FDeduc`g'r, mlabel(country) mlabsize(vsmall) mlabpos(9) m(i)||
+        lfit FDMMR FDeduc`g'r, lcolor(red) lwidth(thick) lpattern(---)
+    scheme(s1mono) xline(0, lwidth(thin)) yline(0, lwidth(thin))
+    note("Slope =  `Pcval' (p-value = `Ppval' )");
+    *note("`n1' `Pcval' `n2' `Ppval' )");
+    graph export "$OUT/graphs/MMReduc`g'Deltas_conditional.eps", as(eps) replace;
+    #delimit cr
+
+}
+restore
+exit
 
 
 ********************************************************************************
