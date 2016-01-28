@@ -21,6 +21,8 @@
 \usepackage{rotating,capt-of}
 \usepackage{setspace}
 \usepackage{subfloat}
+\usepackage{subcaption}
+\usepackage[capposition=top]{floatrow}
 
 
 
@@ -34,11 +36,11 @@
 %================================================================================
 \title{Maternal Education and Maternal Mortality: 
 Evidence from a Large Panel and Various Natural Experiments}
-\author{Sonia Bhalotra\thanks{The University of Essex. 
-Contact: srbhal@essex.ac.uk}
-\and{Damian Clarke\thanks{The University of Oxford. 
-Contact: damian.clarke@economics.ox.ac.uk}}}
-\date{December 2014}
+\author{Sonia Bhalotra\thanks{Department of Economics, The University of Essex,
+    Colchester UK. Contact: srbhal@essex.ac.uk}
+  \and{Damian Clarke\thanks{Department of Econocims, The University of Oxford,
+      Oxford UK. Contact: damian.clarke@economics.ox.ac.uk}}}
+\date{January 2016}
 
 
 %================================================================================
@@ -97,7 +99,9 @@ years of education will reduce maternal mortality by 174 deaths per 100,000
 births, while moving from 7 to 8 years results in a smaller, but still 
 significant, 15 deaths per 100,000 births.
 \end{abstract}
+\hspace{8mm} \textbf{JEL codes:} H52, I15, I18, J13.
 
+\newpage
 %================================================================================
 %INTRODUCTION
 %================================================================================
@@ -107,20 +111,21 @@ unlike income gradients, tends not to diminish as education levels rise and is
 evident across and within rich and poor countries \citep{RichardsBarry1998, 
 KunstMackenbach1994, EloPreston1996, LlerasMuney2005, Mearaetal2008}. Maternal 
 mortality is an important determinant of life expectancy for women in developing 
-countries but there is not much evidence of the relationship between maternal 
-mortality and education. This paper attempts to fill that gap.
+countries but there is relatively little evidence of the relationship between
+maternal mortality and education. This paper attempts to fill that gap.
 
 Every day, approximately 800 women die from preventable causes related to 
-pregnancy and childbirth, 99\% of all maternal deaths occur in developing 
-countries and they are largely preventable \citep{WHO2012}. The maternal 
-mortality ratio in developing countries is 240 per 100,000 births versus 16 per 
-100,000 in developed countries. There are large disparities between and within 
-countries, with a few countries having extremely high maternal mortality ratios 
-of 1,000 or more per 100,000 live births; more than half of all maternal deaths 
-occur in sub-Saharan Africa and almost one third occur in South Asia 
-\citep{WHO2012}. The WHO identifies poverty, limited access to public services, 
-cultural practices and lack of information as the main causes or sources of 
-variation in maternal mortality ratios.
+pregnancy and childbirth with 99\% of all maternal deaths occuring in
+developing countries \citep{WHO2012}. The maternal mortality ratio in developing
+countries is 240 per 100,000 births versus 16 per 100,000 in developed countries.
+There are large disparities between and within countries, with a few countries
+having extremely high maternal mortality ratios of 1,000 or more per 100,000 live
+births; more than half of all maternal deaths occur in sub-Saharan Africa and
+almost one third occur in South Asia \citep{WHO2012}. The WHO identifies poverty,
+limited access to public services, cultural practices and lack of information as
+the main causes or sources of variation in maternal mortality ratios.  Here we
+test whether differences in levels of womens education have an additional
+direct effect on rates of maternal death.
 
 Between 1990 and 2010, maternal mortality worldwide dropped by almost 50\%. 
 While this is impressive, certainly relative to trends in the preceding twenty 
@@ -219,16 +224,18 @@ In order to examine the effect of educational expansions on maternal mortality,
 we run country-level regressions of the following form:
 \begin{equation}
 \label{eqn:panel}
-   MMR_{it}=\alpha_i+\mathbf{educ}_{it}\beta + \mathbf{W}_{it}\gamma+\delta_t+
+   MMR_{ct}=\mathbf{educ}_{ct}\beta + \mathbf{W}_{ct}\gamma+\alpha_c+\alpha_t+
    \varepsilon_{it},
 \end{equation}
-where $MMR_{it}$ refers to the maternal mortality rate in country $i$ and period 
-$t$, $\mathbf{educ}_{it}$ to a series of variables measuring the percent of the 
-population with a given level of education, and $\mathbf{W}_{it}$ refers to a 
+where $MMR_{ct}$ refers to the maternal mortality rate in country $c$ and period 
+$t$, $\mathbf{educ}_{ct}$ to a series of variables measuring the percent of the 
+population with a given level of education, and $\mathbf{W}_{ct}$ refers to a 
 vector of relevant country- and time-varying covariates.  Given that we have both 
 temporal and regional variation in the variables of interest, we employ a 
 fixed-effects methodology which allows for us to control for all time-fixed 
-country-specific factors which may confound the analysis in (\ref{eqn:panel}).
+country-specific factors which may confound the analysis in (\ref{eqn:panel}).%
+\footnote{As a robustness test, we include country-specific linear time trends
+$\alpha_c\cdot t$ in all regressions.}
 The ability to eliminate these time invariant factors is particularly important 
 in this analysis, given that many unobserved factors, such as the institutional 
 and political aspects of a given country, are likely to be correlated with both 
@@ -236,40 +243,40 @@ maternal mortality and educational attainment. Whilst some of these variables ar
 not strictly ``time-invariant'', they evolve sufficiently slowly that our analysis 
 over a comparatively short time horizon will mean that a fixed-effect estimator 
 will largely control for them. We cluster standard errors at the level of the 
-country (allowing for the stochastic term $u_{it}$ to be correlated over time for 
-each $i$.)\footnote{In certain cases when we restrict to only certain sub-groups
+country (allowing for the stochastic term $u_{ct}$ to be correlated over time for 
+each $c$.)\footnote{In certain cases when we restrict to only certain sub-groups
 of countries, the number of countries in each regression is less than 50.  Rule
 of thumb-type considerations suggest that clustering standard errors using less
 than around 50 clusters is not optimal \citep{AngristPischke2009,NicholsSchaffer2007}.  
-In these cases we also estimate using heteroscedasticity robust standar errors, 
+In these cases we also estimate using heteroscedasticity robust standard errors, 
 and wild bootstrapped standard errors \citep{MackinnonWebb2014,CameronMiller2015}. 
 To be conservative, we always report the set of estimates with the largest 
 standard errors (on our variables of interest).}
 
-We are able to estimate (\ref{eqn:panel}) for a number of different subgroups. 
-Whilst we primarily focus on women of reproductive age, our data allows us to run 
-a similar analysis for educational attainment of both gender groups and for 
-various age subgroups created within the fertile age range. We also segregate 
-countries by region- and income-level, and present group-specific estimates of the 
-above specification. A full list of the educational variables which we use and a 
-description of the time varying covariates $\textbf{W}_{it}$ is provided in the 
-data section of this document.
+We estimate (\ref{eqn:panel}) for a number of different subgroups. Whilst we
+primarily focus on women of reproductive age, our data allows us to run a similar
+analysis for educational attainment of both gender groups and for various age
+subgroups created within the fertile age range. We also segregate countries by
+region- and income-level, and present group-specific estimates of the above
+specification. A full list of the educational variables which we use and a 
+description of the time varying covariates $\textbf{W}_{it}$ is provided in
+section \ref{scn:data}. 
 
 \subsection{Natural Experiments}
 \label{scn:empiricalexperiment}
-In addition to (\ref{eqn:panel}) which we estimate with panel data, we focus on a 
-number of country-specific cases in countries which have experienced isolated, 
-policy-defined expansions in schooling achievement. Such expansions allow for us 
-to causally identify the effect of education on maternal mortality if we believe 
-that we can identify similar subgroups of individuals who are differentially 
-affected by these isolated shocks to education. In these country case studies, we 
-construct comparable subgroups of women who entered school on either side of an 
-important educational reform.  We exploit variation in the intensity of treatment 
-between regions and cohorts of birth to estimate the effect of educational 
-expansions on maternal mortality.
+In addition to (\ref{eqn:panel}) which we estimate with country by year panel
+data, we focus on a number of country-specific cases in countries which have
+experienced isolated, policy-defined expansions in schooling achievement. Such
+expansions allow for us to causally identify the effect of education on maternal
+mortality if we believe that we can identify similar subgroups of individuals
+who are differentially affected by these isolated shocks to education. In these
+country case studies, we construct comparable subgroups of women who entered
+school on either side of an important educational reform.  We exploit variation
+in the intensity of treatment between regions and cohorts of birth to estimate
+the effect of educational expansions on maternal mortality.
 
 Prominent educational reforms discussed in the economics literature are listed 
-below in table \ref{MMRtab:EducExp}.  Of the reforms listed here, we identify 
+in table \ref{MMRtab:EducExp}.  Of the reforms listed here, we identify 
 three which are suitable to use as natural experiments to identify the effect of 
 education on maternal mortality.  These are Nigeria, Zimbabwe, and Kenya. Of the 
 other three cases listed, they were either not examined as they occurred too 
@@ -439,41 +446,25 @@ observations on a 5-yearly cycle; 1990, 1995, 2000, 2005 and 2010. To this main
 dataset we add measures for the log of GDP per capita, immunization rates---which 
 we consider an imperfect proxy for national health expenditures---and fertility 
 which are accessed from The World Bank Data Bank. We construct two further 
-variables for the analysis by combining results from household surveys with 
-available, but sporadic, cross-country measures. In order to control for births
-attended by skilled health staff and for the adolescent fertility rate, we use 
-household data from the Demographic and Health Surveys (DHS) for that subset of 
-countries and time periods for which a DHS survey is available. Where DHS data is 
-not available, we access more complete cross-country data provided by 
-\citet{WorldBank2012} Data Bank. A precise description of what these variables 
-represent and how they are constructed is provided in appendix 
-\ref{scn:dataappendix}.  The full merged dataset is available for download from 
-the authors' webpage.
+covariates by combining results from household surveys with available, but
+sporadic, cross-country measures. In order to control for births attended by skilled
+health staff and for the adolescent fertility rate, we use household data from the
+Demographic and Health Surveys (DHS) for that subset of countries and time periods for
+which a DHS survey is available. Where DHS data is not available, we access more
+complete cross-country data provided by \citet{WorldBank2012} Data Bank. A precise
+description of what these variables represent and how they are constructed is
+provided in appendix \ref{scn:dataappendix}.  The full merged dataset is available
+for download from the authors' webpage.
 
 The estimation sample with non-missing data for all relevant variables contains 
 108 countries observed quinquennially through 1990-2010. The panel is unbalanced 
 containing gaps in years in which attended births or adolescent fertility 
 observations are not available. A full list of countries and years of 
 availability is presented in table \ref{MMRtab:survey} in appendix 
-\ref{scn:appTables}, and summary statistics are presented in table 
-\ref{MMRtab:sumstats} below.
-
-Trends in maternal mortality and education in the cross-country sample are 
-displayed in figures \ref{fig:EducRegion}-\ref{fig:MMRRegion}. There is 
-considerable variation both across time and continents, but overall a 
-consistently positive trend in years of schooling, and a negative trend in 
-regional maternal mortality figures. Exceptionally, in sub-Saharan Africa, 
-maternal mortality stagnated between 1990-1995, beginning to fall in line with 
-other regions during the late 1990s and early 2000s.
-
-Despite reductions in maternal mortality in sub-Saharan Africa, this region still 
-had overwhelmingly the highest rates of maternal death associated with childbirth 
-in 2010 (Figure \ref{fig:MMRGlobal}). Whilst certain countries in South, Central 
-and East Asia, along with Middle East and North Africa, and Latin America have 
-achieved ratios of less than 100 deaths per 100,000 births, all but a small 
-hand-full of sub-Saharan countries still have ratios which exceed 300 per 100,000 
-births.
-
+\ref{scn:appTables}, and summary statistics of all variables and their coverage
+are presented in table \ref{MMRtab:sumstats}.  Additional descriptive statistics
+of education and maternal mortality over the time period of interest are available
+in data appendix \ref{scn:dataappendix}, and in appendix figures.
 
 \subsection{Natural Experiments}
 \label{sscn:dataexp}
@@ -541,30 +532,45 @@ in every 100 women dies during child birth.
 \section{Results}
 \subsection{Global}
 \subsubsection{The Sensitivity of Maternal Mortality to Education (and Health 
-Interventions)}
+  Interventions)}
+Figure \ref{MMRWomparl} presents a simple plot of changes in MMR versus changes
+in education over time for all countries for which data is available. We examine
+the unconditional correlation between reductions in the proportion of women who
+have no education and reductions in MMR in panel A, while in panel B we examine
+the correlation between increases in the proportion of women with primary
+education and changes in maternal mortality.  In both cases, a strong and highly
+significant (p$<$0.01) negative correlation is observed. In the time period
+examined, a 1 percentage point reduction in the proportion of women out of school
+is associated with 9.172 fewer maternal deaths per 100,000 live births, while a 1
+percentage point increase in the proportion of women in primary school is
+associated with 5.079 fewer maternal deaths per 100,000 live births.  In
+appendix figure \ref{MMRDeltaCond}, similar conclusions are found to hold even
+when conditioning on changes in GDP which occurr simultaneously. and plotting
+residual changes in MMR and educational attainment.
+
 Table \ref{MMRtab:MMRpercent} provides results for our principal cross-country 
 specification (\ref{eqn:panel}), estimated on cross-country panel data for 108 
 developing countries observed at five yearly intervals in 1990-2010, and using 
-the percentage 
-of people in a country and year who have attained specified levels of education. 
-We present similar results disaggregated by country income group and regional 
-classifications as tables \ref{MMRtab:MMRregion} and \ref{MMRtab:MMRincome} 
-respectively. In order to test the robustness of our results to alternative 
-specifications of measures of education, we run regressions using years of 
-education and years of education squared, and these results are included as 
-appendix tables \ref{MMRtab:MMRyrs} and \ref{MMRtab:MMRyrssq}. We start with a 
-simple panel data specification in which the identifying variation is within 
-countries over time, with country fixed effects absorbing all country-specific 
-time-invariant components of, for instance, political institutions, climate, 
-culture and deep-set attitudes towards women that may produce a correlation 
-between education and maternal mortality. We then add flexible controls for 
-aggregate trended unobservables and for country and time-varying variables that 
-we expect are correlated with education and maternal mortality.
+the percentage of people in a country and year who have attained specified levels
+of education.\footnote{We present similar results disaggregated by country income
+group and regional classifications as tables \ref{MMRtab:MMRregion} and
+\ref{MMRtab:MMRincome} respectively. In order to test the robustness of our
+results to alternative specifications of measures of education, we run regressions
+using years of education and years of education squared, and these results are
+included as appendix tables \ref{MMRtab:MMRyrs} and \ref{MMRtab:MMRyrssq}.} We
+start with a simple panel data specification in which the identifying variation
+is within countries over time, with country fixed effects absorbing all
+country-specific time-invariant components of, for instance, political
+institutions, climate, culture and deep-set attitudes towards women that may
+produce a correlation between education and maternal mortality. We then add
+flexible controls for aggregate trended unobservables and for country and
+time-varying variables that we expect are correlated with education and maternal
+mortality.
 
 The pooled within-country correlation of maternal mortality rates with women's 
 education is significantly negative for the percent of the population attaining 
 each education level. The estimates suggest that the MMR-returns to investment 
-in women's education are positive and weakly diminishing in level of education
+in women's education are positive and diminishing in level of education
 (this is confirmed by fitting a quadratic in total years of education:\ the 
 quadratic term is positive and significant but the turning point lies outside 
 the sample range). The point estimates are consistently largest for primary 
@@ -579,36 +585,38 @@ relationship between educational improvements and MMR reduction is larger in low
 income environments (consistent with their higher baseline rates of maternal 
 mortality and their lower baseline levels of education).
 
-Column (2) is the favoured specification. It shows that, conditional upon 
+Column (3) is the favoured specification. It shows that, conditional upon 
 aggregate trends in maternal mortality, if an additional one percent of the 
 population enrolled in primary education this would lower the number of maternal 
-deaths by 10 per 100,000 live births (The omitted group is the percent of the
-population with no formal education). This coefficient is estimated with 
-precision (a p-value less than 0.01). It denotes a large impact, equivalent to 
-0.04 of a standard deviation and 5\% of the mean maternal mortality rate in the 
-sample. It is illustrative to consider the impact of moving the entire population 
-of individuals with no education---on average 17.5\% of women---into enrolment in 
-primary education. Our estimates suggest this would lower MMR by 175.5 per 100,000 
-births, which is 0.58 of a s.d.\ of total MMR. The addition of controls in the 
-remaining columns of the table lowers the coefficient on primary education but in 
-no case is it significantly different from the coefficient in column 2. In the 
-richest model, conditional upon controls for economic and health variables (column 
-7), the point estimate on primary education is reduced to almost two thirds of its 
-initial size (column 2). For policy purposes it can be useful to look at the 
+deaths by 9 per 100,000 live births (the omitted group is the percent of the
+population with no formal education).  This is a large (and statistically
+significant) impact, equivalent to 0.04 of a standard deviation and 5\% of the
+mean maternal mortality rate in the sample. It is illustrative to consider the
+impact of moving the entire population of individuals with no education---on
+average 17.5\% of women---into enrolment in primary education. Our estimates
+suggest this would lower MMR by 175.5 per 100,000 births, which is 0.58 of a
+s.d.\ of total MMR. The addition of controls in the remaining columns of the
+table lowers the coefficient on primary education but in no case is it
+significantly different from the coefficient in column 3. In the richest model,
+conditional upon controls for economic and health variables (column 8), the
+point estimate on primary education is reduced to almost three quarters of its 
+initial size (column 3). For policy purposes it can be useful to look at the 
 estimates conditional and unconditional upon alternative sets of controls since 
 cohort changes in primary education will sometimes evolve similarly to changes in 
 the controls that we introduce. We examine this in the following section.
 
-Conditional on the controls introduced, the coefficients on secondary and tertiary 
-education also remain significant. An additional percent of the population moving 
-into secondary education lowers maternal mortality by 10 in 100,000 births. The 
-effect of moving the sample population of uneducated women of fertile age into 
-secondary education is estimated to create a mean reduction in maternal mortality 
-of 172 (0.77 s.d.) in addition to the reduction of 196 associated with their passage 
-through primary education. So the total impact of moving all uneducated women into 
-secondary education is a reduction in MMR of 368 deaths per 100,000 births.
+Conditional on the controls introduced, the coefficient on secondary education
+also remains significant. An additional percent of the female population moving
+into secondary education lowers maternal mortality by between 6.5 and 5 deaths
+in 100,000 births (partial versus full controls).  Although always resulting
+in negative coefficients, the additional impact of moving women into tertiary
+education has no statistitically significant effect.  Our estimates suggest that
+the largest effects are observed when women move from no to some education, while
+the additional effect of higher education is small:\ results suggestive that
+gaining basic health knowledge has the largest effect on the likelihood of dying
+in child birth.
 
-In columns 3-7 we introduce a succession of controls for the state of the
+In columns 4-8 we introduce a succession of controls for the state of the
 economy, public health care, and fertility. We control for the logarithm of per 
 capita GDP so as to assess whether education is simply proxying income. We find 
 that it is not; the coefficients on education are unchanged and the coefficient 
@@ -656,12 +664,11 @@ and their lifetime risk of death due to pregnancy is higher. A woman's lifetime
 risk of maternal death---the probability that a 15 year old woman will eventually 
 die from a maternal cause---is 1 in 3,800 in developed countries, versus 1 in 150 
 in developing countries. Introducing the fertility rate in column 7, we see that an 
-additional birth per mother is associated with an 
-increase in maternal mortality of 28 per 100,000 live births or that a one s.d.\ 
-increase in fertility (which is 1.7 births) leads to 48 additional maternal deaths, 
-which is 0.16 of a s.d.\ or 22\% of mean fertility. In the main specification 
-however it should be noted that the effect of total fertility is weakly estimated, 
-and not significant at typical levels of confidence.
+additional birth per mother is associated with an increase in maternal mortality of
+8 per 100,000 live births or that a one s.d.\ increase in fertility (which is 1.7
+births) leads to 14 additional maternal deaths. In the main specification however,
+it should be noted that the effect of total fertility is weakly estimated, and not
+significant at typical levels of confidence.
 
 Teenage fertility is highly prevalent in developing countries, and this is 
 closely associated with women dropping out of school early. Adolescent women face 
@@ -687,28 +694,32 @@ for policy given that WHO policy documents on maternal mortality have
 under-emphasised education.
 
 \paragraph{Alternative specification of education}
-The specification in appendix Table \ref{MMRtab:MMRyrs} (column 2) suggests that an 
-additional year of education for all women lowers the number of maternal deaths 
-by 54 per 100,000 live births. A one standard deviation increase in years of 
-education, of 3.21 years, would lower MMR by 173 per 100,000 births, which is 0.58 
-of a s.d.\ of MMR. The introduction of controls---particularly the addition of 
-immunization---renders the linear years of education variable insignificant, 
-although the coefficient is still negative. In appendix Table 
-\ref{MMRtab:MMRyrssq} we show estimates using a quadratic in years of education,
-the functional form suggested by a non-parametric plot of the relationship of 
-interest (see Figure \ref{fig:educmmr}). The education coefficient is now robust 
-to the introduction of immunization and other controls. With the exception of 
+We examine the sensitivity of these results to functional form, and also
+measurement of education and MMR.  The specification in appendix Table
+\ref{MMRtab:MMRyrs} (column 3) suggests that when considering years of
+education achieved, rather than individual levels, an additional year of
+education for all women lowers the number of maternal deaths by 28 per
+100,000 live births. A one standard deviation increase in years of 
+education, of 3.21 years, would lower MMR by 90 per 100,000 births, which
+is 0.3 of a s.d.\ of MMR in the whole world sample. The introduction of
+controls---particularly the addition of immunization---renders the linear
+years of education variable insignificant, although the coefficient is
+still negative. In appendix Table \ref{MMRtab:MMRyrssq} we show estimates
+using a quadratic in years of education, the functional form suggested by
+a non-parametric plot of the relationship of interest (see Figure
+\ref{fig:educmmr}). The education coefficient is now robust to the
+introduction of immunization and other controls. With the exception of 
 fertility which is now significant and of larger magnitude, other controls 
 behave similarly in terms of their effects on MMR as the estimates in Table 
-\ref{MMRtab:MMRpercent} discussed earlier. The linear and quadratic terms in education are 
-significant and they indicate continuously positive but diminishing marginal 
-returns (in terms of MMR reductions) to years of education. The estimates in 
-column 2 show that moving from 0 to 1 year of education is associated with a 
+\ref{MMRtab:MMRpercent} discussed earlier. The linear and quadratic terms in
+education are significant and they indicate continuously positive but diminishing
+marginal returns (in terms of MMR reductions) to years of education. The estimates
+in column 2 show that moving from 0 to 1 year of education is associated with a 
 reduction of 210 deaths per 100,000 live births, while moving from 5 to 6 years 
 of education is associated with a smaller, but still very significant, reduction 
 of 94 maternal deaths per 100,000 births. In the model with all controls (column 
 8) these estimates are attenuated slightly but still suggest significant effects: 
-reductions of 175 deaths and 65 deaths respectively when moving from 0 to 1 or 
+reductions of 171 deaths and 65 deaths respectively when moving from 0 to 1 or 
 from 5 to 6 years of education.
 
 While we have only a limited number of observations for maternal
@@ -721,7 +732,14 @@ results are not only driven by this across-country result.  Intra-country
 correlations appear to also be negative in the large majority of cases. Arrows
 overlayed on top of country averages show that, in a given country, increases
 in education are associated with reductions in log MMR in 116 of 146 cases,
-and is unrelated or positively related in only 30 cases.
+and is unrelated or positively related in only 30 cases.  We examine this
+more formally in appendix table \ref{MMRtab:MMRDelta}.  Here we follow
+specification \ref{eqn:panel}, however replace all variables with their
+\emph{changes} (first differences), so that the interpretation of the regression
+is how a one unit change in educational attainment within a country effects
+changes in maternal mortality.  Once again we see that increases in education
+significantly reduce MMR, and that this reduction is largely focused on
+lower levels of education.
 
 Finally, when working with the subset of countries for which we are able to
 calculate maternal mortality ratios using DHS microdata, we run identical
@@ -808,6 +826,39 @@ measured simply as years of schooling, providing considerable evidence that
 it is actually the level of education of the women in the cohort that is 
 important, not total educational attainment, or the attainment of men in the 
 same cohort.
+
+\subsubsection{Education and Women's Age}
+\label{ssscn:age}
+In a similar manner to the above results by gender, we are interested in
+determining whether these results are driven by fertile aged women, or whether
+more educated women in all age cohorts of a country are responsible for
+reductions in MMR observed when education rises.  If education reduces maternal
+deaths mainly through an `individual knowledge' channel, we would expect that
+it is the educational attainment of fertile aged women which matters.  However,
+if women's education affects maternal mortality through social channels such as
+more trained female health professionals, or greater weight in public decisions,
+we may find that female education at all ages, including post-fertile age, affects
+MMR levels in the country.
+
+Barro-Lee education data records the education levels of various age groups,
+from 15-19 year olds up to 70-74 (and 75 plus).  Given this data and our
+principal (cross-country) regression \ref{eqn:panel}, we can replicate the
+specification which was earlier run for fertile-aged women only, using women of
+all ages.  We thus estimate \ref{eqn:panel} for each quinquennial age group
+(from 20-24 up to 70-74 inclusive, as well as the 75 plus group).  We omit
+15-19 year olds from this analysis given that many of these women will still
+be in secondary education.
+
+Results from these regressions are presented in figure \ref{fig:EducAge}. In
+this figure, the coefficient on proportion of primary educated women is reported,
+where each coefficient comes from a regression using a seperate age group.
+These results suggest that overwhelmingly, it is education at fertile ages (rather
+than all ages) which is driving MMR reductions.  While among 20-24 year olds
+each additional percent of women in the country with primary education results in
+a statistically significant reduction of more than 4 maternal deaths per 100,000
+live births, this figure has dropped to less than 1 death per
+100,000 live births (and insignifcant) for women aged 45-49.  Over the ages
+of 50, results are typically very close to 0, and insignificant in all cases.
 
 
 \subsubsection{Potential Pathways and Correlated Effects}
@@ -957,25 +1008,31 @@ results from Nigeria and Zimbabwe.
 \section{Conclusion}
 In the last two decades, maternal mortality has declined sharply (by 50\%) and 
 education has risen sharply. The analysis in this paper suggests that some part 
-of the decline in maternal mortality may be attributed to the rise in education. 
-Using the cross-country data sample, we use the changes in maternal mortality, 
-education and the control variables in the analysis between 1990 and 2010 to 
-crudely simulate the contribution of education. In this twenty year period, the 
-average percent of women with no formal education has fallen from 22 to 13\%. 
-Applying this reduction of 9\% to the estimates in Table \ref{MMRtab:MMRpercent} 
-suggests that education will have led to a decline in the maternal mortality 
-ratio of 105 deaths per 100,000 births (unconditional) or about 71 (conditional 
-upon health services and fertility which, we noted, are correlated with 
-education). The actual decline in the maternal mortality ratio in the same twenty 
-year period in our sample is 119. This suggests that education gains in this 
-period can explain roughly half or possibly more of the observed decline in 
-maternal mortality. Compare this with the role of attended births. The percentage 
-of attended births has risen from 72\% to 82\%. Our estimates suggest that this 
-will have led to a decline in MMR of 15 per 100,000 births. These simulations are 
-only suggestive but the evidence overall does suggest that the rapid growth in 
-education in developing countries may have made a substantial and largely 
-unrecognised contribution to the dramatic declines in maternal mortality witnessed 
-in recent years.
+of the decline in maternal mortality may be directly attributed to the rise in
+education.  These results are consistent with a number of papers in the public
+and health economic literature which find that education has a direct link to
+health behaviour. Here we show that this is the case even when considering
+hard-to-move indicators like maternal death.
+
+Using both large-scale national reforms and variation in education and maternal
+mortality over time, and consulting sources of education and maternal mortality
+measures from the best available micro and macro-level datasets, we find
+consistent evidence that increases in primary and lower levels of education can
+have significant impacts on rates of death related to child birth.  Depending on
+the context, we find that moving all women in a country from 0 to 1 year of
+education could account for reductions in MMR by as much as 150 per 100,000
+live births, while moving women from 7 to 8 years could results in approximately
+15-20 fewer deaths per 100,000 births.
+
+Our results suggest that it is not just general education rates in a society
+which matter (or education acting as a proxy for economic development). Rather
+reductions in MMR are nearly exclusively driven by educational attainment
+accruing directly to women, and specifically to fertile-aged women.  These
+findings are particularly relevant for policy makers, and in considering the
+definition and progress towards global goals such as the sustainable
+development goals.  The evidence in this paper suggests that potential synergies
+between improvements in education, gender equality, and health are considerable.
+
 
 
 \newpage
@@ -1019,6 +1076,22 @@ MMR and Education data is available in 5 year periods (1990, 1995, 2000, 2005,
 2010), for each of these years where the fifth year was not available but there 
 was data in the preceeding 5 year period, the average of the preceeding 5 year 
 period was taken and used as the data point in the fifth year.
+
+Trends in maternal mortality and education in the cross-country sample are 
+displayed in figures \ref{fig:EducRegion}-\ref{fig:MMRRegion}. There is 
+considerable variation both across time and continents, but overall a 
+consistently positive trend in years of schooling, and a negative trend in 
+regional maternal mortality figures. Exceptionally, in sub-Saharan Africa, 
+maternal mortality stagnated between 1990-1995, beginning to fall in line with 
+other regions during the late 1990s and early 2000s.
+
+Despite reductions in maternal mortality in sub-Saharan Africa, this region still 
+had overwhelmingly the highest rates of maternal death associated with childbirth 
+in 2010 (Figure \ref{fig:MMRGlobal}). Whilst certain countries in South, Central 
+and East Asia, along with Middle East and North Africa, and Latin America have 
+achieved ratios of less than 100 deaths per 100,000 births, all but a small 
+hand-full of sub-Saharan countries still have ratios which exceed 300 per 100,000 
+births.
 
 \subsection{Data for Quasi-Experiments}
 Micro-level data for education and maternal mortality is used in each country.
@@ -1110,6 +1183,11 @@ urban slum environments where social and educational support networks are weak.
 \section{Appendix Tables}
 \label{scn:appTables}
 \input{\MMRfolder/Paper/tables/Appendix_Tables.tex}
+
+\newpage
+\section{Appendix Figures}
+\label{scn:appFigures}
+\input{\MMRfolder/Paper/AppendixFigures.tex}
 %\input{\MMRfolder/Paper/Appendix_Tables.tex}
 
 \end{spacing}
