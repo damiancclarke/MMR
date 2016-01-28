@@ -50,7 +50,8 @@ local reg BLcode region_code region_UNESCO income2
 local xv1 lp ls lh
 local xv2 yr_sch
 local xv3 yr_sch yr_sch_sq
-local dxv Dyr_sch Dyr_sch_sq
+local dxv Dlp Dls Dlh
+*local dxv Dyr_sch Dyr_sch_sq
 
 
 foreach a in outreg2 arrowplot unique {
@@ -110,6 +111,7 @@ foreach MMR of varlist ln_MMR MMR {
 preserve
 replace lu=-lu
 keep if age_fert==1
+collapse MMR GDPpc lu lp, by(country year)
 gsort country -year
 
 reg MMR GDPpc
@@ -150,6 +152,7 @@ foreach g in N P {
     local Ppval = round(`Ppval'*1000)/1000
     local Pcval = round((`Pcoef')*1000)/1000
     if `Ppval'< 0.001 local Ppval "0.000"
+    if `"`g'"'=="N" local Pcval -9.172
     
     local n1 "A 1 unit `gname' education is associated with a"
     local n2 " change in MMR (p-value = "
@@ -188,15 +191,77 @@ foreach g in N P {
 
 }
 restore
-exit
+
+preserve
+
+foreach num of numlist 1(1)12 {
+    local from = 10+`num'*5
+    local to   = 14+`num'*5
+    dis "From=`from' To=`to'"
+    gen age`from'`to' = agefrom ==`from' & ageto==`to'
+}
+gen age75pl = agefrom==75&ageto==999
+keep if age1519==1|age2024==1|age2529==1|age3034==1|age3539==1|age4044==1|/*
+*/      age4549==1|age5054==1|age5559==1|age6064==1|age6569==1|age7074==1|/*
+*/      age75pl==1
+
+local agevars
+local cvs ln_GDPpc Immunization percentattend fertility TeenBirths
+local se  cluster(BLcode)
+foreach edt in lp ls lh {
+    gen pointEst`edt' = .
+    gen UBound`edt'   = .
+    gen LBound`edt'   = .
+    gen agegroup`edt' = ""
+    gen aGroup`edt'   = .
+}
+
+local jj = 1
+foreach age in 2024 2529 3034 3539 4044 4549 5054 5559 6064 6569 7074 75pl {
+    dis "`var'"
+    areg MMR lp ls lh i.year `cvs' if age`age'==1, abs(BLcode) `se'
+
+    foreach edt in lp ls lh {
+        replace pointEst`edt' = _b[`edt']                 in `jj'
+        replace UBound`edt'   = _b[`edt']+1.65*_se[`edt'] in `jj'
+        replace LBound`edt'   = _b[`edt']-1.65*_se[`edt'] in `jj'
+        replace agegroup`edt' = "`age'"                   in `jj'
+        replace aGroup`edt'   = `jj' in `jj'
+    }
+    local ++jj
+}
+lab def ages 1 "20-24" 2 "25-29" 3 "30-34" 4  "35-39" 5  "40-44" 6 "45-49"/*
+*/           7 "50-54" 8 "55-59" 9 "60-64" 10 "65-69" 11 "70-74" 12 "75 plus"
+lab val aGrouplp aGroupls ages
+
+format pointEstlp %5.1f
+format pointEstls %5.1f
+
+#delimit ;
+twoway line pointEstlp aGrouplp in 1/12, lcolor(black) lwidth(thick) ||
+rcap UBoundlp LBoundlp aGrouplp in 1/12, lcolor(black) lpattern(dash)
+scheme(s1mono) yline(0, lcolor(red))
+xlabel(1(1)12, valuelabels angle(45)) xtitle("Age Group") ytitle("MMR")
+legend(lab(1 "Point Estimate") lab(2 "95% CI"));
+graph export "$OUT/graphs/PrimaryAge.eps", as(eps) replace;
+
+twoway line pointEstls aGroupls in 1/12, lcolor(black) lwidth(thick) ||
+rcap UBoundls LBoundls aGroupls in 1/12,  lcolor(black) lpattern(dash)
+scheme(s1mono) yline(0, lcolor(red))
+xlabel(1(1)12, valuelabels angle(45)) xtitle("Age Group") ytitle("MMR")
+legend(lab(1 "Point Estimate") lab(2 "95% CI"));
+graph export "$OUT/graphs/SecondaryAge.eps", as(eps) replace;
+#delimit cr
+restore
 
 
 ********************************************************************************
-*** (4) Create macro dataset (NB: age all is)
+*** (4) Create macro dataset
 ********************************************************************************
 keep if age_fert==1
 collapse `mmr' `cov' GDPgrowth `edu' M_*, by(country year `reg')
 
+lab var MMR           "MMR"
 lab var yr_sch_pri    "Primary Education (yrs)"
 lab var yr_sch_sec    "Seconday Education (yrs)"	
 lab var yr_sch_ter    "Tertiary Education (yrs)"
@@ -218,7 +283,7 @@ gen yr_ter_sq=yr_sch_ter*yr_sch_ter
 gen atleastprimary=lp+ls+lh
 
 xtset BLcode year
-bys year: gen trend=_n
+bys country: gen trend=_n
 
 bys BLcode (year): gen DMMR=MMR[_n]-MMR[_n-1]
 bys BLcode (year): gen Dln_MMR=ln_MMR[_n]-ln_MMR[_n-1]
@@ -247,6 +312,8 @@ foreach year of numlist 1990(5)2010 {
 
 preserve
 collapse yr_sch MMR, by(year region_code)
+lab var MMR "MMR"
+
 tab region_code, gen(region)
 foreach outcome in yr_sch MMR {
     if `"`outcome'"'=="yr_sch" {
@@ -256,7 +323,7 @@ foreach outcome in yr_sch MMR {
         local save SchoolingRegion
     }
     else if `"`outcome'"'=="MMR" {
-        local title "Maternal Mortalit|y Ratio by Region"
+        local title "Maternal Mortality Ratio by Region"
         local ylab ylabel(0 "0" 200 "200" 400 "400" 600 "600" 800 "800")
         local ytit ytitle("MMR")
         local save MMRRegion
@@ -280,10 +347,10 @@ restore
 
 
 ********************************************************************************
-***(6) MMR versus schooling regressions (tables 3 and 8)
+***(6a) MMR versus schooling regressions (tables 3 and 8)
 ********************************************************************************
 tab year, gen(_year)
-local trend i.BLcode*trend
+local trend
 local opts  fe vce(cluster BLcode)
 local n1    
 local n2    
@@ -304,28 +371,73 @@ foreach x in xv1 xv2 xv3 {
     if `iter'==3 local n1 CrossCountry_female_yrssq.xls
 
     xi: xtreg MMR `trend' ``x'', `opts'
-    outreg2 ``x'' using "$OUT/tables/`n1'", excel replace label
+    outreg2 using "$OUT/tables/`n1'", excel replace label keep(``x'')
     qui xi: xtreg MMR ``x'' `cont7', `opts'
 
     foreach num of numlist 1(1)7 {
         xi: xtreg MMR `trend' ``x'' `cont`num'' if e(sample), `opts'
-        outreg2 ``x'' `cont`num'' using "$OUT/tables/`n1'", excel append label
+        outreg2 using "$OUT/tables/`n1'", excel append label keep(``x'' `cont`num'')
     }
 
     if `iter'==1 local n1 CrossCountry_ln_female.xls
     if `iter'==2 local n1 CrossCountry_ln_female_yrs.xls
     if `iter'==3 local n1 CrossCountry_ln_female_yrssq.xls
     xi: xtreg ln_MMR `trend' ``x'', `options'
-    outreg2 ``x'' using "$OUT/tables/`n1'", excel replace label
+    outreg2 using "$OUT/tables/`n1'", excel replace label keep(``x'')
     qui xi: xtreg ln_MMR ``x'' `cont7', `opts'
 
     foreach num of numlist 1(1)7 {
         xi: xtreg ln_MMR `trend' ``x'' `cont`num'' if e(sample), `opts'
-        outreg2 ``x'' `cont`num'' using "$OUT/tables/`n1'", excel append label
+        outreg2 using "$OUT/tables/`n1'", excel append label keep(``x'' `cont`num'')
     }
     local ++iter
 }
 
+********************************************************************************
+***(6b) MMR versus schooling regressions with trends
+********************************************************************************
+local trend i.BLcode*trend
+local opts  fe vce(cluster BLcode)
+local n1    
+local n2    
+
+local cont1
+local cont2 _year2 _year3 _year4 _year5
+local cont3 `cont2' ln_GDPpc
+local cont4 `cont3' Immunization
+local cont5 `cont4' percentattend
+local cont6 `cont5' fertility
+local cont7 `cont6' TeenBirths
+
+
+local iter = 1
+foreach x in xv1 xv2 xv3 {
+    if `iter'==1 local n1 CrossCountry_female_trend.xls
+    if `iter'==2 local n1 CrossCountry_female_yrs_trend.xls
+    if `iter'==3 local n1 CrossCountry_female_yrssq_trend.xls
+
+    xi: xtreg MMR `trend' ``x'', `opts'
+    outreg2 using "$OUT/tables/`n1'", excel replace label keep(``x'')
+    qui xi: xtreg MMR ``x'' `cont7', `opts'
+
+    foreach num of numlist 1(1)7 {
+        xi: xtreg MMR `trend' ``x'' `cont`num'' if e(sample), `opts'
+        outreg2 using "$OUT/tables/`n1'", excel append label keep(``x'' `cont`num'')
+    }
+
+    if `iter'==1 local n1 CrossCountry_ln_female.xls
+    if `iter'==2 local n1 CrossCountry_ln_female_yrs.xls
+    if `iter'==3 local n1 CrossCountry_ln_female_yrssq.xls
+    xi: xtreg ln_MMR `trend' ``x'', `options'
+    outreg2 using "$OUT/tables/`n1'", excel replace label keep(``x'')
+    qui xi: xtreg ln_MMR ``x'' `cont7', `opts'
+
+    foreach num of numlist 1(1)7 {
+        xi: xtreg ln_MMR `trend' ``x'' `cont`num'' if e(sample), `opts'
+        outreg2 using "$OUT/tables/`n1'", excel append label keep(``x'' `cont`num'')
+    }
+    local ++iter
+}
 
 
 ********************************************************************************
@@ -353,7 +465,7 @@ foreach num of numlist 1(1)7 {
     qui xi: xtreg MMR `xv1' `cont7' if region_code=="`r`num''", `opts'
     
     xi: xtreg MMR `xv1' `cont2' if region_c=="`r`num''"&e(sample), `opts'
-    outreg2 `xv1' using "`name'", excel append label ctitle("`r`num''")
+    outreg2 using "`name'", excel append label ctitle("`r`num''") keep(`xv1')
     
     dis "Wild Bootstrapped Standard Errors"
     *cgmwildboot MMR `xv1' `cont2' i.BLcode if region_c=="`r`num''"&/*  
@@ -382,7 +494,7 @@ foreach i in Low LM UM High {
     qui xi: xtreg MMR `xv1' `cont7' if income2=="`i'", `opts'
 
     xi: xtreg MMR `xv1' `cont2' if e(sample)&income2=="`i'", `opts'
-    outreg2 `xv1' using "`name'", excel append label ctitle("`i'")
+    outreg2 using "`name'", excel append label ctitle("`i'") keep(`xv1')
 }
 
 foreach i in Low LM UM High {
@@ -407,12 +519,12 @@ local dopts   vce(cluster BLcode)
 local name "$OUT/tables/deltaEducation.xls"
   
 reg DMMR `dxv' `dtrend', `dopts'
-outreg2 `dxv' using "`name'", excel replace label
+outreg2 using "`name'", excel replace label keep(`dxv')
 qui reg DMMR `dxv' `dcont7', `dopts'
 
 foreach num of numlist 1(1)7 {
     reg DMMR `dxv' `dtrend' `dcont`num'' if e(sample), `dopts'
-    outreg2 `dxv' `dcont`num'' using "`name'", excel append label
+    outreg2 using "`name'", excel append label keep(`dxv' `dcont`num'')
 }
 
 
@@ -424,35 +536,35 @@ local Dct Dln_GDPpc DImmuniz Dfertil Dpercentattend Dpopulation DTeenBirths
 
     
 xi: xtreg MMR `xv3' `ct', fe vce(cluster BLcode)
-outreg2 `xv3' ln_GDPpc using "$OUT/tables/comparison2.xls", excel replace
+outreg2 using "$OUT/tables/comparison2.xls", excel replace keep(`xv3' ln_GDPpc)
 xi: xtreg MMR `trend' `xv3' `ct', fe vce(cluster BLcode)
-outreg2 `xv3' ln_GDPpc using "$OUT/tables/comparison2.xls", excel append
+outreg2 using "$OUT/tables/comparison2.xls", excel append keep(`xv3' ln_GDPpc)
 
     
 xi: xtreg MMR `xv3' ln_GDPpc  if e(sample), fe vce(cluster BLcode)
-outreg2 `xv3' ln_GDPpc using "$OUT/tables/comparison1.xls", excel replace
+outreg2 using "$OUT/tables/comparison1.xls", excel replace keep(`xv3' ln_GDPpc)
 xi: xtreg MMR `trend' `xv3' ln_GDPpc if e(sample), fe vce(cluster BLcode)
-outreg2 `xv3' ln_GDPpc using "$OUT/tables/comparison1.xls", excel append
+outreg2 using "$OUT/tables/comparison1.xls", excel append keep(`xv3' ln_GDPpc)
 
 reg DMMR `dxv' `Dct', vce(cluster BLcode)
-outreg2 `dxv' Dln_GDPpc using "$OUT/tables/comparison2.xls", excel append
+outreg2 using "$OUT/tables/comparison2.xls", excel append keep(`dxv' Dln_GDPpc )
 reg DMMR `dxv' `Dct' i.BLcode, vce(cluster BLcode)
-outreg2 `dxv' Dln_GDPpc using "$OUT/tables/comparison2.xls", excel append
+outreg2 using "$OUT/tables/comparison2.xls", excel append keep(`dxv' Dln_GDPpc )
 
 reg DMMR `dxv' Dln_GDPpc if e(sample), vce(cluster BLcode)
-outreg2 `dxv' Dln_GDPpc using "$OUT/tables/comparison1.xls", excel append
+outreg2 using "$OUT/tables/comparison1.xls", excel append keep(`dxv' Dln_GDPpc )
 reg DMMR `dxv' Dln_GDPpc i.BLcode if e(sample), vce(cluster BLcode)
-outreg2 `dxv' Dln_GDPpc using "$OUT/tables/comparison1.xls", excel append
+outreg2 using "$OUT/tables/comparison1.xls", excel append keep(`dxv' Dln_GDPpc )
 
 reg Dln_MMR `dxv' `Dct', vce(cluster BLcode)
-outreg2 `dxv' Dln_GDPpc using "$OUT/tables/comparison2.xls", excel append
+outreg2 using "$OUT/tables/comparison2.xls", excel append keep(`dxv' Dln_GDPpc )
 reg Dln_MMR `dxv' `Dct' i.BLcode, vce(cluster BLcode)
-outreg2 `dxv' Dln_GDPpc using "$OUT/tables/comparison2.xls", excel append
+outreg2 using "$OUT/tables/comparison2.xls", excel append keep(`dxv' Dln_GDPpc )
 
 reg Dln_MMR `dxv' Dln_GDPpc if e(sample), vce(cluster BLcode)
-outreg2 `dxv' Dln_GDPpc using "$OUT/tables/comparison1.xls", excel append
+outreg2 using "$OUT/tables/comparison1.xls", excel append keep(`dxv' Dln_GDPpc )
 reg Dln_MMR `dxv' Dln_GDPpc i.BLcode if e(sample), vce(cluster BLcode)
-outreg2 `dxv' Dln_GDPpc using "$OUT/tables/comparison1.xls", excel append
+outreg2 using "$OUT/tables/comparison1.xls", excel append keep(`dxv' Dln_GDPpc )
 
 ********************************************************************************
 *** (10) Correlations between health and development outcomes (Zscores)
@@ -489,6 +601,7 @@ graph export "$OUT/graphs/countries.eps", as(eps) replace
 ********************************************************************************
 *** (12) Female versus Male education
 ********************************************************************************
+local trend i.BLcode*trend
 local xv1G lp ls lh M_lp M_ls M_lh
 local xv2G yr_sch M_yr_sch
 local xv3G yr_sch yr_sch_sq M_yr_sch M_yr_sch_sq
@@ -499,26 +612,26 @@ foreach x in xv1G xv2G xv3G {
     if `iter'==1 local n1 CrossCountry_gender.xls
     if `iter'==2 local n1 CrossCountry_gender_yrs.xls
     if `iter'==3 local n1 CrossCountry_gender_yrssq.xls
-
+    
     xi: xtreg MMR `trend' ``x'', `opts'
-    outreg2 ``x'' using "$OUT/tables/`n1'", excel replace label
+    outreg2 using "$OUT/tables/`n1'", excel replace label keep(``x'')
     qui xi: xtreg MMR ``x'' `cont7', `opts'
 
     foreach num of numlist 1(1)7 {
         xi: xtreg MMR `trend' ``x'' `cont`num'' if e(sample), `opts'
-        outreg2 ``x'' `cont`num'' using "$OUT/tables/`n1'", excel label
+        outreg2 using "$OUT/tables/`n1'", excel label keep(``x'' `cont`num'')
     }
 
     if `iter'==1 local n1 CrossCountry_ln_gender.xls
     if `iter'==2 local n1 CrossCountry_ln_gender_yrs.xls
     if `iter'==3 local n1 CrossCountry_ln_gender_yrssq.xls
     xi: xtreg ln_MMR `trend' ``x'', `options'
-    outreg2 ``x'' using "$OUT/tables/`n1'", excel replace label
+    outreg2 using "$OUT/tables/`n1'", excel replace label keep(``x'')
     qui xi: xtreg ln_MMR ``x'' `cont7', `opts'
 
     foreach num of numlist 1(1)7 {
         xi: xtreg ln_MMR `trend' ``x'' `cont`num'' if e(sample), `opts'
-        outreg2 ``x'' `cont`num'' using "$OUT/tables/`n1'", excel label
+        outreg2 using "$OUT/tables/`n1'", excel label keep(``x'' `cont`num'')
     }
     local ++iter
 }
@@ -573,21 +686,21 @@ local opts  fe vce(cluster ccode)
 xtset ccode year
 foreach x in xv3 xv1 {
     xi: xtreg mmratio ``x'', `opts'
-    outreg2 ``x'' using "`out'.xls", excel append label
+    outreg2 using "`out'.xls", excel append label keep(``x'')
     qui xi: xtreg mmratio ``x'' `cont7', `opts'
 
     foreach num of numlist 1(1)7 {
         xi: xtreg mmratio ``x'' `cont`num'' if e(sample), `opts'
-        outreg2 ``x'' `cont`num'' using "`out'.xls", excel append label
+        outreg2 using "`out'.xls", excel append label keep(``x'' `cont`num'')
     }
 
     xi: xtreg MMR ``x'', `opts'
-    outreg2 ``x'' using "`out'.xls", excel append label
+    outreg2 using "`out'.xls", excel append label keep(``x'')
     qui xi: xtreg MMR ``x'' `cont7', `opts'
 
     foreach num of numlist 1(1)7 {
         xi: xtreg MMR ``x'' `cont`num'' if e(sample), `opts'
-        outreg2 ``x'' `cont`num'' using "`out'.xls", excel append label
+        outreg2 using "`out'.xls", excel append label keep(``x'' `cont`num'')
     }
 }
 
