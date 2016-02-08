@@ -93,7 +93,7 @@ outreg2 `placebo1' using "$OUT/tables/NigeriaPlacebo.xls", excel append
 xi: reg educ `placebo3' `Ncont' `Biafra2' `wt' if `sampP', robust `se'
 outreg2 `placebo3' using "$OUT/tables/NigeriaPlacebo.xls", excel append
 xi: reg educ `placebo4' `Ncont' `Biafra2' `wt' if `sampP', robust `se'
-outreg2 `placebo4' using "$OUT/tables/NigeriaPlacebo.xls", excel append
+aoutreg2 `placebo4' using "$OUT/tables/NigeriaPlacebo.xls", excel append
 
 **GRAPHICAL
 collapse educ, by(yearbirth)
@@ -103,9 +103,10 @@ ytitle("Years of Education") xline(1965, lcolor(black) lpattern(dot)) ///
 xline(1975, lcolor(black) lpattern(dot)) legend(off) ///
 || lfit educ yearbirth if yearbirth<=1965&yearbirth>=1955, `linef' ///
 || lfit educ yearbirth if yearbirth>=1975, `linef' ///
-|| lfit educ yearbirth if yearbirth<=1975&yearbirth>=1965, `linef'
+|| lfit educ yearbirth if yearbirth<=1975&yearbirth>=1965, `linef'        ///
+text(7 1958 "Pre-Reform") text(7 1967 "Partial") text(7 1973 "Full")
 graph export "$OUT/graphs/Nigeria_educ.eps", as(eps) replace
-
+exit
 
 ********************************************************************************
 *** (2b) Nigeria Estimates MMR
