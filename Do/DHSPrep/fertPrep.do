@@ -62,7 +62,32 @@ foreach year of 1980(1)2010 {
 
 clear
 append using `files'
+gen countryname = _cou
+replace countryname = subinstr(countryname,"-"," ", .)
+replace countryname = "Congo. Rep." if countryname == "Congo Brazzaville"
+replace countryname = "Congo. Dem. Rep." if countryname == "Congo Democratic Republic"
+replace countryname = "Cote d'Ivoire" if countryname == "Cote d Ivoire"
+replace countryname = "Egypt. Arab Rep." if countryname == "Egypt"
+replace countryname = "Yemen. Rep." if countryname == "Yemen"
+	
+preserve
 
+********************************************************************************
+*** (3) Merge in WB names
+********************************************************************************
+use "$OUT/control_GDPpc"
+keep countryname countrycode
+gen a = 1
+collapse a, by(countryname countrycode)
+drop a
+
+tempfile countries
+save `countries'
+restore
+
+merge m:1 countryname using `countries'
+keep if _merge == 3
+drop _merge
 
 lab dat "Fertility Preferences calculated from all DHS surveys"
-save "$OUT/fertilityPreferences", replace
+save "$OUT/control_fertilityPreferences", replace
