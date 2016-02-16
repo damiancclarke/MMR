@@ -44,3 +44,25 @@ foreach file in 1 2 3 4 5 6 7 {
 }
 
 append using `f1' `f2' `f3' `f4' `f5' `f6'
+gen age = yearInterview - birthYear
+
+local files
+
+foreach year of 1980(1)2010 {
+    preserve
+    gen age`year' = `year' - birthYear
+    keep if age`year'>=25&age`year'<40
+    collapse wifeNoMore husband*, by(_cou)
+    gen year = `year'
+    tempfile p`year'
+    save `p`year''
+    local files `files' `p`year''
+    restore
+}
+
+clear
+append using `files'
+
+
+lab dat "Fertility Preferences calculated from all DHS surveys"
+save "$OUT/fertilityPreferences", replace
