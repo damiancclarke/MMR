@@ -48,10 +48,10 @@ gen age = yearInterview - birthYear
 
 local files
 
-foreach year of 1980(1)2010 {
+foreach year of numlist 1980(1)2010 {
     preserve
     gen age`year' = `year' - birthYear
-    keep if age`year'>=25&age`year'<40
+    keep if age`year'>=25&age`year'<=35
     collapse wifeNoMore husband*, by(_cou)
     gen year = `year'
     tempfile p`year'
@@ -75,7 +75,7 @@ preserve
 ********************************************************************************
 *** (3) Merge in WB names
 ********************************************************************************
-use "$OUT/control_GDPpc"
+use "$OUT/control_GDPpc", clear
 keep countryname countrycode
 gen a = 1
 collapse a, by(countryname countrycode)
