@@ -71,7 +71,7 @@ foreach var in GDPpc Immunization fertility population TeenBirths_temp IMR GDPgr
     replace year=year+1957
 
     do "$COD/WHO_Countrynaming.do"
-		keep if year==1990|year==1995|year==2000|year==2005|year==2010
+    keep if year==1990|year==1995|year==2000|year==2005|year==2010
 
     rename countryname country
     merge m:m country year using "$DAT/MMReduc_BASE_F", gen(_merge`var')
@@ -82,7 +82,14 @@ use "$DAT/InputsToCreateBase/control_birthphysician", clear
 do  "$COD/WHO_Countrynaming.do"
 rename countryname country
 
-merge m:m country year using "$DAT/MMReduc_BASE_F", gen(_merge`var')
+merge m:m country year using "$DAT/MMReduc_BASE_F", gen(_mergePhys)
+save "$DAT/MMReduc_BASE_F", replace
+
+use "$DAT/InputsToCreateBase/control_fertilityPreferences", clear
+do  "$COD/WHO_Countrynaming.do"
+rename countryname country
+
+merge m:m country year using "$DAT/MMReduc_BASE_F", gen(_mergeFertPref)
 save "$DAT/MMReduc_BASE_F", replace
 
 ********************************************************************************

@@ -51,7 +51,7 @@ local files
 foreach year of numlist 1980(1)2010 {
     preserve
     gen age`year' = `year' - birthYear
-    keep if age`year'>=25&age`year'<=35
+    keep if age`year'>=25&age`year'<=39
     collapse wifeNoMore husband*, by(_cou)
     gen year = `year'
     tempfile p`year'

@@ -72,7 +72,7 @@ if ftype=='tex':
     mc2  = '}}'
     mc3  = '{\\begin{footnotesize}\\textsc{Notes:} '
     cadd = ['6','9','9','9','8','5','6','5','5','7','3','8']
-    ccm  = ['}{p{12.5cm}}','}{p{20cm}}','}{p{17.2cm}}','}{p{18.8cm}}',
+    ccm  = ['}{p{13.4cm}}','}{p{20cm}}','}{p{17.2cm}}','}{p{18.8cm}}',
     '}{p{20cm}}','}{p{12.5cm}}','}{p{17.7cm}}','}{p{12.7cm}}','}{p{12cm}}',
             '}{p{15.4cm}}','}{p{9.6cm}}','}{p{15.4cm}}']
 
@@ -118,7 +118,7 @@ elif ftype=='csv':
     summo.write('Variable;Obs;Mean;Std. Dev.;Min;Max \n')
 
 for i,line in enumerate(summi):
-    if i>2 and i<24:
+    if i>2 and i<23:
         newline= []
         words = line.split()
         for word in words:
@@ -143,9 +143,9 @@ for i,line in enumerate(summi):
         line=line.replace('percentattend','Percent Attended Births'            )
         line=line.replace('population'   ,'Population (Millions) '             )
         line=line.replace('fertility'    ,'Fertility'                          )
-        line=line.replace('husbandMore'  ,'Husband wants more births than wife')
-        line=line.replace('husbandLess'  ,'Husband wants same births as wife'  )
-        line=line.replace('husbandSame'  ,'Husband wants less births than wife')
+        line=line.replace('husbandMore'  ,'Husband wants more kids than wife'  )
+        line=line.replace('husbandLess'  ,'Husband wants less kids than wife'  )
+        line=line.replace('MFyr_sch'     ,'Male/Female Education (years)'      )
         line=line.replace('yr_sch_pri'   ,'Years of Primary Education'         )
         line=line.replace('yr_sch_sec'   ,'Years of Secondary Education'       )
         line=line.replace('yr_sch_ter'   ,'Years of Tertiary Education'        )
@@ -154,7 +154,6 @@ for i,line in enumerate(summi):
         line=line.replace('ls'           ,'Percent Secondary'                  )
         line=line.replace('lh'           ,'Percent Tertiary'                   )
         line=line.replace('lu'           ,'Percent No Education'               )
-        line=line.replace('MFyr_sch'     ,'Male/Female Education (years)'      )
 
         if ftype=='tex':
             line=re.sub('Total','\\midrule\\multicolumn{6}{l}{\\\\textsc{'+
@@ -163,11 +162,12 @@ for i,line in enumerate(summi):
         summo.write(line+'\n')
 
 summo.write(
-mr+'\n'+mc1+cadd[0]+ccm[0]+mc3+'Maternal mortality is expressed in terms of ' 
-'deaths per 100,000 live births. Immunization is expressed as the percent of '
-'children of ages 12-23 months who are immunized against diphtheria, pertussis'
+mr+'\n'+mc1+cadd[0]+ccm[0]+mc3+'Maternal mortality is expressed in terms of    ' 
+'deaths per 100,000 live births. Immunization is expressed as the percent of   '
+'children of ages 12-23 months who are immunized against diphtheria, pertussis '
 ' and tetanus (DPT). Fertility represents births per woman, and teen births are'
-' expressed as the number of births per 1000 women between the ages of 15--19.')
+' expressed as the number of births per 1000 women between the ages of 15--19. '
+'Husband and wife fertility preferences are only available for DHS countries.')
 if ftype=='tex':
     summo.write('\\end{footnotesize}} \\\\ \\bottomrule '
     '\\end{tabular}\\end{center}\\end{table}')

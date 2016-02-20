@@ -44,7 +44,8 @@ cap mkdir "$OUT/graphs"
 ********************************************************************************
 **VARIABLES
 local mmr MMR ln_MMR
-local cov GDPpc ln_GDPpc Immuniz fertil percentattend population TeenBirths hus*
+local cov GDPpc ln_GDPpc Immuniz fertil percentattend population TeenBirths /*
+*/        husbandMore husbandLess
 local edu ln_yrsch yr_sch yr_sch_pr yr_sch_se yr_sch_te lpc lsc lhc lu lp ls lh
 local reg BLcode region_code region_UNESCO income2
 local xv1 lp ls lh
@@ -294,9 +295,13 @@ foreach var of varlist `xv1' `xv3' ln_GDPpc Immuniz percentatt fertil TeenBirths
 ********************************************************************************
 ***(5) Summary stats
 ********************************************************************************
+gen MFyr_sch = M_yr_sch/yr_sch
 local opts cells("count mean sd min max")
-local educsum yr_sch yr_sch_pr yr_sch_se yr_sch_te lp ls lh lu
+local educsum yr_sch yr_sch_pr yr_sch_se yr_sch_te lp ls lh lu MFyr_sch
 local title "Summary Stats for All Countries"
+
+lab var husbandMore "Husband wants more births than wife"
+lab var husbandLess "Husband wants less births than wife"
 
 replace population=population/1000000    
 estpost sum `mmr' `cov' `educsum'
@@ -721,7 +726,6 @@ local n3   "relEduc_MMR.xls"
 gen MFlp     = M_lp/lp
 gen MFls     = M_ls/ls
 gen MFlh     = M_lh/lh
-gen MFyr_sch = M_yr_sch/yr_sch
 gen MFprim   = (1-M_lu)/(1-lu)
 gen Fprim    = 1-lu
 
@@ -730,7 +734,7 @@ egen Avels     = rowmean(M_ls ls)
 egen Avelh     = rowmean(M_lh lh)
 egen Aveyr_sch = rowmean(M_yr_sch yr_sch)
 local edrat MFyr_sch
-local edcon yr_sch 
+local edcon yr_sch
 
 
 xi: xtreg husbandMore `edrat' `edcon', fe robust
