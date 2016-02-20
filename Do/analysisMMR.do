@@ -44,7 +44,7 @@ cap mkdir "$OUT/graphs"
 ********************************************************************************
 **VARIABLES
 local mmr MMR ln_MMR
-local cov GDPpc ln_GDPpc Immuniz fertil percentattend population TeenBirths
+local cov GDPpc ln_GDPpc Immuniz fertil percentattend population TeenBirths hus*
 local edu ln_yrsch yr_sch yr_sch_pr yr_sch_se yr_sch_te lpc lsc lhc lu lp ls lh
 local reg BLcode region_code region_UNESCO income2
 local xv1 lp ls lh
@@ -363,7 +363,7 @@ local cont5 `cont4' percentattend
 local cont6 `cont5' fertility
 local cont7 `cont6' TeenBirths
 
-
+/*
 local iter = 1
 foreach x in xv1 xv2 xv3 {
     if `iter'==1 local n1 CrossCountry_female.xls
@@ -392,6 +392,7 @@ foreach x in xv1 xv2 xv3 {
     }
     local ++iter
 }
+
 
 ********************************************************************************
 ***(6b) MMR versus schooling regressions with trends
@@ -702,6 +703,52 @@ foreach x in xv3 xv1 {
         xi: xtreg MMR ``x'' `cont`num'' if e(sample), `opts'
         outreg2 using "`out'.xls", excel append label keep(``x'' `cont`num'')
     }
+}
+*/
+
+********************************************************************************
+*** (15) Fertility Preferences
+********************************************************************************
+local trend
+local xv1G lp ls lh M_lp M_ls M_lh
+local xv2G yr_sch M_yr_sch
+local xv3G yr_sch yr_sch_sq M_yr_sch M_yr_sch_sq
+local n1   "relEduc_fertPrefs.xls"
+local n2   "relEduc_fert.xls"
+local n3   "relEduc_MMR.xls"
+
+
+gen MFlp     = M_lp/lp
+gen MFls     = M_ls/ls
+gen MFlh     = M_lh/lh
+gen MFyr_sch = M_yr_sch/yr_sch
+gen MFprim   = (1-M_lu)/(1-lu)
+gen Fprim    = 1-lu
+
+egen Avelp     = rowmean(M_lp lp)
+egen Avels     = rowmean(M_ls ls)
+egen Avelh     = rowmean(M_lh lh)
+egen Aveyr_sch = rowmean(M_yr_sch yr_sch)
+local edrat MFyr_sch
+local edcon yr_sch 
+
+
+xi: xtreg husbandMore `edrat' `edcon', fe robust
+outreg2 using "$OUT/tables/`n1'", excel replace label keep(`edrat' `edcon')
+xi: xtreg fertility `edrat' `edcon' if e(sample), fe robust
+outreg2 using "$OUT/tables/`n2'", excel replace label keep(`edrat' `edcon')
+xi: xtreg MMR `edrat' `edcon', fe robust
+outreg2 using "$OUT/tables/`n3'", excel replace label keep(`edrat' `edcon')
+qui xi: xtreg husbandMore `edrat' `edcon' `cont7', fe robust
+gen Mp = e(sample)
+
+foreach num of numlist 1(1)7 {
+    xi: xtreg husbandMore `trend'  `edrat' `edcon' `cont`num'' if Mp==1, fe robust
+    outreg2 using "$OUT/tables/`n1'", excel label keep(`edrat' `edcon' `cont`num'')
+    xi: xtreg fertility `trend'  `edrat' `edcon' `cont`num'' if Mp==1, fe robust
+    outreg2 using "$OUT/tables/`n2'", excel label keep(`edrat' `edcon' `cont`num'')
+    xi: xtreg MMR `trend' `edrat' `edcon' `cont`num'' if Mp==1, fe robust
+    outreg2 using "$OUT/tables/`n3'", excel label keep(`edrat' `edcon' `cont`num'')
 }
 
 ********************************************************************************
