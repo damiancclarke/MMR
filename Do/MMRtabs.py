@@ -39,6 +39,7 @@ gend = 'CrossCountry_gender.txt'
 mmry = 'CrossCountry_female_yrs.txt'
 mmrs = 'CrossCountry_female_yrssq.txt'
 mmrd = 'deltaEducation.txt'
+mmrt = 'CrossCountry_female_trend.txt'
 gens = 'CrossCountry_gender_yrssq.txt'
 mmrc = 'DHSsubset.txt'
 ngra = 'Nigeria.txt'
@@ -47,6 +48,8 @@ zimb = 'Zimbabwe.txt'
 zimP = 'ZimbabwePlacebo.txt'
 keny = 'Kenya.txt'
 kenP = 'KenyaPlacebo.txt'
+Mec1 = 'relEduc_fertPrefs.txt'
+Mec2 = 'relEduc_MMR.txt'
 
 #-------------------------------------------------------------------------------
 # --- (2) csv or tex options
@@ -68,10 +71,10 @@ if ftype=='tex':
     mcbf = '}{l}{\\textbf{'
     mc2  = '}}'
     mc3  = '{\\begin{footnotesize}\\textsc{Notes:} '
-    cadd = ['6','9','9','9','8','5','6','5','5','7','3']
+    cadd = ['6','9','9','9','8','5','6','5','5','7','3','8']
     ccm  = ['}{p{12.5cm}}','}{p{20cm}}','}{p{17.2cm}}','}{p{18.8cm}}',
     '}{p{20cm}}','}{p{12.5cm}}','}{p{17.7cm}}','}{p{12.7cm}}','}{p{12cm}}',
-    '}{p{15.4cm}}','}{p{9.6cm}}']
+            '}{p{15.4cm}}','}{p{9.6cm}}','}{p{15.4cm}}']
 
 elif ftyoe=='csv':
     dd = ';'
@@ -115,7 +118,7 @@ elif ftype=='csv':
     summo.write('Variable;Obs;Mean;Std. Dev.;Min;Max \n')
 
 for i,line in enumerate(summi):
-    if i>2 and i<20:
+    if i>2 and i<24:
         newline= []
         words = line.split()
         for word in words:
@@ -132,22 +135,26 @@ for i,line in enumerate(summi):
         line = re.sub(r"\s+",dd,line)
         line=re.sub(r"&$", ls+ls, line)
 
-        line=line.replace('ln_MMR'       ,'ln(Maternal Mortality)'      )
-        line=line.replace('MMR'          ,'Maternal Mortality'          )
-        line=line.replace('ln_GDPpc'     ,'ln(GDP per capita)'          )
-        line=line.replace('GDPpc'        ,'GDP per capita'              )
-        line=line.replace('TeenBirths'   ,'Teen Births'                 )
-        line=line.replace('percentattend','Percent Attended Births'     )
-        line=line.replace('population'   ,'Population (Millions) '      )
-        line=line.replace('fertility'    ,'Fertility'                   )
-        line=line.replace('yr_sch_pri'   ,'Years of Primary Education'  )
-        line=line.replace('yr_sch_sec'   ,'Years of Secondary Education')
-        line=line.replace('yr_sch_ter'   ,'Years of Tertiary Education' )
-        line=line.replace('yr_sch'       ,'Total Years of Education'    )
-        line=line.replace('lp'           ,'Percent Primary'             )
-        line=line.replace('ls'           ,'Percent Secondary'           )
-        line=line.replace('lh'           ,'Percent Tertiary'            )
-        line=line.replace('lu'           ,'Percent No Education'        )
+        line=line.replace('ln_MMR'       ,'ln(Maternal Mortality)'             )
+        line=line.replace('MMR'          ,'Maternal Mortality'                 )
+        line=line.replace('ln_GDPpc'     ,'ln(GDP per capita)'                 )
+        line=line.replace('GDPpc'        ,'GDP per capita'                     )
+        line=line.replace('TeenBirths'   ,'Teen Births'                        )
+        line=line.replace('percentattend','Percent Attended Births'            )
+        line=line.replace('population'   ,'Population (Millions) '             )
+        line=line.replace('fertility'    ,'Fertility'                          )
+        line=line.replace('husbandMore'  ,'Husband wants more births than wife')
+        line=line.replace('husbandLess'  ,'Husband wants same births as wife'  )
+        line=line.replace('husbandSame'  ,'Husband wants less births than wife')
+        line=line.replace('yr_sch_pri'   ,'Years of Primary Education'         )
+        line=line.replace('yr_sch_sec'   ,'Years of Secondary Education'       )
+        line=line.replace('yr_sch_ter'   ,'Years of Tertiary Education'        )
+        line=line.replace('yr_sch'       ,'Total Years of Education'           )
+        line=line.replace('lp'           ,'Percent Primary'                    )
+        line=line.replace('ls'           ,'Percent Secondary'                  )
+        line=line.replace('lh'           ,'Percent Tertiary'                   )
+        line=line.replace('lu'           ,'Percent No Education'               )
+        line=line.replace('MFyr_sch'     ,'Male/Female Education (years)'      )
 
         if ftype=='tex':
             line=re.sub('Total','\\midrule\\multicolumn{6}{l}{\\\\textsc{'+
@@ -219,6 +226,63 @@ mr+'\n'+mc1+cadd[1]+ccm[1]+mc3+'All regressions include fixed-effects by '
 ' of control variables is available in section \\ref{scn:data}, and as the note'  
 ' to table \\ref{MMRtab:sumstats}.  Standard errors clustered at the level of'
 ' the country are diplayed.\n'+foot)
+if ftype=='tex':
+    mmro.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
+    '\\end{tabular}\\end{center}\\end{table}\\end{landscape}')
+
+mmro.close()
+
+#Trends
+mmri = open(result + mmrt, 'r')
+mmro = open(tables + 'MMRTrends.' + end, 'w')
+
+if ftype=='tex':
+    mmro.write('\\begin{landscape}\\begin{table}[htpb!]\\begin{center}'
+   '\\caption{Cross-Country Results of MMR and Female Educational Attainment with Trends}'
+   '\\label{MMRtab:MMRpercentTrends}\\begin{tabular}{lcccccccc}\\toprule')
+for i,line in enumerate(mmri):
+    if i<=32:
+        line = re.sub(r"\t",dd,line)
+        line = re.sub(r"^&&","&",line)
+
+        #line=re.sub(r"&$", ls+ls, line)
+
+        line = line.replace('&LABELS','')
+        line = line.replace('Percent ever enrolled in','')
+        line = line.replace('ls& secondary','Secondary Education (\\% Population) ')
+        line = line.replace('lp& primary','Primary Education (\\% Population) ')
+        line = line.replace('lh& tertiary','Tertiary Education (\\% Population) ')
+        line = line.replace('_year2&year==  1995.0000'  ,'year 1995')
+        line = line.replace('_year3&year==  2000.0000'  ,'year 2000')
+        line = line.replace('_year4&year==  2005.0000'  ,'year 2005')
+        line = line.replace('_year5&year==  2010.0000'  ,'year 2010')
+        line = line.replace('ln_GDPpc&'                 ,'')
+        line = line.replace('Immunization&'             ,'')
+        line = line.replace('(DPT)'                     ,'(DPT) ')
+        line = line.replace('percentattend&'            ,'')
+        line = line.replace('fertility&(mean) fertility','Fertility')
+        line = line.replace('TeenBirths&'               ,'')
+        line = line.replace('Constant&Constant'         ,'Constant')
+        line = line.replace('BLcode&'                   ,'countries')
+        line = line.replace('\n'                        ,'\\\\')
+        line = line.replace(')\\\\'                     ,')'+dd3+'\\\\')
+        line = line.replace('(8)'                       ,'(8) ')
+        line = line.replace('&('                        ,dd1+'(')
+        line = line.replace(')&'                        ,')'+dd2)
+        line = line.replace('MMR\\\\'                   ,'MMR\\\\ \\midrule')
+        line = line.replace('Observations&'             ,'Observations')
+        line = line.replace('R-squared&'                ,'R-squared')
+        mmro.write(line+'\n')
+
+mmro.write(
+mr+'\n'+mc1+cadd[1]+ccm[1]+mc3+'All regressions include fixed-effects by '  
+'country. For the full list of countries by year see table \\ref{MMRtab:survey}.'
+' Country-specific linear trends are also included in all columns as a '
+' robustness test. Results are for the percent of the female population between '
+'the ages of 15 and 39 with each level of education in each country.  A full '
+'description of control variables is available in section \\ref{scn:data}, and as'
+' the note to table \\ref{MMRtab:sumstats}.  Standard errors clustered at the '
+' level of the country are diplayed in parentheses.\n'+foot)
 if ftype=='tex':
     mmro.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
     '\\end{tabular}\\end{center}\\end{table}\\end{landscape}')
@@ -357,7 +421,7 @@ for i,line in enumerate(mmri):
 
         #line=re.sub(r"&$", ls+ls, line)
         line = line.replace('&LABELS'                   ,'')
-        line = line.replace('yr_sch_sq&'       ,'Years of Education Squared')
+        line = line.replace('yr_sch_sq&yr_sch_sq'       ,'Years of Education Squared')
         line = line.replace('yr_sch&(mean) yr_sch'      ,'Years of Education')
         line = line.replace('_year2&year==  1995.0000'  ,'year 1995')
         line = line.replace('_year3&year==  2000.0000'  ,'year 2000')
@@ -410,9 +474,9 @@ for i,line in enumerate(mmri):
         line = re.sub(r"^&&","&",line)
 
         line = line.replace('&LABELS','')
-        line = line.replace('M_yr_sch_sq&'       ,'Years of Education Squared (Male) ')
+        line = line.replace('M_yr_sch_sq&M_yr_sch_sq'   ,'Years of Education Squared (Male) ')
         line = line.replace('M_yr_sch&(mean) M_yr_sch'  ,'Years of Education (Male) ')
-        line = line.replace('yr_sch_sq&'       ,'Years of Education Squared (Female) ')
+        line = line.replace('yr_sch_sq&yr_sch_sq'       ,'Years of Education Squared (Female) ')
         line = line.replace('yr_sch&(mean) yr_sch'      ,'Years of Education (Female) ')
         line = line.replace('_year2&year==  1995.0000'  ,'year 1995')
         line = line.replace('_year3&year==  2000.0000'  ,'year 2000')
@@ -461,27 +525,27 @@ if ftype=='tex':
     '\\caption{Cross-Country Results of $\Delta$ MMR and $\Delta$ Female Educational Attainment}'
     '\\label{MMRtab:MMRDelta}\\begin{tabular}{lcccccccc}\\toprule')
 for i,line in enumerate(mmri):
-    if i<=32:
+    if i<=29:
         line = re.sub(r"\t",dd,line)
         line = re.sub(r"^&&","&",line)
 
         #line=re.sub(r"&$", ls+ls, line)
 
         line = line.replace('&LABELS','')
-        line = line.replace('Percent ever enrolled in','')
-        line = line.replace('ls& secondary','Secondary Education (\\% Population) ')
-        line = line.replace('lp& primary','Primary Education (\\% Population) ')
+        line = line.replace('DMMR','$\Delta$ MMR')
+        line = line.replace('Dlh&Dlh','$\Delta$ Tertiary Education (\\% Population) ')
+        line = line.replace('Dls&Dls','$\Delta$ Secondary Education (\\% Population) ')
+        line = line.replace('Dlp&Dlp','$\Delta$ Primary Education (\\% Population) ')
         line = line.replace('lh& tertiary','Tertiary Education (\\% Population) ')
         line = line.replace('_year2&year==  1995.0000'  ,'year 1995')
         line = line.replace('_year3&year==  2000.0000'  ,'year 2000')
         line = line.replace('_year4&year==  2005.0000'  ,'year 2005')
         line = line.replace('_year5&year==  2010.0000'  ,'year 2010')
-        line = line.replace('ln_GDPpc&'                 ,'')
-        line = line.replace('Immunization&'             ,'')
-        line = line.replace('(DPT)'                     ,'(DPT) ')
-        line = line.replace('percentattend&'            ,'')
-        line = line.replace('fertility&(mean) fertility','Fertility')
-        line = line.replace('TeenBirths&'               ,'')
+        line = line.replace('Dln_GDPpc&Dln_GDPpc'      ,'$\Delta$ log(GDP) p.c.')
+        line = line.replace('DImmunization&DImmunization','$\Delta$ Immunization (DPT) ')
+        line = line.replace('Dpercentattend&Dpercentattend','$\Delta$ Attended Births')
+        line = line.replace('Dfertility&Dfertility','$\Delta$ Fertility')
+        line = line.replace('DTeenBirths&DTeenBirths','$\Delta$ Teen births')
         line = line.replace('Constant&Constant'         ,'Constant')
         line = line.replace('BLcode&'                   ,'countries')
         line = line.replace('\n'                        ,'\\\\')
@@ -495,7 +559,7 @@ for i,line in enumerate(mmri):
         mmro.write(line+'\n')
 
 mmro.write(
-mr+'\n'+mc1+cadd[1]+ccm[1]+mc3+'$Delta$ refers to the first difference for each'
+mr+'\n'+mc1+cadd[1]+ccm[1]+mc3+'$\Delta$ refers to the first difference for each'
 'variable within a given country over time. For the full list of countries by year see table \\ref{MMRtab:survey}.' 
 '  Results are for the percent of the female population between the ages of '
 ' 15 and 39 with each level of education in each country.  A full description'
@@ -638,7 +702,7 @@ for i,line in enumerate(mmri):
         line = re.sub(r"\t",dd,line)
         line = re.sub(r"^&&","&",line)
 
-        line = line.replace('yr_sch_sq&'       ,'Years of Education Squared')
+        line = line.replace('yr_sch_sq&yr_sch_sq'       ,'Years of Education Squared')
         line = line.replace('yr_sch&(mean) yr_sch'      ,'Years of Education')
         line = re.split(r"&", line)
         line = [line[i] for i in [0,1,2,3,4,5,6,7,8]]
@@ -653,7 +717,7 @@ for i,line in enumerate(mmri):
         line = re.sub(r"\t",dd,line)
         line = re.sub(r"^&&","&",line)
 
-        line = line.replace('yr_sch_sq&'       ,'Years of Education Squared')
+        line = line.replace('yr_sch_sq&yr_sch_sq'       ,'Years of Education Squared')
         line = line.replace('yr_sch&(mean) yr_sch'      ,'Years of Education')
         line = re.split(r"&", line)
         line = [line[i] for i in [0,9,10,11,12,13,14,15,16]]
@@ -764,8 +828,113 @@ if ftype=='tex':
 
 zsco.close()
 
+
 #-------------------------------------------------------------------------------
-# --- (7) Nigeria tables
+# --- (7) Mechanisms Table
+#-------------------------------------------------------------------------------
+Mc1i = open(result + Mec1, 'r')
+Mc2i = open(result + Mec2, 'r')
+meco = open(tables + 'Mechanisms.' + end, 'w')
+
+fpB  = []
+MMB  = []
+fpS  = []
+MMS  = []
+fpR  = []
+MMR  = []
+
+for i,line in enumerate(Mc1i):
+    if i==3:
+        fpB.append(line.split()[3])
+        fpB.append(line.split()[4])
+        fpB.append(line.split()[7])
+    if i==4:
+        fpS.append(line.split()[3])
+        fpS.append(line.split()[4])
+        fpS.append(line.split()[7])
+    if i==5:
+        fpB.append(line.split()[3])
+        fpB.append(line.split()[4])
+        fpB.append(line.split()[7])
+    if i==6:
+        fpS.append(line.split()[3])
+        fpS.append(line.split()[4])
+        fpS.append(line.split()[7])
+    if i==29:
+        fpR.append(line.split()[3])
+        fpR.append(line.split()[4])
+        fpR.append(line.split()[7])
+for i,line in enumerate(Mc2i):
+    if i==3:
+        MMB.append(line.split()[3])
+        MMB.append(line.split()[4])
+        MMB.append(line.split()[7])
+    if i==4:
+        MMS.append(line.split()[3])
+        MMS.append(line.split()[4])
+        MMS.append(line.split()[7])
+    if i==5:
+        MMB.append(line.split()[3])
+        MMB.append(line.split()[4])
+        MMB.append(line.split()[7])
+    if i==6:
+        MMS.append(line.split()[3])
+        MMS.append(line.split()[4])
+        MMS.append(line.split()[7])
+    if i==29:
+        MMR.append(line.split()[3])
+        MMR.append(line.split()[4])
+        MMR.append(line.split()[7])
+
+
+if ftype=='tex':
+    meco.write('\\begin{landscape}\\begin{table}[htpb!]\\begin{center}\n'
+    '\\caption{Mechanisms: Female Bargaining Power and Fertility Preferences}\n'
+    '\\label{MMRtab:Mechanisms}\\begin{tabular}{lcccp{1mm}ccc}\\toprule\n'
+               '& \\multicolumn{3}{c}{Husband Desires Higher Fertility}&&'
+               '\\multicolumn{3}{c}{Maternal Mortality Ratio}\\\\'
+               'VARIABLES & (1)&(2)&(3)&&(4)&(5)&(6)\\\\ \\cmidrule(r){1-4} \\cmidrule(r){6-8}')
+    meco.write('\\begin{footnotesize}\\end{footnotesize}&'*6+
+    '\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
+
+meco.write('Male/Female Education   &'+fpB[0]+'&'+fpB[1]+'&'+fpB[2])
+meco.write('                       &&'+MMB[0]+'&'+MMB[1]+'&'+MMB[2]+'\\\\ \n')
+meco.write('                        &'+fpS[0]+'&'+fpS[1]+'&'+fpS[2])
+meco.write('                       &&'+MMS[0]+'&'+MMS[1]+'&'+MMS[2]+'\\\\ \n')
+meco.write('Female Education (years)&'+fpB[3]+'&'+fpB[4]+'&'+fpB[5])
+meco.write('                       &&'+MMB[3]+'&'+MMB[4]+'&'+MMB[5]+'\\\\ \n')
+meco.write('                        &'+fpS[3]+'&'+fpS[4]+'&'+fpS[5])
+meco.write('                       &&'+MMS[3]+'&'+MMS[4]+'&'+MMS[5]+'\\\\ \n')
+meco.write('\\begin{footnotesize}\\end{footnotesize}&'*5+
+'\\begin{footnotesize}\\end{footnotesize}\\\\ \n')
+meco.write('Observations            &207&207&207&&207&207&207\\\\ \n')
+meco.write('R-squared               &'+fpR[0]+'&'+fpR[1]+'&'+fpR[2])
+meco.write('                       &&'+MMR[0]+'&'+MMR[1]+'&'+MMR[2]+'\\\\ \n')
+meco.write('Number of Countries     &48&48&48&&48&48&48\\\\ \n')
+
+
+meco.write(mr+'\n'+mc1+cadd[11]+ccm[11]+mc3+'Dependent variable in columns 1-'
+           '3 is measured as the proportion of women aged 25-40 who report   '
+           'at their husband wants higher fertility than they do.  Dependent '
+           'variable in columns 4-6 is the number of maternal deaths per     '
+           '100,000 live births.  The estimation sample consists of all DHS  '
+           'countries in which women respond to desired fertility questions. '
+           'Column 1 and 4 includes country '
+           ' fixed effects, columns 2 and 5 include country and year fixed   '
+           'effects, and columns 3 and 6 include fixed effects and full      '
+           'time varying controls with the exception of fertility (see column'
+           ' 6 of table \\ref{MMRtab:MMRpercent}.  Male to female education  '
+           'is measured as the ratio in years.  Heteroscedasticity-robust    '
+           'standard errors are reported.\n'+foot)
+if ftype=='tex':
+    meco.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
+   '\\end{tabular}\\end{center}\\end{table}\\end{landscape}')
+
+meco.close()
+
+
+#-------------------------------------------------------------------------------
+# --- (8) Nigeria tables
 #-------------------------------------------------------------------------------
 ngai = open(result + ngra, 'r')
 ngao = open(tables + 'Nigeria.' + end, 'w')
@@ -955,7 +1124,7 @@ if ftype=='tex':
 ngao.close()
 
 #-------------------------------------------------------------------------------
-# --- (8) Zimbabwe tables
+# --- (9) Zimbabwe tables
 #-------------------------------------------------------------------------------
 zimi = open(result + zimb, 'r')
 zimo = open(tables + 'Zimbabwe.' + end, 'w')
@@ -1062,7 +1231,7 @@ zimo.close()
 
 
 #-------------------------------------------------------------------------------
-# --- (9) Kenya tables
+# --- (10) Kenya tables
 #-------------------------------------------------------------------------------
 keni = open(result + keny, 'r')
 keno = open(tables + 'Kenya.' + end, 'w')
@@ -1168,7 +1337,7 @@ keno.close()
 
 
 #-------------------------------------------------------------------------------
-# --- (10) Write tables
+# --- (X) Write tables
 #-------------------------------------------------------------------------------
 tabo = open(tables + 'Tables.tex', 'w')
 
@@ -1182,6 +1351,7 @@ tabo.write('\\input{\\MMRfolder/Paper/tables/MMRregion.tex}\n')
 tabo.write('\\input{\\MMRfolder/Paper/tables/MMRincome.tex}\n')
 tabo.write('\\input{\\MMRfolder/Paper/tables/MMRpercentGender.tex}\n')
 tabo.write('\\input{\\MMRfolder/Paper/tables/correlatedEffects.tex}\n')
+tabo.write('\\input{\\MMRfolder/Paper/tables/Mechanisms.tex}\n')
 tabo.write('\\input{\\MMRfolder/Paper/tables/Nigeria.tex}\n')
 tabo.write('\\input{\\MMRfolder/Paper/tables/Zimbabwe.tex}\n')
 tabo.write('\\input{\\MMRfolder/Paper/tables/Kenya.tex}\n')
