@@ -224,7 +224,7 @@ we run country-level regressions of the following form:
 \begin{equation}
 \label{eqn:panel}
    MMR_{ct}=\mathbf{educ}_{ct}\beta + \mathbf{W}_{ct}\gamma+\alpha_c+\alpha_t+
-   \varepsilon_{it},
+   \varepsilon_{ct},
 \end{equation}
 where $MMR_{ct}$ refers to the maternal mortality rate in country $c$ and period 
 $t$, $\mathbf{educ}_{ct}$ to a series of variables measuring the percent of the 
@@ -258,7 +258,7 @@ analysis for educational attainment of both gender groups and for various age
 subgroups created within the fertile age range. We also segregate countries by
 region- and income-level, and present group-specific estimates of the above
 specification. A full list of the educational variables which we use and a 
-description of the time varying covariates $\textbf{W}_{it}$ is provided in
+description of the time varying covariates $\textbf{W}_{ct}$ is provided in
 section \ref{scn:data}. 
 
 \subsection{Natural Experiments}
@@ -517,7 +517,7 @@ natural experiments occurred at the secondary or upper-primary level, average
 educational attainment is approximately 7-8 years for all women in the sample, 
 while in Nigeria, where the natural experiment of interest involves primary school 
 construction, average education in the cohorts of interest is approximately 5 
-years.  In each case, over the entire range of cohorts examined, betwee 1 and 2 
+years.  In each case, over the entire range of cohorts examined, between 1 and 2 
 in every 100 women dies during child birth.
 
 %GDP per capita: (data.worldbank.org/indicator/NY.GDP.PCAP.CD)
@@ -584,7 +584,7 @@ relationship between educational improvements and MMR reduction is larger in low
 income environments (consistent with their higher baseline rates of maternal 
 mortality and their lower baseline levels of education).
 
-Column (3) is the favoured specification. It shows that, conditional upon 
+Column 3 is the favoured specification. It shows that, conditional upon 
 aggregate trends in maternal mortality, if an additional one percent of the 
 population enrolled in primary education this would reduce the number of maternal 
 deaths by 8.4 per 100,000 live births (the omitted group is the percent of the
@@ -752,7 +752,7 @@ given that microdata results are based on a smaller number of events (maternal
 deaths), DHS results are, unsurprisingly, somewhat less precise.  Despite this, 
 panel A shows that when using either DHS or WHO data, (quadratic) years of 
 education are 
-significantly related to MMR.  In column (8) we see that conditional on full
+significantly related to MMR.  In column 8 we see that conditional on full
 controls, DHS and WHO estimates result in similar conclusions, and reasonably
 similar point estimates (tests of equality of the coefficients on the linear
 and quadratic term cannot be rejected).  We return to using DHS microdata
@@ -775,7 +775,7 @@ paper the $R^2$ of a regression of female to male education and an intercept is
 In this section we turn to results which allow us to test whether increases 
 in male or in female education drive reductions in maternal mortality.  We
 run a series of regressions as per (\ref{eqn:panel}), where now the vector
-of educational variables $\mathbf{educ}_{it}$ contains measures of both male
+of educational variables $\mathbf{educ}_{ct}$ contains measures of both male
 and female education in the population.  We can thus test whether 
 \emph{conditional} on male education, increases in female education cause
 reductions in rates of maternal mortality.  And vice versa, conditioning on
@@ -955,8 +955,8 @@ GDP which had no significant impact on maternal mortality) and regress them on
 education conditional upon country fixed effects (Table \ref{MMRtab:Zscore}):
 \begin{equation}
 \label{eqn:Zscore}
-  fert_{it}=\alpha + \mathbf{educ}^\prime_{it}\beta + \mathbf{W}^\prime_i\gamma 
-  + u_{it}.
+  fert_{ct}=\alpha + \mathbf{educ}^\prime_{ct}\beta + \mathbf{W}^\prime_c\gamma 
+  + u_{ct}.
 \end{equation}
 
 We see that increases in education are significant predictors of within-country 
