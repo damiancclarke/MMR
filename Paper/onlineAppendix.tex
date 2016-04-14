@@ -1,0 +1,263 @@
+%********************************************************************************
+\documentclass{article}
+\usepackage{etex}
+\reserveinserts{28}
+
+%-------------------------------------------------------------------------------
+%--- PACKAGES
+%-------------------------------------------------------------------------------
+\usepackage{chronosys}
+\usepackage{url}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{bold-extra}
+\usepackage{rotating}
+\usepackage{dcolumn}
+%\usepackage{chronology}
+\usepackage{color}
+\pagecolor{white}
+\usepackage{pdfpages}
+\usepackage{lastpage}
+\usepackage{lscape}
+\usepackage{lineno}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{breqn}
+\usepackage{appendix}
+\usepackage{natbib}
+\usepackage[capposition=top]{floatrow}
+\usepackage{graphicx}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{multirow}
+\usepackage{titletoc}
+\usepackage{wrapfig}
+\usepackage{blindtext}
+\usepackage{subcaption}
+\usepackage{subfloat}
+\usepackage{xr}
+\externaldocument{MMREducation_BhalotraClarke}
+
+\definecolor{blue}{HTML}{84CECC}
+\definecolor{gr}{HTML}{375D81}
+
+%-------------------------------------------------------------------------------
+%--- SPECIFICATIONS (MARGINS, TOC, BIBLIO)
+%-------------------------------------------------------------------------------
+\setlength\topmargin{-0.375in}
+\setlength\textheight{8.8in}
+\setlength\textwidth{5.8in}
+\setlength\oddsidemargin{0.4in}
+\setlength\evensidemargin{-0.5in}
+
+\bibliographystyle{abbrvnat}
+\bibpunct{(}{)}{;}{a}{,}{,}
+\newcommand{\MMRfolder}{"."}
+
+
+\titlecontents{section}
+[0pt]
+{}%
+{\contentsmargin{0pt}
+    \thecontentslabel\enspace%
+    }
+{\contentsmargin{0pt}}
+{\titlerule*[.5pc]{.}\contentspage}
+[]
+
+\renewcommand\figurename{Appendix Figure}
+\renewcommand\tablename{Appendix Table}
+\renewcommand\thesection{\Alph{section}}
+\renewcommand*{\thepage}{A\arabic{page}}
+\renewcommand*{\theequation}{A\arabic{equation}}
+
+
+%-------------------------------------------------------------------------------
+%--- FRONT PAGE
+%-------------------------------------------------------------------------------
+\begin{document}
+\begin{spacing}{1.4}
+
+\begin{center}
+\textbf{ONLINE APPENDICES} \\
+\vspace{4mm}
+From the paper: \\
+\vspace{6mm}
+       {\large \textsc{Maternal Education and Maternal Mortality:
+       Evidence from a Large Panel and Various Natural Experiments}} \\
+Sonia Bhalotra and Damian Clarke
+\end{center}
+
+\tableofcontents
+
+
+%-------------------------------------------------------------------------------
+%--- MAIN CONTENTS
+%-------------------------------------------------------------------------------
+\setlength\parindent{0.25in}
+\setlength\parskip{0.25in}
+
+
+\newpage
+%===============================================================================
+%MEDICAL LITERATURE
+%===============================================================================
+\section{Maternal Mortality in the Medical Literature}
+\label{scn:medliterature}
+Between 1990 and 2010, maternal mortality worldwide dropped by almost 50\%. 
+While this is impressive, certainly relative to trends in the preceding twenty 
+years, the average rate of decline in the global maternal mortality ratio (the 
+number of maternal deaths per 100,000 live births) of 3.1\% per year over this 
+period falls well below the annual decline of 5.5\% required to achieve the 
+Millennium Development Goals (MDG) for maternal health adopted by the 
+international community in 2000. There are signs of increasing policy commitment 
+to addressing maternal mortality: official development assistance for maternal 
+and new-born health has risen relative, for instance, to funding for child 
+health \citep{Grecoetal2008}.\footnote{Overall donor disbursements increased from 
+US\$2,119 million in 2003 to \$3,482 million in 2006; funding for child
+health increased by 63\% and that for maternal and new-born health increased by 
+66\%. In the 68 priority countries, child-related disbursements increased from a 
+mean of \$4 per child in 2003 to \$7 per child in 2006; disbursements for 
+maternal and neonatal health increased from \$7 per live birth in 2003 to \$12 
+per live birth in 2006.}
+
+The medical literature suggests that maternal mortality is principally 
+associated with labour, delivery and the early postpartum period; largely 
+occuring between the third trimester of pregnancy and the first post-partum 
+week. The principal medical cause of these deaths is obstetric haemorrhage, a 
+largely preventable cause provided ``access to timely and competent obstetric 
+care'' is available \citep{RonsmansGraham2006}.  Along with haemorrhage, a number 
+of other causes are reported, including sepsis, abortion, hypertensive disorders, 
+obstructed labour, embolism and ectopic pregnancy\footnote{Highly cited figures 
+\citep{WHOetal1991} suggest figures of 25\% due to haemorrhage, 20\% due to 
+indirect causes, 15\% due to infection, 13\% due to abortions, 12\% due to 
+eclampsia, 8\% to obstructed labour and 8\% to other direct causes. 
+\citet{Khanetal2006} provide evidence broadly in agreement with these values 
+however note that these estimates suffer from large confidence intervals.}.  
+Despite the fact that these complications account for the majority of deaths 
+during labour, birth and the post-partum period, the prevalence of each varies 
+by region \citep{Khanetal2006}.  Whilst haemorrhage is the principal cause in 
+developing regions, complications from caesarian sections and anaesthesia are more 
+common in developed countries, and other region-specific disease burdens are noted 
+(abortion in Latin America and the Caribbean, sepsis and HIV in Africa and anaemia 
+in Asia).
+
+Much focus in the existing literature is on the difficulty of obtaining accurate 
+statistics of maternal mortality, particularly in those areas where maternal 
+mortality is highest\citep{RonsmansGraham2006, MccarthyMaine1992, 
+McAlisterBaskett2006}.  The ability to compile credible data is confounded by the 
+lack of consistent classification prior to the introduction of ICD-9 coding, the 
+need to collect data from an array of data sources, misclassification of maternal 
+death, significant under-reporting of maternal mortality, and missing and 
+incomplete data\citep{Yazbeck2007, Hoganetal2010}.
+
+Early work\footnote{The Safe Motherhood Initiative of 1987 was put in place in 
+response to the increasing recognition of this topic in developing countries.} 
+in the medical literature highlighted the importance of addressing the `proximal 
+causes' or inputs of maternal mortality; namely the likelihood that a women 
+becomes pregnant, or the likelihood of complications (and the treatment of these 
+complications) conditional upon her becoming pregnant \citep{MccarthyMaine1992, 
+GoodburnCampbell2001, TrusselPebley1984}.  Along with attendence and medical 
+care for mothers during pregnancy and childbirth, these studies suggest that 
+altering maternal age, quantity of births, and spacing of births could have a 
+considerable effect on rates of maternal mortality.  
+
+More recent medical studies also suggest that socioeconomic factors are 
+fundamental in the reduction of maternal mortality.  \citet{Costelloetal2004}, 
+for example, argue that the focus on primary care and skilled attendance is 
+not a sufficient strategy, citing considerable reductions in maternal mortality 
+following community-based interventions\footnote{Also see 
+\citet{Manandharetal2004} for the results of a randomized trial of 
+community-based meetings.}.  \citet{McAlisterBaskett2006} suggest that 
+social---and specifically gender-specific factors such as female 
+education---should predict maternal mortality, demonstrating cross-country 
+correlation between these variables. Recent work from \citet{Ahmedetal2012} 
+suggests that family planning inputs would allow for considerable reductions in 
+maternal deaths world-wide, with the authors estimating that the equivalent of 
+44\% of maternal deaths in 2008 were averted due to contraceptive use, and that 
+meeting unmet demand for family planning could prevent a further 29\%. Finally, 
+the importance of socio-economic factors is also highlighted by 
+\citet{Ahmedetal2010} (and earlier by \citet{ShenWilliamson1999}) who suggest 
+that more educated and empowered women are more likely to utilise health 
+services related to maternal mortality such as antenatal care, and skilled 
+birth attendants, and by \citet{BhuttaBlack2013} who higlight the social 
+determinants of maternal health, and the link of poor health to poorly served 
+urban slum environments where social and educational support networks are weak.
+
+%===============================================================================
+%DATA APPENDIX
+%===============================================================================
+\section{Data Appendix}
+\label{scn:dataappendix}
+\subsection{Data for Panel Analysis}
+The variable `Percent Attended Births' represents the number of births attended 
+by a skilled physician.  This variable has been constructed from World Bank data 
+relating to births attended by skilled health staff 
+(\url{http://data.worldbank.org/indicator/SH.STA.BRTC.ZS}) and DHS data 
+constructed from the cross-country micro data. The DHS data comes from a 
+question regarding place of birth, where those mothers who report births in a 
+public or private facility are assumed to have been attended by a skilled health 
+professional.  
+
+Given the sporadic nature of the data produced, the following procedure was 
+followed: `Percent Attended Births' was set equal to the DHS microdata average 
+for each year/country group pair for which this observation was available.  In 
+the case that DHS data was not available and World Bank data was, `Percent 
+Attended Births' was set equal to the rate from the World Bank data.  Given that 
+MMR and Education data is available in 5 year periods (1990, 1995, 2000, 2005, 
+2010), for each of these years where the fifth year was not available but there 
+was data in the preceeding 5 year period, the average of the preceeding 5 year 
+period was taken and used as the data point in the fifth year.
+
+Trends in maternal mortality and education in the cross-country sample are 
+displayed in figures \ref{fig:EducRegion}-\ref{fig:MMRRegion}. There is 
+considerable variation both across time and continents, but overall a 
+consistently positive trend in years of schooling, and a negative trend in 
+regional maternal mortality figures. Exceptionally, in sub-Saharan Africa, 
+maternal mortality stagnated between 1990-1995, beginning to fall in line with 
+other regions during the late 1990s and early 2000s.
+
+Despite reductions in maternal mortality in sub-Saharan Africa, this region still 
+had overwhelmingly the highest rates of maternal death associated with childbirth 
+in 2010 (Figure \ref{fig:MMRGlobal}). Whilst certain countries in South, Central 
+and East Asia, along with Middle East and North Africa, and Latin America have 
+achieved ratios of less than 100 deaths per 100,000 births, all but a small 
+hand-full of sub-Saharan countries still have ratios which exceed 300 per 100,000 
+births.
+
+\subsection{Data for Quasi-Experiments}
+Micro-level data for education and maternal mortality is used in each country.
+Both come from DHS.  For each country we pool all available DHS waves in which
+the maternal mortality module was collected.  These are, for Zimbabwe: 1994, 
+1999, 2005 and 2010; for Kenya: 1998, 2003, and 2008; and for Nigeria: 1999 and
+2008.
+
+From each respondent in the DHS Individual Recode file (ie all index women), we
+use their education, along with their region of birth and residence, data of 
+birth, and various characteristics such as ethnicity and religion.  To create a
+maternal mortality database, we take information on all of the sisters of each
+woman in the DHS data.  For these sisters, the index woman reports if they are
+alive, their data of birth, if they died during childbirth, and if so, in what 
+the maternal death occurred.  From this, we generate a sisters file recording 
+maternal mortality rates for each woman, (and hence birth cohorts). Full details
+regarding all data, and data itself is available on the web
+(\url{https://github.com/damiancclarke/MMR}).
+
+\newpage
+\section{Appendix Tables}
+\label{scn:appTables}
+\input{\MMRfolder/Paper/tables/Appendix_Tables.tex}
+
+\newpage
+\section{Appendix Figures}
+\label{scn:appFigures}
+\input{\MMRfolder/Paper/AppendixFigures.tex}
+
+
+\newpage
+\bibliography{./Paper/BibTeX}
+
+
+\end{spacing}
+\end{document}
