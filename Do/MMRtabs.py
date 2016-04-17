@@ -27,8 +27,10 @@ print '\n The script %s is making %s files \n' %(script, ftype)
 #-------------------------------------------------------------------------------
 # --- (1) File names
 #-------------------------------------------------------------------------------
-result = '/home/damian/investigacion/Activa/MMR/Results/tables/'
-tables = '/home/damian/investigacion/Activa/MMR/Paper/tables/'
+#result = '/home/damian/investigacion/Activa/MMR/Results/tables/'
+#tables = '/home/damian/investigacion/Activa/MMR/Paper/tables/'
+result = '/media/ubuntu/Impar/investigacion/Activa/MMR/Results/tables/'
+tables = '/media/ubuntu/Impar/investigacion/Activa/MMR/Paper/tables/'
 
 sums = 'SumStats.xls'
 mmra = 'CrossCountry_female.txt'
@@ -138,6 +140,7 @@ for i,line in enumerate(summi):
         line=line.replace('ln_MMR'       ,'ln(Maternal Mortality)'             )
         line=line.replace('MMR'          ,'Maternal Mortality'                 )
         line=line.replace('ln_GDPpc'     ,'ln(GDP per capita)'                 )
+        line=line.replace('ln_GDPcur'    ,'ln(GDP per capita)'                 )
         line=line.replace('GDPpc'        ,'GDP per capita'                     )
         line=line.replace('TeenBirths'   ,'Teen Births'                        )
         line=line.replace('percentattend','Percent Attended Births'            )
@@ -201,6 +204,7 @@ for i,line in enumerate(mmri):
         line = line.replace('_year4&year==  2005.0000'  ,'year 2005')
         line = line.replace('_year5&year==  2010.0000'  ,'year 2010')
         line = line.replace('ln_GDPpc&'                 ,'')
+        line = line.replace('ln_GDPcur&'                ,'')
         line = line.replace('Immunization&'             ,'')
         line = line.replace('(DPT)'                     ,'(DPT) ')
         line = line.replace('percentattend&'            ,'')
@@ -220,12 +224,12 @@ for i,line in enumerate(mmri):
 
 mmro.write(
 mr+'\n'+mc1+cadd[1]+ccm[1]+mc3+'All regressions include fixed-effects by '  
-'country. For the full list of countries by year see table \\ref{MMRtab:survey}.' 
+'country. For the full list of countries by year see online appendix table 1.' 
 '  Results are for the percent of the female population between the ages of '
 ' 15 and 39 with each level of education in each country.  A full description'
 ' of control variables is available in section \\ref{scn:data}, and as the note'  
 ' to table \\ref{MMRtab:sumstats}.  Standard errors clustered at the level of'
-' the country are diplayed.\n'+foot)
+' the country are displayed.\n'+foot)
 if ftype=='tex':
     mmro.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
     '\\end{tabular}\\end{center}\\end{table}\\end{landscape}')
@@ -257,6 +261,7 @@ for i,line in enumerate(mmri):
         line = line.replace('_year4&year==  2005.0000'  ,'year 2005')
         line = line.replace('_year5&year==  2010.0000'  ,'year 2010')
         line = line.replace('ln_GDPpc&'                 ,'')
+        line = line.replace('ln_GDPcur&'                ,'')
         line = line.replace('Immunization&'             ,'')
         line = line.replace('(DPT)'                     ,'(DPT) ')
         line = line.replace('percentattend&'            ,'')
@@ -276,13 +281,13 @@ for i,line in enumerate(mmri):
 
 mmro.write(
 mr+'\n'+mc1+cadd[1]+ccm[1]+mc3+'All regressions include fixed-effects by '  
-'country. For the full list of countries by year see table \\ref{MMRtab:survey}.'
+'country. For the full list of countries by year see online appendix table 1.'
 ' Country-specific linear trends are also included in all columns as a '
 ' robustness test. Results are for the percent of the female population between '
 'the ages of 15 and 39 with each level of education in each country.  A full '
-'description of control variables is available in section \\ref{scn:data}, and as'
-' the note to table \\ref{MMRtab:sumstats}.  Standard errors clustered at the '
-' level of the country are diplayed in parentheses.\n'+foot)
+'description of control variables is available in section 3 of the paper, and as'
+' the note to table 2a.  Standard errors clustered at the '
+' level of the country are displayed in parentheses.\n'+foot)
 if ftype=='tex':
     mmro.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
     '\\end{tabular}\\end{center}\\end{table}\\end{landscape}')
@@ -318,6 +323,7 @@ for i,line in enumerate(mmri):
         line = line.replace('_year4&year==  2005.0000'  ,'year 2005')
         line = line.replace('_year5&year==  2010.0000'  ,'year 2010')
         line = line.replace('ln_GDPpc&'                 ,'')
+        line = line.replace('ln_GDPcur&'                ,'')
         line = line.replace('Immunization&'             ,'')
         line = line.replace('(DPT)'                     ,'(DPT) ')
         line = line.replace('percentattend&'            ,'')
@@ -338,13 +344,13 @@ for i,line in enumerate(mmri):
 
 mmro.write(
 mr+'\n'+mc1+cadd[1]+ccm[1]+mc3+'All regressions include fixed-effects by '  
-'country. For the full list of countries by year see table \\ref{MMRtab:survey}.' 
+'country. For the full list of countries by year see online appendix table 1.'
 ' Educational variables are the same as those in table \\ref{MMRtab:MMRpercent}'
 ' however include both female and male figures for each variable (ages 15-39).'
 ' A full description'
 ' of control variables is available in section \\ref{scn:data}, and as the note'  
 ' to table \\ref{MMRtab:sumstats}.  Standard errors clustered at the level of'
-' the country are diplayed.\n'+foot)
+' the country are displayed.\n'+foot)
 if ftype=='tex':
     mmro.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
     '\\end{tabular}\\end{center}\\end{table}\\end{landscape}')
@@ -375,6 +381,7 @@ for i,line in enumerate(mmri):
         line = line.replace('_year4&year==  2005.0000'  ,'year 2005')
         line = line.replace('_year5&year==  2010.0000'  ,'year 2010')
         line = line.replace('ln_GDPpc&'                 ,'')
+        line = line.replace('ln_GDPcur&'                ,'')
         line = line.replace('Immunization&'             ,'')
         line = line.replace('(DPT)'                     ,'(DPT) ')
         line = line.replace('percentattend&'            ,'')
@@ -394,11 +401,11 @@ for i,line in enumerate(mmri):
 
 mmro.write(
 mr+'\n'+mc1+cadd[2]+ccm[2]+mc3+'All regressions include fixed-effects by '
-'country.  For the full list of countries by year see table \\ref{MMRtab:survey}.'
+'country.  For the full list of countries by year see online appendix table 1.'
 '  Results are for average years of education of females between the ages of 15'
 ' and 39 in each country.  A full description of control variables is available'
-' in section \\ref{scn:data}, and as the note to table \\ref{MMRtab:sumstats}.  '
-'Standar errors clustered at the level of the country are shown.\n'+foot)
+' in section 3 of the paper, and as the note to table 2a.  '
+'Standard errors clustered at the level of the country are shown.\n'+foot)
 if ftype=='tex':
     mmro.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
     '\\end{tabular}\\end{center}\\end{table}')
@@ -428,6 +435,7 @@ for i,line in enumerate(mmri):
         line = line.replace('_year4&year==  2005.0000'  ,'year 2005')
         line = line.replace('_year5&year==  2010.0000'  ,'year 2010')
         line = line.replace('ln_GDPpc&'                 ,'')
+        line = line.replace('ln_GDPcur&'                ,'')
         line = line.replace('Immunization&'             ,'')
         line = line.replace('(DPT)'                     ,'(DPT) ')
         line = line.replace('percentattend&'            ,'')
@@ -447,10 +455,10 @@ for i,line in enumerate(mmri):
 
 mmro.write(
 mr+'\n'+mc1+cadd[3]+ccm[3]+mc3+'All regressions include fixed-effects by '
-'country.  For the full list of countries by year see table \\ref{MMRtab:survey}.'
+'country.  For the full list of countries by year see online appendix table 1.'
 '  Results are for average years of education of females between the ages of 15'
 ' and 39 in each country.  A full description of control variables is available'
-' in section \\ref{scn:data}, and as the note to table \\ref{MMRtab:sumstats}.  '
+' in section 3 of the paper, and as the note to table 2a.  '
 'Standard errors clustered at the level of the country are shown.\n'+foot)
 if ftype=='tex':
     mmro.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
@@ -483,6 +491,7 @@ for i,line in enumerate(mmri):
         line = line.replace('_year4&year==  2005.0000'  ,'year 2005')
         line = line.replace('_year5&year==  2010.0000'  ,'year 2010')
         line = line.replace('ln_GDPpc&'                 ,'')
+        line = line.replace('ln_GDPcur&'                ,'')
         line = line.replace('Immunization&'             ,'')
         line = line.replace('(DPT)'                     ,'(DPT) ')
         line = line.replace('percentattend&'            ,'')
@@ -503,13 +512,12 @@ for i,line in enumerate(mmri):
 
 mmro.write(
 mr+'\n'+mc1+cadd[1]+ccm[1]+mc3+'All regressions include fixed-effects by '  
-'country. For the full list of countries by year see table \\ref{MMRtab:survey}.' 
-' Educational variables are the same as those in table \\ref{MMRtab:MMRpercent}'
-' however include both female and male figures for each variable (ages 15-39).'
-' A full description'
-' of control variables is available in section \\ref{scn:data}, and as the note'  
-' to table \\ref{MMRtab:sumstats}.  Standard errors clustered at the level of'
-' the country are diplayed.\n'+foot)
+'country. For the full list of countries by year see online appendix table 1.'
+' Educational variables are the same as those in table 3 however include both '
+'female and male figures for each variable (ages 15-39). A full description'
+' of control variables is available in section 3 of the paper, and as the note'  
+' to table 2a.  Standard errors clustered at the level of'
+' the country are displayed.\n'+foot)
 if ftype=='tex':
     mmro.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
     '\\end{tabular}\\end{center}\\end{table}\\end{landscape}')
@@ -542,6 +550,7 @@ for i,line in enumerate(mmri):
         line = line.replace('_year4&year==  2005.0000'  ,'year 2005')
         line = line.replace('_year5&year==  2010.0000'  ,'year 2010')
         line = line.replace('Dln_GDPpc&Dln_GDPpc'      ,'$\Delta$ log(GDP) p.c.')
+        line = line.replace('Dln_GDPcur&Dln_GDPcur'    ,'$\Delta$ log(GDP) p.c.')
         line = line.replace('DImmunization&DImmunization','$\Delta$ Immunization (DPT) ')
         line = line.replace('Dpercentattend&Dpercentattend','$\Delta$ Attended Births')
         line = line.replace('Dfertility&Dfertility','$\Delta$ Fertility')
@@ -560,12 +569,13 @@ for i,line in enumerate(mmri):
 
 mmro.write(
 mr+'\n'+mc1+cadd[1]+ccm[1]+mc3+'$\Delta$ refers to the first difference for each'
-'variable within a given country over time. For the full list of countries by year see table \\ref{MMRtab:survey}.' 
+' variable within a given country over time. For the full list of countries by '
+'year see table online appendix table \\ref{MMRtab:survey}.' 
 '  Results are for the percent of the female population between the ages of '
 ' 15 and 39 with each level of education in each country.  A full description'
-' of control variables is available in section \\ref{scn:data}, and as the note'  
-' to table \\ref{MMRtab:sumstats}.  Standard errors clustered at the level of'
-' the country are diplayed.\n'+foot)
+' of control variables is available in section 3 of the paper, and as the note'  
+' to table 2a.  Standard errors clustered at the level of'
+' the country are displayed.\n'+foot)
 if ftype=='tex':
     mmro.write('\\end{footnotesize}} \\\\ \\bottomrule \n'
     '\\end{tabular}\\end{center}\\end{table}\\end{landscape}')
@@ -797,6 +807,11 @@ if ftype=='tex':
     zsco.write('\\begin{footnotesize}\\end{footnotesize}&'*4+
     '\\begin{footnotesize}\\end{footnotesize}\\\\')
 
+FEff = str('%.3f'%(0.0177*17.6*26.12*1.676/300.9))+'s.d. &'
+IEff = str('%.3f'%(0.0147*17.6*2.423*15.90/300.9))+'s.d. &'
+AEff = str('%.3f'%(0.0138*17.6*1.490*27.59/300.9))+'s.d. &'
+GEff = str('%.3f'%(0.0089*17.6*60.62*1.652/300.9))+'s.d. &'
+TEff = str('%.3f'%(0.0083*17.6*2.037*46.12/300.9))+'s.d. \\\\'
 for i,line in enumerate(zsci):
     if i>2 and i<14:
         line = re.sub(r"\t",dd,line)
@@ -813,8 +828,7 @@ for i,line in enumerate(zsci):
         line = line.replace(')&'                        ,')'+dd2)
         zsco.write(line+'\n')
 
-zsco.write('Effect Size &'
-' 0.066 s.d. & 0.049 s.d. & 0.065 s.d. & 0.022 s.d. & 0.060 s.d. \\\\')
+zsco.write('Effect Size &'+FEff+IEff+AEff+GEff+TEff)
 zsco.write(
 mr+'\n'+mc1+cadd[6]+ccm[6]+mc3+'Each regression includes fixed effects by '
 'country, and heteroscedasticity robust standard errors.  Each dependent '
@@ -828,7 +842,7 @@ if ftype=='tex':
 
 zsco.close()
 
-
+"""
 #-------------------------------------------------------------------------------
 # --- (7) Mechanisms Table
 #-------------------------------------------------------------------------------
@@ -931,7 +945,7 @@ if ftype=='tex':
    '\\end{tabular}\\end{center}\\end{table}\\end{landscape}')
 
 meco.close()
-
+"""
 
 #-------------------------------------------------------------------------------
 # --- (8) Nigeria tables
