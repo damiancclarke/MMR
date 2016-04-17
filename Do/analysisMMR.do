@@ -34,6 +34,10 @@ global DAT "~/investigacion/Activa/MMR/Data"
 global COD "~/investigacion/Activa/MMR/Do"
 global OUT "~/investigacion/Activa/MMR/Results"
 global LOG "~/investigacion/Activa/MMR/Log"
+global DAT "/media/ubuntu/Impar/investigacion/Activa/MMR/Data"
+global COD "/media/ubuntu/Impar/investigacion/Activa/MMR/Do"
+global OUT "/media/ubuntu/Impar/investigacion/Activa/MMR/Results"
+global LOG "/media/ubuntu/Impar/investigacion/Activa/MMR/Log"
 
 log using "$LOG/analysisMMR.txt", text replace
 cap mkdir "$OUT/tables"
@@ -44,8 +48,9 @@ cap mkdir "$OUT/graphs"
 ********************************************************************************
 **VARIABLES
 local mmr MMR ln_MMR
-local cov GDPpc ln_GDPpc Immuniz fertil percentattend population TeenBirths /*
-*/        husbandMore husbandLess
+local cov GDPpc ln_GDPpc ln_GDPcu Immuniz fertil percentattend population /*
+*/              TeenB
+*husbandMore husbandLess
 local edu ln_yrsch yr_sch yr_sch_pr yr_sch_se yr_sch_te lpc lsc lhc lu lp ls lh
 local reg BLcode region_code region_UNESCO income2
 local xv1 lp ls lh
@@ -55,7 +60,7 @@ local dxv Dlp Dls Dlh
 *local dxv Dyr_sch Dyr_sch_sq
 
 
-foreach a in outreg2 arrowplot unique {
+foreach a in outreg2 arrowplot unique estout {
     cap which `a'
     if _rc!=0 ssc install `a'
 }
@@ -77,13 +82,13 @@ rename TeenBirths_t TeenBirths
 ********************************************************************************
 cap mkdir "$OUT/graphs/trends"
 
-twoway scatter MMR year if age_all || lfit MMR year if age_all, ///
+twoway scatter MMR year if age_all || lfit MMR year if age_all,          ///
 title(Maternal Mortality by Year) subtitle(Points represent country average)
 graph export "$OUT/graphs/trends/timetrend_MMR.eps", replace as(eps)
 
 foreach educ of varlist lu- yr_sch_ter { 
-    twoway scatter `educ' year if age_all || lfit `educ' year if ///
-    age_all, title("Educational Achievement (F) by Year") ///
+    twoway scatter `educ' year if age_all || lfit `educ' year if         ///
+    age_all, title("Educational Achievement (F) by Year")                ///
     subtitle(Points represent country average)
     graph export "$OUT/graphs/trends/timetrend_`educ'_F.eps", replace as(eps)
 }
@@ -260,6 +265,7 @@ restore
 *** (4) Create macro dataset
 ********************************************************************************
 keep if age_fert==1
+
 collapse `mmr' `cov' GDPgrowth `edu' M_*, by(country year `reg')
 
 lab var MMR           "MMR"
@@ -268,6 +274,7 @@ lab var yr_sch_sec    "Seconday Education (yrs)"
 lab var yr_sch_ter    "Tertiary Education (yrs)"
 lab var year          "Year"
 lab var ln_GDPpc      "log GDP per capita"
+lab var ln_GDPcur     "log GDP per capita"
 lab var Immunization  "Immunization (DPT)"
 lab var percentattend "Attended Births"
 lab var TeenBirths    "Teen births"
@@ -288,7 +295,7 @@ bys country: gen trend=_n
 
 bys BLcode (year): gen DMMR=MMR[_n]-MMR[_n-1]
 bys BLcode (year): gen Dln_MMR=ln_MMR[_n]-ln_MMR[_n-1]
-foreach var of varlist `xv1' `xv3' ln_GDPpc Immuniz percentatt fertil TeenBirths population{
+foreach var of varlist `xv1' `xv3' ln_GDPpc ln_GDPcur Immuniz percentatt fertil TeenBirths population{
     bys BLcode (year): gen D`var'=`var'[_n]-`var'[_n-1]    
 }
 
@@ -300,8 +307,8 @@ local opts cells("count mean sd min max")
 local educsum yr_sch yr_sch_pr yr_sch_se yr_sch_te lp ls lh lu MFyr_sch
 local title "Summary Stats for All Countries"
 
-lab var husbandMore "Husband wants more births than wife"
-lab var husbandLess "Husband wants less births than wife"
+*lab var husbandMore "Husband wants more births than wife"
+*lab var husbandLess "Husband wants less births than wife"
 
 replace population=population/1000000    
 estpost sum `mmr' `cov' `educsum'
@@ -362,13 +369,13 @@ local n2
 
 local cont1
 local cont2 _year2 _year3 _year4 _year5
-local cont3 `cont2' ln_GDPpc
+local cont3 `cont2' ln_GDPcur
 local cont4 `cont3' Immunization
 local cont5 `cont4' percentattend
 local cont6 `cont5' fertility
 local cont7 `cont6' TeenBirths
 
-/*
+
 local iter = 1
 foreach x in xv1 xv2 xv3 {
     if `iter'==1 local n1 CrossCountry_female.xls
@@ -397,7 +404,7 @@ foreach x in xv1 xv2 xv3 {
     }
     local ++iter
 }
-
+gen msamp = e(sample)
 
 ********************************************************************************
 ***(6b) MMR versus schooling regressions with trends
@@ -405,16 +412,7 @@ foreach x in xv1 xv2 xv3 {
 local trend i.BLcode*trend
 local opts  fe vce(cluster BLcode)
 local n1    
-local n2    
-
-local cont1
-local cont2 _year2 _year3 _year4 _year5
-local cont3 `cont2' ln_GDPpc
-local cont4 `cont3' Immunization
-local cont5 `cont4' percentattend
-local cont6 `cont5' fertility
-local cont7 `cont6' TeenBirths
-
+local n2
 
 local iter = 1
 foreach x in xv1 xv2 xv3 {
@@ -514,7 +512,7 @@ foreach i in Low LM UM High {
 ********************************************************************************
 local dcont1
 local dcont2 _year2 _year3 _year4
-local dcont3 `dcont2' Dln_GDPpc
+local dcont3 `dcont2' Dln_GDPcur
 local dcont4 `dcont3' DImmunization
 local dcont5 `dcont4' Dpercentattend
 local dcont6 `dcont5' Dfertility
@@ -580,7 +578,7 @@ local name $OUT/tables/Zscores_female.xls
 cap rm "`name'"
 cap rm "$OUT/tables/Zscores_female.txt"
 
-foreach v in fertility Immunization percentattend ln_GDPpc TeenBirths {
+foreach v in fertility Immunization percentattend ln_GDPcur TeenBirths {
     egen z_`v'=std(`v')
     reg z_`v' `xv1', robust
     outreg2 using "`name'", excel append
@@ -608,9 +606,17 @@ graph export "$OUT/graphs/countries.eps", as(eps) replace
 *** (12) Female versus Male education
 ********************************************************************************
 local trend i.BLcode*trend
-local xv1G lp ls lh M_lp M_ls M_lh
+local xv1G lp ls lh M_lp M_ls M_lh 
 local xv2G yr_sch M_yr_sch
 local xv3G yr_sch yr_sch_sq M_yr_sch M_yr_sch_sq
+local trend
+local cont1
+local cont2 _year2 _year3 _year4 _year5
+local cont3 `cont2' ln_GDPcur
+local cont4 `cont3' Immunization
+local cont5 `cont4' percentattend
+local cont6 `cont5' fertility
+local cont7 `cont6' TeenBirths
 
 
 local iter = 1
@@ -621,10 +627,9 @@ foreach x in xv1G xv2G xv3G {
     
     xi: xtreg MMR `trend' ``x'', `opts'
     outreg2 using "$OUT/tables/`n1'", excel replace label keep(``x'')
-    qui xi: xtreg MMR ``x'' `cont7', `opts'
 
     foreach num of numlist 1(1)7 {
-        xi: xtreg MMR `trend' ``x'' `cont`num'' if e(sample), `opts'
+        xi: xtreg MMR `trend' ``x'' `cont`num'' if msamp==1, `opts'
         outreg2 using "$OUT/tables/`n1'", excel label keep(``x'' `cont`num'')
     }
 
@@ -633,10 +638,9 @@ foreach x in xv1G xv2G xv3G {
     if `iter'==3 local n1 CrossCountry_ln_gender_yrssq.xls
     xi: xtreg ln_MMR `trend' ``x'', `options'
     outreg2 using "$OUT/tables/`n1'", excel replace label keep(``x'')
-    qui xi: xtreg ln_MMR ``x'' `cont7', `opts'
 
     foreach num of numlist 1(1)7 {
-        xi: xtreg ln_MMR `trend' ``x'' `cont`num'' if e(sample), `opts'
+        xi: xtreg ln_MMR `trend' ``x'' `cont`num'' if msamp==1, `opts'
         outreg2 using "$OUT/tables/`n1'", excel label keep(``x'' `cont`num'')
     }
     local ++iter
@@ -709,8 +713,8 @@ foreach x in xv3 xv1 {
         outreg2 using "`out'.xls", excel append label keep(``x'' `cont`num'')
     }
 }
-*/
 
+exit
 ********************************************************************************
 *** (15) Fertility Preferences
 ********************************************************************************
