@@ -391,6 +391,7 @@ foreach x in xv1 xv2 xv3 {
         outreg2 using "$OUT/tables/`n1'", excel append label keep(``x'' `cont`num'')
     }
 
+
     if `iter'==1 local n1 CrossCountry_ln_female.xls
     if `iter'==2 local n1 CrossCountry_ln_female_yrs.xls
     if `iter'==3 local n1 CrossCountry_ln_female_yrssq.xls
@@ -405,6 +406,16 @@ foreach x in xv1 xv2 xv3 {
     local ++iter
 }
 gen msamp = e(sample)
+
+**Make graph of margins
+xtreg MMR yr_sch c.yr_sch#c.yr_sch if msamp==1, `opts'
+margins, dydx(yr_sch) at(yr_sch=(0(1)13))
+marginsplot, yline(0, lcolor(red) lwidth(thick)) scheme(s1mono)               /*
+*/ xlabel(0 "0" 1 "1" 2 "2" 3 "3" 4 "4" 5 "5" 6 "6" 7 "7" 8 "8" 9 "9" 10 "10" /*
+*/ 11 "11" 12 "12" 13 "13") title(" ") ytitle("Predicted Effects (MMR)" " ")  /*
+*/ xtitle("Years of Schooling")
+graph export "$OUT/graphs/marginsEducMMR.eps", as(eps) replace 
+
 
 ********************************************************************************
 ***(6b) MMR versus schooling regressions with trends
