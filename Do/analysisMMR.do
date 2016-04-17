@@ -48,7 +48,7 @@ cap mkdir "$OUT/graphs"
 ********************************************************************************
 **VARIABLES
 local mmr MMR ln_MMR
-local cov GDPpc ln_GDPpc ln_GDPcu Immuniz fertil percentattend population /*
+local cov GDPpc ln_GDPpc GDPcu ln_GDPcu Immuniz fertil percentattend population /*
 */              TeenB
 *husbandMore husbandLess
 local edu ln_yrsch yr_sch yr_sch_pr yr_sch_se yr_sch_te lpc lsc lhc lu lp ls lh
@@ -591,7 +591,7 @@ cap rm "$OUT/tables/Zscores_female.txt"
 
 foreach v in fertility Immunization percentattend ln_GDPcur TeenBirths {
     egen z_`v'=std(`v')
-    reg z_`v' `xv1', robust
+    reg z_`v' `xv1' if msamp==1, robust
     outreg2 using "`name'", excel append
 }
 
