@@ -1,0 +1,514 @@
+\documentclass[10pt,letterpaper,subeqn, xcolor=table]{beamer}
+
+\setbeamertemplate{navigation symbols}{}
+\usefonttheme{serif}
+\usecolortheme{seahorse}
+
+
+\usepackage[english]{babel}
+\selectlanguage{english}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{xcolor,colortbl}
+\definecolor{dblue}{rgb}{0.,0.,0.6}
+\usepackage{color}
+\usepackage[update,prepend]{epstopdf}
+\usepackage{framed}
+\usepackage{fleqn}
+\usepackage{graphics}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{setspace}
+\usepackage{textcomp}
+\usepackage{wrapfig}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{subfloat}
+\setbeamertemplate{caption}[numbered]
+\usepackage{wrapfig}
+
+
+
+\usepackage{soul}
+\definecolor{green1}{rgb}{0.5, 1, 0.3}
+
+\usepackage{pgf,tikz}
+\usepackage{pgfplots}
+\usetikzlibrary{decorations}
+
+
+\begin{document}
+\title{Maternal Education and Maternal Mortality}
+\subtitle{Evidence from a Large Panel and Various Natural Experiments}
+\author{Sonia Bhalotra\inst{1} \and Damian Clarke\inst{2}}
+\institute{\inst{1} University of Essex \and \inst{2} University of Santiago de Chile}
+\date{\today}
+
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\frame{\frametitle{Take Away Points}
+\begin{enumerate}
+\item The probability that a mother dies in child birth is negatively related to her education \\ \vspace{2mm}
+\item This finding is robust: it turns up in `long' panel data and in micro data from plausibly exogenous increases in education \\ \vspace{2mm}
+\item The relevant margin is \emph{extensive}: moving from 0 to 1 years of education reduces maternal mortality ratio (MMR) by 166 per 100,000 live births \\ \vspace{2mm}
+\item But smaller effects from intensive changes: moving from 7 to 8 years reduces MMR by 20 per 100,000 live births
+\end{enumerate}
+}
+
+\begin{frame}
+\begin{figure}[!htbp]
+  \begin{center}
+    \caption{Changes in Education and Changes in Maternal Mortality}
+    \includegraphics[scale=0.7]{./figures/MMReducPDeltas.eps}
+  \end{center}
+\end{figure}
+\end{frame}
+
+
+
+\section{Motivation}
+\begin{frame}
+\begin{center}
+\Large	
+\textsc{\textcolor{dblue}{Motivation}}
+\end{center}
+\end{frame}
+
+\frame{\frametitle{Introduction}
+\begin{itemize}
+\item Every day 830 women die from preventable causes related to pregnancy and childbirth (WHO 2012)
+\item MMR in developing countries is 240 per 100,000 live births, compared with 16 per 100,000 in developed
+\item `Main sources' of maternal mortality: 
+\begin{itemize}
+\item Poverty 
+\item Limited access to public services
+\item Cultural practices
+\item Lack of information
+\end{itemize}
+\item This paper: Does education play a role in maternal mortality rates?
+\end{itemize}
+}
+
+\frame{\frametitle{Health and Education}
+There is a lively literature in economics that documents a positive correlation between 
+education and other indicators of health
+\vspace{6mm}
+\begin{itemize}
+\item Smoking and drinking less, likelihood of prenatal care, adoption of new drugs (Cutler, Currie, Lleras-Muney among others)\ldots
+\item Consistent with education conferring efficacy in acquiring and processing information (Rosenzweig, 1995)
+\item Education may also influence health via income, though results generally hold conditional on income
+\end{itemize}
+}
+
+\frame{\frametitle{This Paper}
+Despite these well-studied relationships, both academic and policy literature have
+very little to say about the link between education and maternal mortality.
+\vspace{6mm}
+\begin{itemize}
+\item We examine whether there is a causal relationship between education and MMR
+\item We identify using
+\begin{enumerate}
+\item A large panel, and 
+\item A number of country-specific policy experiments
+\end{enumerate}
+\item We find consistent evidence to suggest that education has played an \emph{important and sizeable}
+role in recent reductions of the MMR
+\end{itemize}
+}
+
+\section{Identification}
+\begin{frame}
+\begin{center}
+\Large	
+\textsc{\textcolor{dblue}{Identification}}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{Panel}
+We run the following on a panel of 108 countries from 1990-2010:
+\vspace{5mm}
+\begin{equation}
+\label{eqn:panel}
+MMR_{it}=\alpha_i+\mathbf{educ}_{it}\beta + \mathbf{W}_{it}\gamma+\delta_t+\varepsilon_{it},
+\end{equation}
+\vspace{5mm}
+\begin{itemize}
+\item We are intersted in $\hat\beta$, which is identified under typical (fixed-effect) panel assumptions
+\item Include a continously more demanding set of time-varying controls $\mathbf{W}_{it}$, linear trends
+\item Examine various functional forms and measures of female education (conditional and unconditional on male education)
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label=ID]
+\frametitle{Country-Specific Reforms}
+However, we may be concerned that additional time-varying factors are omitted from (\ref{eqn:panel}). So:
+\begin{eqnarray}
+ \label{eqn:Nigeria}
+ y_{ijk}&=&\alpha + \beta \text{ UPE Cohort}_{jk}+\gamma \text{UPE Input}_k+ \\ \nonumber
+& & \delta(\text{UPE Input}_k\times\text{UPE Cohort}_{jk})+\textbf{X}^\prime_{ijk}\theta+\varepsilon_{ijk}. \\
+\nonumber
+\end{eqnarray}
+\vspace{5mm}
+We run similar regressions for a number of country-specific contexts:
+\begin{itemize}
+\item Nigeria (above): Universal Primary Education, 1976
+\item \hyperlink{ZIMBABWE}{\textcolor{blue}{Zimbabwe}}: Extensions of availability after independence, 1980
+\item \hyperlink{KENYA}{\textcolor{blue}{Kenya}}: Rearrangement of years to obtain KCPE, 1985
+\end{itemize}
+\end{frame}
+
+
+\section{Data}
+\begin{frame}
+\begin{center}
+\Large	
+\textsc{\textcolor{dblue}{Data}}
+\end{center}
+\end{frame}
+
+\begin{frame}[label=DATA]
+\frametitle{Data}
+We compile a cross-country dataset consisting of:
+\begin{itemize}
+\item educational outcomes from Barro and Lee (2010, 2013)
+\item maternal mortality ratios (\hyperlink{MMRnote}{\textcolor{blue}{MMR}}) from WHO 2012
+\item additional controls from World Bank Data Bank, and constructed from DHS (\hyperlink{SumStats}{\textcolor{blue}{Summary Statistics}})
+\end{itemize}
+\vspace{5mm}
+For country-specific estimates we use the DHS:
+\begin{itemize}
+\item Education comes from female respondents of 4 or 5 waves of surveys in each country (\hyperlink{SumStatsCountry}{\textcolor{blue}{Summary Statistics}})
+\item Maternal mortality is calculated by the sisterhood method
+\item This allows us to calculate country sub-region averages by cohort
+\end{itemize}
+\end{frame}
+
+\section{Results}
+\begin{frame}
+\begin{center}
+\Large	
+\textsc{\textcolor{dblue}{Results}}
+\end{center}
+\end{frame}
+
+
+\begin{frame}
+\input{tables/MMRpercent.tex}
+\end{frame}
+
+\begin{frame}[label=GTABLE]
+\input{tables/MMRpercentGender.tex}
+\end{frame}
+
+\begin{frame}
+\frametitle{Education During Fertile Period Affects Maternal Mortality}
+  \begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.65]{./figures/PrimaryAge.eps}
+\caption{Effect of Primary Education on MMR by Women's Age}
+\end{center}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}[label=ZIMBABWE_EDUC]
+\frametitle{Educational Reforms}
+  \begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.7]{./figures/Zimbabwe_educ.eps}
+\caption{Educational Attainment by Cohort: Zimbabwe}
+\end{center}
+\end{figure}
+\hyperlink{NIGERIA_EDUC}{\beamergotobutton{For Nigeria}}
+\end{frame}
+
+\begin{frame}[label=ZIMBABWE_MMR]
+\frametitle{Educational Reforms}
+  \begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.7]{./figures/Zimbabwe_mmr.eps}
+\caption{Maternal Mortality by Cohort: Zimbabwe}
+\end{center}
+\end{figure}
+\hyperlink{NIGERIA_MMR}{\beamergotobutton{For Nigeria}}
+\end{frame}
+
+
+\frame{\frametitle{Educational Reforms}
+\begin{table}[htpb!]
+\begin{center}
+\scalebox{0.7}{
+\begin{tabular}{lccc} \toprule
+  & (1) & (2)  & (3) \\
+  & Nigeria & Zimbabwe & Kenya \\
+\midrule
+\textsc{Panel A: Education} & & & \\
+Treatment 1 & 2.179$^{***}$& 1.148$^{***}$& 0.953$^{***}$ \\
+& \begin{footnotesize} (0.806)\end{footnotesize} & \begin{footnotesize} (0.167) \end{footnotesize}& \begin{footnotesize} (0.265) \end{footnotesize} \\
+Treatment 2 & 1.059$^{**}$&& \\
+&  \begin{footnotesize}(0.455) \end{footnotesize}&& \\
+& & & \\
+Observations & 12,735 &  10,195 & 13,703 \\ \midrule
+\multicolumn{4}{l}{\textsc{Panel B: Maternal Mortality}}  \\
+\rowcolor{green1} Treatment 1 & -0.0192$^{**}$& -0.00413$^{**}$& 0.00689 \\
+& \begin{footnotesize} (0.00951) \end{footnotesize} & \begin{footnotesize} (0.00143)\end{footnotesize} & \begin{footnotesize} (0.00553) \end{footnotesize} \\
+Treatment 2 & -0.0118$^{**}$&& \\
+& \begin{footnotesize} (0.00518) \end{footnotesize} && \\
+& & & \\
+Observations & 28,694 &  28,631 & 25,602 \\ \bottomrule
+        \multicolumn{4}{c}{\begin{footnotesize} *** p$<$0.01, ** p$<$0.05, * p$<$0.1\end{footnotesize}} \\
+        \multicolumn{4}{p{9cm}}{\begin{footnotesize}\textsc{Notes:} Panel A is the first stage equation, panel B is reduced form. Full specifications and treatment variables are described in section 5.  Standard errors are clustered by state and birth cohort. `Treatment 2' refers to pre-treatment cohorts who are partially affected due to over-age enrolments. `Treatment 1' refers to affected cohorts. \end{footnotesize}} \\ \midrule
+
+\end{tabular}
+}
+\end{center}
+\end{table}
+}
+
+\frame{\frametitle{Country-Specific Results}
+\begin{itemize}
+\item Effects are significant in Nigeria, Zimbabwe
+\begin{itemize}
+ \item These are reforms which largely affect \emph{primary} or lower secondary enrolment 
+ \item No effect found in Kenya (reform affects 7\textsuperscript{th} year of education)
+\end{itemize}
+\item By using data on fertility per woman (DHS), we can convert deaths per woman into deaths per birth to compare with our cross-country estimates (next slide)
+\item In each case, placebo tests are run using false (lagged) reforms
+\end{itemize}
+}
+
+
+\frame{\frametitle{Interpreting Effect Sizes}
+\begin{itemize}
+\item Preferred estimates from panel data suggest moving all uneducated women from 0-1 (5-6) years 
+of education will reduce MMR by 166 (56) deaths per 100,000 live births
+\item Interpreting MMR reductions from policy experiments in terms of years of education gives:
+\begin{itemize}
+\item an effect size of $\frac{-0.0192/2.179}{5.38}=-0.00164$ or 164 per 100,000 in Nigeria
+\item or of $\frac{-0.00413/1.148}{3.61}=-0.00010$ or 10 per 100,000 in Zimbabwe
+\end{itemize}
+\item Given that Nigeria was a primary reform, and Zimbabwe was a lower-secondary reform, these effect
+sizes match up surprisingly well
+\end{itemize}
+}
+
+\begin{frame}
+  \frametitle{Mechanisms: Women's Bargaining Power and Fertility Choices}
+\input{./tables/Mechanisms.tex}
+\end{frame}
+
+\section{Summary}
+\begin{frame}
+\begin{center}
+\Large	
+\textsc{\textcolor{dblue}{Summary}}
+\end{center}
+\end{frame}
+
+\frame{\frametitle{Conclusion}
+In the last two-decades maternal mortality has declined by $\sim$50\%
+\begin{itemize}
+\item Our analysis suggets that gains in female education can explain an important (and largely unrecognised) 
+proportion of this result
+\item Effects are largely due to initial (primary) years of education 
+\item There is potential for important further gains:
+\begin{itemize}
+\item 14.5\% of women 15 or older still have no education (Barro-Lee 2013)
+\item The probability that a 15 year old woman will die in child birth is 1 in 150 in developing countries (WHO, 2012)
+\end{itemize}
+\item Important implications for post-MDG policy.  The SDGs require a reduction from 210 (now) to 70 deaths per 100,000 live births by 2030.
+\end{itemize}
+}
+
+
+\begin{frame}
+\begin{center}
+\Large	
+\textsc{\textcolor{dblue}{Thank You}}
+\end{center}
+\end{frame}
+
+\section{Appended}
+\begin{frame}
+\begin{center}
+\Large	
+\textsc{\textcolor{dblue}{Additional Details\ldots}}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{Education and MMR: Cross- and Within-Country Relationship}
+\begin{figure}
+\includegraphics[scale=0.62]{./figures/countries}  
+\caption{Between and Within Country Correlations: Education and MMR}
+\end{figure}
+\end{frame}
+
+\begin{frame}[label=MMRnote]
+\begin{center}
+\begin{equation}
+MMR=\frac{\text{deaths relating to pregnancy}}{100,000 \text{ live births}}
+\end{equation}
+\vspace{5mm}
+\begin{equation}
+MMRate=\frac{\text{deaths relating to pregnancy}}{\text{Women of Fertile Age}}
+\end{equation}
+\end{center}
+\vspace{8mm}
+So\ldots
+\begin{equation}
+MMR = \frac{MMRate}{\text{Fertility per woman}}=\frac{\text{maternal deaths/woman}}{\text{live births/woman}}
+\end{equation}
+\hyperlink{DATA}{\beamergotobutton{Back}}
+\end{frame}
+
+\begin{frame}[label=SumStats]
+\input{./tables/sumStats.tex}
+\hyperlink{DATA}{\beamergotobutton{Back}}
+\end{frame}
+
+\begin{frame}[label=SumStatsCountry]
+\input{./tables/sumExperiments.tex}
+\hyperlink{DATA}{\beamergotobutton{Back}}
+\end{frame}
+
+
+
+\begin{frame}[label=otherPANEL]
+  \begin{table}[htpb!]
+
+    \begin{center}
+     \scalebox{0.52}{
+      \begin{tabular}{lcccccccc}\toprule
+
+        &(1)&(2)&(3)&(4)&(5)&(6)&(7)&(8)\\
+
+        VARIABLES&MMR&MMR&MMR&MMR&MMR&MMR&MMR&MMR\\\midrule
+
+        \vspace{4pt}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}\\
+
+        Years of Education&-233.0***&-236.5***&-207.1***&-206.3***&-191.5***&-185.4***&-191.9***&-184.4***\\
+
+        & \begin{footnotesize}(23.83)\end{footnotesize} & \begin{footnotesize}(26.67)\end{footnotesize} & \begin{footnotesize}(24.03)\end{footnotesize} & \begin{footnotesize}(23.55)\end{footnotesize} & \begin{footnotesize}(26.85)\end{footnotesize} & \begin{footnotesize}(29.12)\end{footnotesize} & \begin{footnotesize}(37.32)\end{footnotesize} & \begin{footnotesize}(36.65)\end{footnotesize} \\
+
+        Years of Education Squared&12.34***&12.51***&12.53***&12.49***&11.68***&11.44***&11.73***&11.31***\\
+
+        & \begin{footnotesize}(1.347)\end{footnotesize} & \begin{footnotesize}(1.567)\end{footnotesize} & \begin{footnotesize}(1.522)\end{footnotesize} & \begin{footnotesize}(1.490)\end{footnotesize} & \begin{footnotesize}(1.581)\end{footnotesize} & \begin{footnotesize}(1.672)\end{footnotesize} & \begin{footnotesize}(2.040)\end{footnotesize} & \begin{footnotesize}(2.026)\end{footnotesize} \\
+
+        year==1995&&&-8.620&-9.644&-4.161&-4.580&-6.012&-8.210\\
+
+        & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}(10.81)\end{footnotesize} & \begin{footnotesize}(12.35)\end{footnotesize} & \begin{footnotesize}(12.01)\end{footnotesize} & \begin{footnotesize}(11.68)\end{footnotesize} & \begin{footnotesize}(13.14)\end{footnotesize} & \begin{footnotesize}(13.64)\end{footnotesize} \\
+
+        year==2000&&&-25.12*&-26.49&-17.91&-17.58&-20.62&-21.82\\
+
+        & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}(14.71)\end{footnotesize} & \begin{footnotesize}(16.99)\end{footnotesize} & \begin{footnotesize}(15.91)\end{footnotesize} & \begin{footnotesize}(16.01)\end{footnotesize} & \begin{footnotesize}(18.89)\end{footnotesize} & \begin{footnotesize}(19.10)\end{footnotesize} \\
+
+        year==2005&&&-50.16***&-54.36**&-37.12*&-38.49*&-42.52*&-40.69\\
+
+        & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}(17.23)\end{footnotesize} & \begin{footnotesize}(24.80)\end{footnotesize} & \begin{footnotesize}(22.21)\end{footnotesize} & \begin{footnotesize}(21.47)\end{footnotesize} & \begin{footnotesize}(25.56)\end{footnotesize} & \begin{footnotesize}(25.21)\end{footnotesize} \\
+
+        year==2010&&&-75.56***&-82.38**&-64.34**&-65.31**&-69.95**&-63.63*\\
+
+        & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}(21.61)\end{footnotesize} & \begin{footnotesize}(34.77)\end{footnotesize} & \begin{footnotesize}(30.85)\end{footnotesize} & \begin{footnotesize}(30.36)\end{footnotesize} & \begin{footnotesize}(34.74)\end{footnotesize} & \begin{footnotesize}(34.07)\end{footnotesize} \\
+
+        log GDP per capita&&&&6.023&3.976&6.519&7.607&6.602\\
+
+        & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}(17.30)\end{footnotesize} & \begin{footnotesize}(16.38)\end{footnotesize} & \begin{footnotesize}(15.60)\end{footnotesize} & \begin{footnotesize}(15.89)\end{footnotesize} & \begin{footnotesize}(16.02)\end{footnotesize} \\
+
+        Immunization (DPT)&&&&&-1.843*&-1.765**&-1.818**&-1.812**\\
+
+        & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}(0.934)\end{footnotesize} & \begin{footnotesize}(0.885)\end{footnotesize} & \begin{footnotesize}(0.867)\end{footnotesize} & \begin{footnotesize}(0.873)\end{footnotesize} \\
+
+        Attended Births&&&&&&-0.636&-0.740&-0.870\\
+
+        & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}(0.841)\end{footnotesize} & \begin{footnotesize}(0.827)\end{footnotesize} & \begin{footnotesize}(0.833)\end{footnotesize} \\
+
+        Fertility&&&&&&&-9.667&-15.13\\
+
+        & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}(22.73)\end{footnotesize} & \begin{footnotesize}(23.58)\end{footnotesize} \\
+
+        Teen births&&&&&&&&0.793\\
+
+        & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}(0.895)\end{footnotesize} \\
+
+        Constant&1,163***&1,183***&981.7***&933.1***&1,038***&1,030***&1,097***&1,057***\\
+
+        & \begin{footnotesize}(95.07)\end{footnotesize} & \begin{footnotesize}(105.2)\end{footnotesize} & \begin{footnotesize}(99.20)\end{footnotesize} & \begin{footnotesize}(156.1)\end{footnotesize} & \begin{footnotesize}(147.2)\end{footnotesize} & \begin{footnotesize}(145.3)\end{footnotesize} & \begin{footnotesize}(212.5)\end{footnotesize} & \begin{footnotesize}(226.8)\end{footnotesize} \\
+
+        \vspace{4pt} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} \\
+
+        Observations&710&428&428&428&428&428&428&428\\
+
+        $R^2$&0.425&0.538&0.580&0.580&0.601&0.604&0.604&0.606\\
+
+        Number of Countries&142&108&108&108&108&108&108&108\\ \midrule
+
+        \multicolumn{9}{c}{\begin{footnotesize} *** p$<$0.01, ** p$<$0.05, * p$<$0.1\end{footnotesize}} \\
+        \multicolumn{9}{p{19cm}}{\begin{footnotesize}\textsc{Notes:} All regressions include fixed-effects by country.  Results are for average years of education of females between the ages of 15 and 39 in each country.  A full description of control variables is available in section 6. \end{footnotesize}} \\
+        \bottomrule
+      \end{tabular}
+      }
+    \end{center}
+  \end{table}
+\hyperlink{PTABLE}{\beamergotobutton{Back}}
+\end{frame}
+
+
+\begin{frame}[label=ZIMBABWE]
+Follow Ag\"uero and Bharawadj (2011) in estimating around the discontinuity in educational
+attainment between 14 and 15 year old cohorts in 1980:
+\vspace{5mm}
+\begin{eqnarray}
+ \label{eqn:Zimbabwe}
+ y_{ij}&=&\beta_1\text{DumAge}_{ij}+\beta_2\text{DumAge}_{ij}\times(\text{Age}80_{ij}-14)+ \\ \nonumber
+ && \beta_3(1-\text{DumAge}_{ij})\times(\text{Age}80_{ij}-14)+\textbf{X}^\prime_{ij}\theta+\varepsilon_{ij}.
+\end{eqnarray}
+\vspace{5mm}
+\hyperlink{ID}{\beamergotobutton{Back}}
+\end{frame}
+
+\begin{frame}[label=KENYA]
+As per Chicoine (2011) define treatment based on probability of being in an affected
+cohort, and fit flexible quarter-of-birth trends:
+\vspace{5mm}
+\begin{equation}
+\label{eqn:Kenya}
+ y_{ijq}=\alpha+\beta\text{Treat}_{jk}+\textbf{age}_{ijq}^\prime\gamma+\textbf{qob trend}_{jq}^\prime \delta +\textbf{X}^\prime_{ijq}\theta+\varepsilon_{ijq},
+\end{equation}
+\vspace{5mm}
+\hyperlink{ID}{\beamergotobutton{Back}}
+\end{frame}
+
+
+\begin{frame}[label=NIGERIA_EDUC]
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.7]{./figures/Nigeria_educ.eps}
+\caption{Educational Attainment by Cohort: Nigeria}
+\end{center}
+\end{figure}
+\hyperlink{ZIMBABWE_EDUC}{\beamergotobutton{Back}}
+\end{frame}
+
+\begin{frame}[label=NIGERIA_MMR]
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.7]{./figures/Nigeria_mmr.eps}
+\caption{Maternal Mortality by Cohort: Nigeria}
+\end{center}
+\end{figure}
+\hyperlink{ZIMBABWE_MMR}{\beamergotobutton{Back}}
+\end{frame}
+
+
+\end{document}
+
+In panel A, `Final birth twins' refers to those families where twins occur on their last birth and those families with an identical number of births but one 
+fewer child due to singleton births.  All children (both in twin and non-twin families) are considered pre-twin if they are born before the final birth.  In panel B, `Twins
+exceeding desired quantity' refers to those families where a twin birth on the final birth causes parents to exceed their optimal number of children, and similar families who
+achieve optimal fertility levels with singleton final births.
